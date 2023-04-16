@@ -43,7 +43,7 @@ body {
   flex-direction: column;
   gap: 0.5em;
   border-radius: 20px;
-  color: #4d4d4d;
+  color: #000000;
   margin-top: -3em;
 }
 .screen-1 .email input {
@@ -53,22 +53,22 @@ body {
   
 }
 .screen-1 .email input::-moz-placeholder {
-  color: black;
+  color: #636262;
   font-size: 0.9em;
   background: white;
 }
 .screen-1 .email input:-ms-input-placeholder {
-  color: black;
+  color: #636262;
   font-size: 0.9em;
   background: white;
 }
 .screen-1 .email input::placeholder {
-  color: black;
+  color: #636262;
   font-size: 0.9em;
   background: white;
 }
 .screen-1 .email ion-icon {
-  color: #4d4d4d;
+  color: #000000;
   margin-bottom: -0.2em;
 }
 .screen-1 .password {
@@ -80,7 +80,7 @@ body {
   flex-direction: column;
   gap: 0.5em;
   border-radius: 20px;
-  color: #4d4d4d;
+  color: #000000;
 }
 .screen-1 .password input {
   outline: none;
@@ -88,19 +88,19 @@ body {
   
 }
 .screen-1 .password input::-moz-placeholder {
-  color: black;
+  color: rgb(103, 102, 102);
   font-size: 0.9em;
 }
 .screen-1 .password input:-ms-input-placeholder {
-  color: black;
+  color: rgb(103, 102, 102);
   font-size: 0.9em;
 }
 .screen-1 .password input::placeholder {
-  color: black;
+  color: rgb(103, 102, 102);
   font-size: 0.9em;
 }
 .screen-1 .password ion-icon {
-  color: #4d4d4d;
+  color: #000000;
   margin-bottom: -0.2em;
 }
 .screen-1 .password .show-hide {
