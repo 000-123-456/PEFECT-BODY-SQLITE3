@@ -1,0 +1,9 @@
+{
+    "editor.fontFamily": " 'Cascadia Code', monospace",
+    "python.autoComplete.extraPaths": [
+       
+    ],
+    "python.settings.CustomBrowser": "Brave",
+    "liveServer.settings.AdvanceCustomBrowserCmdLine": "C:\\Program Files (x86)\\BraveSoftware\\Brave-Browser\\Application\\brave.exe"
+    
+}
