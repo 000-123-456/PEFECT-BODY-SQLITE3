@@ -9,7 +9,6 @@
 /*--------------------------------------------------------------
 # General
 --------------------------------------------------------------*/
-@import url('https://fonts.googleapis.com/css2?family=Asar&family=Bayon&family=Coda+Caption:wght@800&display=swap');
 :root {
   scroll-behavior: smooth;
 }
@@ -123,7 +122,7 @@ h6 {
 }
 
 .dropdown-menu .dropdown-footer a {
-  color: #131212;
+  color: #444444;
   text-decoration: underline;
 }
 
@@ -366,15 +365,14 @@ h6 {
 }
 
 .logo img {
-  max-height: 65px;
+  max-height: 26px;
   margin-right: 6px;
-  border-radius: 50%;
 }
 
 .logo span {
   font-size: 26px;
   font-weight: 700;
-  color: #eff2f7;
+  color: #012970;
   font-family: "Nunito", sans-serif;
 }
 
@@ -383,7 +381,7 @@ h6 {
   z-index: 997;
   height: 60px;
   box-shadow: 0px 2px 20px rgba(1, 41, 112, 0.1);
-  background: linear-gradient(45deg, #000, #3e3e3e);
+  background-color: #fff;
   padding-left: 20px;
   /* Toggle Sidebar Button */
   /* Search Bar */
@@ -393,7 +391,7 @@ h6 {
   font-size: 32px;
   padding-left: 10px;
   cursor: pointer;
-  color: #eff2f7;
+  color: #012970;
 }
 
 .header .search-bar {
@@ -470,13 +468,13 @@ h6 {
 
 .header-nav .nav-icon {
   font-size: 22px;
-  color: #eff2f7;
+  color: #012970;
   margin-right: 25px;
   position: relative;
 }
 
 .header-nav .nav-profile {
-  color: #eff2f7;
+  color: #012970;
 }
 
 .header-nav .nav-profile img {
@@ -676,7 +674,7 @@ h6 {
 .sidebar-nav .nav-heading {
   font-size: 11px;
   text-transform: uppercase;
-  color: #000000;
+  color: #899bbd;
   font-weight: 600;
   margin: 10px 0 5px 15px;
 }
@@ -686,7 +684,7 @@ h6 {
   align-items: center;
   font-size: 15px;
   font-weight: 600;
-  color: #0d0e1e;
+  color: #4154f1;
   transition: 0.3;
   background: #f6f9ff;
   padding: 10px 15px;
@@ -696,25 +694,25 @@ h6 {
 .sidebar-nav .nav-link i {
   font-size: 16px;
   margin-right: 10px;
-  color: #1b1f6b;
+  color: #4154f1;
 }
 
 .sidebar-nav .nav-link.collapsed {
-  color: #0d0e1e;
+  color: #012970;
   background: #fff;
 }
 
 .sidebar-nav .nav-link.collapsed i {
-  color: #1b1f6b;
+  color: #899bbd;
 }
 
 .sidebar-nav .nav-link:hover {
-  color: #1b1f6b;
+  color: #4154f1;
   background: #f6f9ff;
 }
 
 .sidebar-nav .nav-link:hover i {
-  color: #1b1f6b;
+  color: #4154f1;
 }
 
 .sidebar-nav .nav-link .bi-chevron-down {
@@ -752,11 +750,11 @@ h6 {
 
 .sidebar-nav .nav-content a:hover,
 .sidebar-nav .nav-content a.active {
-  color: #000000;
+  color: #4154f1;
 }
 
 .sidebar-nav .nav-content a.active i {
-  background-color: #000000;
+  background-color: #4154f1;
 }
 
 /*--------------------------------------------------------------

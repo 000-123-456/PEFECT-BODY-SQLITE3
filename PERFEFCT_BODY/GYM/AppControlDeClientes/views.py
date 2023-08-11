@@ -2,7 +2,7 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.views import LoginView
 # Create your views here.
 def prueba(request):
-     return render(request, "layout/base.html")
+     return render(request, "layout/index.html")
 
 class LoginFormView(LoginView):
     template_name='AppUsers/login.html'
