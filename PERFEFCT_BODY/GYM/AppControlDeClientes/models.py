@@ -1,2 +1,81 @@
 from django.db import models
+from AppUsers.models import User
+from AppControlDeClientes.op import opTipo
+class Empresa(models.Model):
+    nombre = models.CharField(max_length=50, null=False, verbose_name='Nombre')
+    tarifa = models.PositiveIntegerField(verbose_name='Tarifa', null=False)
+    logo = models.ImageField(upload_to='avatar/%Y/%m/%d',null=True,blank=True)
+    telefono = models.CharField(max_length=9, null=True, verbose_name='Teléfono') 
+    direcccion = models.CharField(max_length=100, null=False, verbose_name='Dirección')
+    def __str__(self) -> str:
+        return self.nombre
+    
+    class Meta:
+        db_table = 'empresa'
+        verbose_name = 'Empresa'
+        verbose_name_plural = 'Empresas'
+        ordering = ['id']
 
+class Membresia(models.Model):
+    nombre = models.CharField(max_length=50, null=False, verbose_name='Nombre')
+    precio = models.DecimalField(max_digits=15,decimal_places=2,null=False,verbose_name="Precio")
+    duracion = models.PositiveIntegerField(default=0, verbose_name='Duracion')
+    estado = models.BooleanField(default=False, verbose_name='Estado')
+    def __str__(self) -> str:
+        return self.nombre
+    
+    class Meta:
+        db_table = 'membresia'
+        verbose_name = 'Membresia'
+        verbose_name_plural = 'Membresias'
+        ordering = ['id']
+
+class Miembro(models.Model):
+    nombre = models.CharField(max_length=50, null=False, verbose_name='Nombres')
+    telefono = models.CharField(max_length=9, null=True, verbose_name='Teléfono') 
+    direcccion = models.CharField(max_length=100, null=False, verbose_name='Dirección')
+    edad = models.PositiveIntegerField(default=0, verbose_name='Edad')
+    nombreContact = models.CharField(max_length=50, null=False, verbose_name='Nombre de contacto')
+    telefonoContact = models.CharField(max_length=9, null=True, verbose_name='Teléfono de contacto')
+    estado = models.BooleanField(default=False, verbose_name='Estado')
+    def __str__(self) -> str:
+        return self.nombre
+    
+    class Meta:
+        db_table = 'miembro'
+        verbose_name = 'Miembro'
+        verbose_name_plural = 'Miembros'
+        ordering = ['id']  
+
+class VentaMembresia(models.Model):
+    fecha_inicio = models.DateField()
+    fecha_fin = models.DateField()
+    monto_pagado = models.DecimalField(max_digits=15,decimal_places=2,null=False,verbose_name="Total pagado")
+    empleado = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name='Empleado')
+    membresia = models.ForeignKey(Membresia, on_delete=models.PROTECT, verbose_name='Membresia')
+    miembro = models.ForeignKey(Miembro, on_delete=models.PROTECT, verbose_name='Miembro')
+    def __str__(self) -> str:
+        return self.id
+    
+    class Meta:
+        db_table = 'ventaMembresia'
+        verbose_name = 'VentaMembresia'
+        verbose_name_plural = 'VentasMembresia'
+        ordering = ['id']
+
+class Asistencia(models.Model):
+    tipo = models.PositiveIntegerField(null=True, blank=True, choices=opTipo, verbose_name='Tipo')
+    monto_pagado = models.DecimalField(max_digits=15,decimal_places=2,null=False,verbose_name="Total pagado")
+    fecha_asistencia = models.DateField(auto_now=True)
+    nombre = models.CharField(max_length=50, null=False, verbose_name='Nombre')
+    miembro = models.ForeignKey(Miembro, on_delete=models.PROTECT, verbose_name='Miembro', null=True, blank=True)
+    empleado = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name='Empleado')
+    
+    def __str__(self) -> str:
+        return self.id
+    
+    class Meta:
+        db_table = 'asistencia'
+        verbose_name = 'Asistencia'
+        verbose_name_plural = 'Asistencias'
+        ordering = ['id']
