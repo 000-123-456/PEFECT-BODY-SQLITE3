@@ -5,7 +5,7 @@ def prueba(request):
      return render(request, "layout/index.html")
 
 class LoginFormView(LoginView):
-    template_name='AppUsers/pages-register.html'
+    template_name='AppUsers/pages-login.html'
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             return redirect('prueba')

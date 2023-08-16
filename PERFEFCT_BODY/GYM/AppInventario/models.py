@@ -1,7 +1,7 @@
 from django.db import models
 
 from GYM import settings
-
+from AppUsers.models import User
 
 # Create your models here.
 class Proveedor(models.Model):
@@ -43,6 +43,7 @@ class Producto(models.Model):
     fecha_updated = models.DateTimeField(auto_now_add=True)
     categoriaP = models.ForeignKey(Categoria, null=False, verbose_name='Categoria', on_delete=models.PROTECT)
     img = models.ImageField(upload_to='avatar/%Y/%m/%d',null=True,blank=True) 
+    nivel_bajo = models.PositiveIntegerField(verbose_name='Nivel bajo de producto')
     def __str__(self) -> str:
         return self.nombre
     
@@ -55,11 +56,12 @@ class Producto(models.Model):
 class Compra(models.Model):
     cantidad = models.PositiveIntegerField(verbose_name='Cantidad', null=False)
     total = models.DecimalField(max_digits=15,decimal_places=2,null=False,verbose_name="Total de compra")
-    fecha_vec = models.DateField()
+    fecha_vec = models.DateField(verbose_name='Fecha de vencimiento')
     fecha_compra = models.DateField(auto_now=True)
     producto = models.ForeignKey(Producto,null=False,verbose_name='Producto',on_delete=models.PROTECT)
     proveedor = models.ForeignKey(Proveedor,null=False,verbose_name='Proveedor',on_delete=models.PROTECT)
-    
+    fecha_created = models.DateTimeField(auto_now_add=True)
+    fecha_updated = models.DateTimeField(auto_now_add=True)
     def __str__(self) -> str:
         return self.id
     
@@ -72,7 +74,8 @@ class Compra(models.Model):
 class Venta(models.Model):
     total = models.DecimalField(max_digits=15,decimal_places=2,null=False,verbose_name="Total")
     fecha_venta = models.DateField(auto_now=True)
-
+    empleado = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name='Empleado')
+    fecha_created = models.DateTimeField(auto_now=True)
     def __str__(self) -> str:
         return self.id
     
@@ -86,7 +89,7 @@ class LineaVenta(models.Model):
     cantidad = models.PositiveIntegerField(default=0, verbose_name='Cantidad')
     precio = models.DecimalField(max_digits=15,decimal_places=2,null=False,verbose_name="Precio")
     producto = models.ForeignKey(Producto,null=False,verbose_name='Producto',on_delete=models.PROTECT)
-    
+    venta = models.ForeignKey(Venta,null=False,verbose_name='Venta',on_delete=models.PROTECT)
     def __str__(self) -> str:
         return self.id
     

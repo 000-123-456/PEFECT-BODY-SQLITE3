@@ -34,7 +34,7 @@ class Miembro(models.Model):
     nombre = models.CharField(max_length=50, null=False, verbose_name='Nombres')
     telefono = models.CharField(max_length=9, null=True, verbose_name='Teléfono') 
     direcccion = models.CharField(max_length=100, null=False, verbose_name='Dirección')
-    edad = models.PositiveIntegerField(default=0, verbose_name='Edad')
+    fecha_nac =  models.DateField(verbose_name='Fecha de nacimiento')
     nombreContact = models.CharField(max_length=50, null=False, verbose_name='Nombre de contacto')
     telefonoContact = models.CharField(max_length=9, null=True, verbose_name='Teléfono de contacto')
     estado = models.BooleanField(default=False, verbose_name='Estado')
@@ -70,7 +70,7 @@ class Asistencia(models.Model):
     nombre = models.CharField(max_length=50, null=False, verbose_name='Nombre')
     miembro = models.ForeignKey(Miembro, on_delete=models.PROTECT, verbose_name='Miembro', null=True, blank=True)
     empleado = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name='Empleado')
-    
+    fecha_created = models.DateTimeField(auto_now=True)
     def __str__(self) -> str:
         return self.id
     
