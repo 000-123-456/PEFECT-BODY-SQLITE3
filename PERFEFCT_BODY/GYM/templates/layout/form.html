@@ -61,3 +61,30 @@
 
 
 {% endblock cuerpo %}
+{% block js %}
+<script>
+  
+ IMask(
+  document.getElementById('tel'),
+  {
+    mask: [
+      {
+        mask: "[0000]-[0000]"
+      }
+      
+    ]
+  }
+)
+IMask(
+  document.getElementById('telContact'),
+  {
+    mask: [
+      {
+        mask: "[0000]-[0000]"
+      }
+      
+    ]
+  }
+)
+</script>
+{% endblock js %}

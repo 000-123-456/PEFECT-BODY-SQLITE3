@@ -33,6 +33,8 @@ class FormMiembro(ModelForm):
                     attrs={
                         'class': 'form-control',
                         'placeholder': 'Ingrese nombre completo',
+                        'pattern': '[0-9]{4}[-][0-9]{4}',
+                        'id':'tel'
                        
                     }
                 ),
@@ -62,6 +64,8 @@ class FormMiembro(ModelForm):
                     attrs={
                         'class': 'form-control',
                         'placeholder': 'Ingrese nombre completo',
+                        'pattern': '[0-9]{4}[-][0-9]{4}',
+                        'id':'telContact'
                         
                     }
                 )
