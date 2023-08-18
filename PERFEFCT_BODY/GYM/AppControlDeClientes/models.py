@@ -32,9 +32,9 @@ class Membresia(models.Model):
 
 class Miembro(models.Model):
     nombre = models.CharField(max_length=50, null=False, verbose_name='Nombres')
+    fecha_nac =  models.DateField(verbose_name='Fecha de nacimiento')
     telefono = models.CharField(max_length=9, null=True, verbose_name='Teléfono') 
     direcccion = models.CharField(max_length=100, null=False, verbose_name='Dirección')
-    fecha_nac =  models.DateField(verbose_name='Fecha de nacimiento')
     nombreContact = models.CharField(max_length=50, null=False, verbose_name='Nombre de contacto')
     telefonoContact = models.CharField(max_length=9, null=True, verbose_name='Teléfono de contacto')
     estado = models.BooleanField(default=False, verbose_name='Estado')

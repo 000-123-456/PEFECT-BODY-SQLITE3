@@ -10,93 +10,37 @@
         <div class="row">
           <div class="col-lg-2"></div>
           <div class="col-lg-6">
-  
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title">Nuevo Miembro</h5>
-  
+                
                 <!-- Horizontal Form -->
-                <form class="row g-3">
-                                <div class="col-md-12">
-                                  <label for="inputName5" class="form-label text-white">Nombre</label>
-                                  <input type="text" class="form-control" id="inputName5"placeholder="Tu nombre completo">
-                                </div>
-                                <div class="col-md-6">
-                                  <label for="inputEmail5" class="form-label text-white">Fecha de nacimiento</label>
-                                  <input type="date" class="form-control" id="inputEmail5">
-                                </div>
-                                <div class="col-md-6">
-                                  <label for="inputPassword5" class="form-label text-white">Teléfono</label>
-                                  <input type="tel" class="form-control" id="inputPassword5" placeholder="Tu numero de telefono">
-                                </div>
-                                <div class="col-12">
-                                  <label for="inputAddress5" class="form-label text-white">Dirección</label>
-                                  <input type="text" class="form-control" id="inputAddres5s" placeholder="Casa#46 Los cocos San Sebastián">
-                                </div>
-                                
-                                <div class="col-6">
-                                  <label for="inputAddress2" class="form-label text-white">Nombre de contacto</label>
-                                  <input type="text" class="form-control" id="inputAddress2" placeholder="Persona de emergencia">
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="inputPassword5" class="form-label text-white">Teléfono de contacto</label>
-                                    <input type="tel" class="form-control" id="inputPassword5" placeholder="Telefeno de emergencia">
-                                  </div>
-                               
-                                
-                                <div class="text-center">
-                                  <button type="submit" class="btn bg-warning text-black">Guardar</button>
-                                  <button type="reset" class="btn btn-secondary">Limpiar</button>
-                                </div>
-                              </form>
-  
-              </div>
-            </div>
-            <div class="col-lg-2"></div>
 
-
+                {% if form.errors %}
+                {% for field  in form  %}
+                        {% for error in field.errors %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>Notificacion: </strong>{{error}}.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" arial-label="Close"></button>
+                        </div>
+                        {% endfor %}
+                {% endfor %}
+              {% endif %}
             <div class="card">
               <div class="card-body">
-                <h5 class="card-title">Nuevo Miembro</h5>
-  
+                <h5 class="card-title">{{titulo}}</h5>
+                
                 <!-- Floating Labels Form -->
-                <form class="row g-3">
-                  <div class="col-md-12">
+                <form class="row g-3" method="post">
+                  {% csrf_token %}
+                  {% for field in form.visible_fields %}
+                  <div class="col-md-{% if field.label == 'Nombre' or field.label == 'Dirección'  %}12{% endif %}{% if field.label != 'Nombre' and field.label != 'Dirección' %}6{% endif %}">
+                
                     <div class="form-floating">
-                      <input type="text" class="form-control" id="floatingName" placeholder="Tu nombre">
-                      <label for="floatingName">Nombre</label>
+                      {{ field }}
+                      <label for="floatingName" autofocus>{{field.label}}</label>
                     </div>
                   </div>
-                  <div class="col-md-6">
-                    <div class="form-floating">
-                      <input type="date" class="form-control" id="floatingEmail" placeholder="Tu fecha de nacimiento">
-                      <label for="floatingEmail">Fecha de Nacimiento</label>
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="form-floating">
-                      <input type="tel" class="form-control" id="floatingPassword" placeholder="Tu telefono">
-                      <label for="floatingPassword">Telefono</label>
-                    </div>
-                  </div>
-                  <div class="col-12">
-                    <div class="form-floating">
-                      <textarea class="form-control" placeholder="Address" id="floatingTextarea" style="height: 100px;"></textarea>
-                      <label for="floatingTextarea">Direccion</label>
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="form-floating">
-                      <input type="text" class="form-control" id="floatingName" placeholder="Nombre de emergencia">
-                      <label for="floatingName">Nombre de contacto</label>
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="form-floating">
-                      <input type="tel" class="form-control" id="floatingPassword" placeholder="Telefono de emergencia">
-                      <label for="floatingPassword">Telefono de contacto</label>
-                    </div>
-                  </div>
+            
+        {% endfor %}
+                  
                   
                   <div class="text-center">
                     <button type="submit" class="btn bg-warning text-black">Guardar</button>
@@ -105,11 +49,13 @@
                 </form><!-- End floating Labels Form -->
   
               </div>
+              
             </div>
   
           </div>
+          <div class="col-lg-2"></div>
         </div>
-
+        
       </section>
 
 
