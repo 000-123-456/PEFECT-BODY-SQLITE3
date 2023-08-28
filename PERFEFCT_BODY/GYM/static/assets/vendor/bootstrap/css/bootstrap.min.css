@@ -2800,12 +2800,12 @@ fieldset:disabled .btn {
   opacity: var(--bs-btn-disabled-opacity);
 }
 .btn-primary {
-  --bs-btn-color: #fff;
-  --bs-btn-bg: #0d6efd;
-  --bs-btn-border-color: #0d6efd;
-  --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: #0b5ed7;
-  --bs-btn-hover-border-color: #0a58ca;
+  --bs-btn-color: #191919;
+  --bs-btn-bg: #FED201;
+  --bs-btn-border-color: #FED201;
+  --bs-btn-hover-color: #191919;
+  --bs-btn-hover-bg: #e9fe01;
+  --bs-btn-hover-border-color: #e9fe01;
   --bs-btn-focus-shadow-rgb: 49, 132, 253;
   --bs-btn-active-color: #fff;
   --bs-btn-active-bg: #0a58ca;
@@ -4397,20 +4397,20 @@ fieldset:disabled .btn {
   --bs-pagination-padding-x: 0.75rem;
   --bs-pagination-padding-y: 0.375rem;
   --bs-pagination-font-size: 1rem;
-  --bs-pagination-color: var(--bs-link-color);
-  --bs-pagination-bg: #fff;
+  --bs-pagination-color: #000;
+  --bs-pagination-bg: #FED201;
   --bs-pagination-border-width: 1px;
-  --bs-pagination-border-color: #dee2e6;
+  --bs-pagination-border-color: #FED201;
   --bs-pagination-border-radius: 0.375rem;
-  --bs-pagination-hover-color: var(--bs-link-hover-color);
-  --bs-pagination-hover-bg: #e9ecef;
-  --bs-pagination-hover-border-color: #dee2e6;
-  --bs-pagination-focus-color: var(--bs-link-hover-color);
+  --bs-pagination-hover-color: #191919;
+  --bs-pagination-hover-bg: #e9fe01;
+  --bs-pagination-hover-border-color: #e9fe01;
+  --bs-pagination-focus-color: #191919;
   --bs-pagination-focus-bg: #e9ecef;
-  --bs-pagination-focus-box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+  --bs-pagination-focus-box-shadow: 0 0 0 0.25rem #191919;
   --bs-pagination-active-color: #fff;
-  --bs-pagination-active-bg: #0d6efd;
-  --bs-pagination-active-border-color: #0d6efd;
+  --bs-pagination-active-bg: #000;
+  --bs-pagination-active-border-color: #000;
   --bs-pagination-disabled-color: #6c757d;
   --bs-pagination-disabled-bg: #fff;
   --bs-pagination-disabled-border-color: #dee2e6;
@@ -5124,8 +5124,8 @@ fieldset:disabled .btn {
   --bs-modal-width: 500px;
   --bs-modal-padding: 1rem;
   --bs-modal-margin: 0.5rem;
-  --bs-modal-color: ;
-  --bs-modal-bg: #fff;
+  --bs-modal-color: #191919;
+  --bs-modal-bg: #000;
   --bs-modal-border-color: var(--bs-border-color-translucent);
   --bs-modal-border-width: 1px;
   --bs-modal-border-radius: 0.5rem;
@@ -5192,6 +5192,7 @@ fieldset:disabled .btn {
   position: relative;
   display: flex;
   flex-direction: column;
+  color: #191919;
   width: 100%;
   color: var(--bs-modal-color);
   pointer-events: auto;
@@ -5240,6 +5241,7 @@ fieldset:disabled .btn {
 .modal-title {
   margin-bottom: 0;
   line-height: var(--bs-modal-title-line-height);
+  color: #fff;
 }
 .modal-body {
   position: relative;

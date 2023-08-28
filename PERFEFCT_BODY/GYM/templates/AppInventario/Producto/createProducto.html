@@ -25,21 +25,34 @@
               {% endif %}
             <div class="card">
               <div class="card-body">
-                <h5 class="card-title">{{titulo}}</h5>
+                <h5 class="card-title"><i class="bi bi-plus-lg"></i> {{titulo}}</h5>
                 
                 <!-- Floating Labels Form -->
-                <form class="row g-3" method="post">
+                <form class="row g-3" method="post" enctype="multipart/form-data" action='.'>
                   {% csrf_token %}
                   {% for field in form.visible_fields %}
-                  <div class="col-md-{% if field.label == 'Nombre' or field.label == 'Dirección'  %}12{% endif %}{% if field.label != 'Nombre' and field.label != 'Dirección' %}6{% endif %}">
-                
+                  
+                  
+                  
+                  {% if  field.label == 'Foto del producto'%}
+                    <div class="col-md-12">     
+                      <div class="form-floating">
+                        <input type="file" name="img" accept="image/*" id="id_img" class='form-control'>
+                        <label for="floatingName" autofocus>Foto del producto</label>
+                      </div>
+                    </div>
+                  {% else %}
+                  <div class="col-md-12">
+                          
                     <div class="form-floating">
                       {{ field }}
                       <label for="floatingName" autofocus>{{field.label}}</label>
                     </div>
                   </div>
-            
-        {% endfor %}
+                  {% endif %}
+                            
+                      
+                  {% endfor %}
                   
                   
                   <div class="text-center">
@@ -64,27 +77,5 @@
 {% block js %}
 <script>
   
- IMask(
-  document.getElementById('tel'),
-  {
-    mask: [
-      {
-        mask: "[0000]-[0000]"
-      }
-      
-    ]
-  }
-)
-IMask(
-  document.getElementById('telContact'),
-  {
-    mask: [
-      {
-        mask: "[0000]-[0000]"
-      }
-      
-    ]
-  }
-)
 </script>
 {% endblock js %}

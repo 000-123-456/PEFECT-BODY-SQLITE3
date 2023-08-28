@@ -1,6 +1,6 @@
 from django.db import models
+from django.core.files.storage import FileSystemStorage
 
-from GYM import settings
 from AppUsers.models import User
 
 # Create your models here.
@@ -42,7 +42,7 @@ class Producto(models.Model):
     fecha_created = models.DateTimeField(auto_now_add=True)
     fecha_updated = models.DateTimeField(auto_now_add=True)
     categoriaP = models.ForeignKey(Categoria, null=False, verbose_name='Categoria', on_delete=models.PROTECT)
-    img = models.ImageField(upload_to='avatar/%Y/%m/%d',null=True,blank=True) 
+    img = models.ImageField(upload_to='productos/',null=True,blank=True)
     nivel_bajo = models.PositiveIntegerField(verbose_name='Nivel bajo de producto')
     def __str__(self) -> str:
         return self.nombre
