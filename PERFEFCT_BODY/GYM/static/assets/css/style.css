@@ -1258,3 +1258,11 @@ hr{
   font-size: 13px;
   color: #012970;
 }
+.swal2-modal,.swal2-popup{
+  background-color: #000;
+  color: #fff;
+}
+.swal2-title{
+  color: #fff;
+  
+}

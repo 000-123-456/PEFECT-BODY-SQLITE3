@@ -51,22 +51,22 @@
                     <tbody>
                       {% if productos %} {% for p in productos %}
                       <tr>
-                        <td>{{p.id}}</td>
+                        <td>{{forloop.counter}}</td>
                         <td>{{ p.nombre }}</td>
                         <td>{{ p.precio_venta }}</td>
                         <td>{{ p.cantidad }}</td>
                         <td>{{ p.categoriaP }}</td>
                         <td>
-                            <img src="/media/{{p.img}}" class="img-fluid d-block mx-auto" style="width: 70px; height:70px; border-radius: 20px;">
+                            <img src="{{p.get_image}}" class="img-fluid d-block mx-auto" style="width: 70px; height:70px; border-radius: 20px;">
                         </td>
                         
                         <td>
                           <a type="button" class="btn btn-secondary" href="{%url 'actualizar_producto' p.id %}">
                             <i class="bi bi-pencil-square"></i>
                           </a>
-                          <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modificarCategoria">
+                          <a type="button" class="btn btn-danger" href="#" onclick="eliminarProducto({{p.id}})">
                               <i class="bi bi-trash btnUM"></i>
-                          </button>
+                          </a>
                         </td>
                       </tr>
                   
@@ -89,5 +89,39 @@
 
 {% endblock cuerpo %}
 {% block js %}
-
+<script>
+  function eliminarProducto(id){
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: 'btn btn-primary',
+        cancelButton: 'btn btn-danger'
+      },
+      buttonsStyling: false
+    })
+    
+    swalWithBootstrapButtons.fire({
+      title: 'Seguro que lo desea eliminar?',
+      text: "Esta accion no se puede revertir!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Confirmar!',
+      cancelButtonText: 'No, cancelar!',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        
+        window.location.href = "EliminarProducto/"+id+"/"
+      } else if (
+        /* Read more about handling dismissals below */
+        result.dismiss === Swal.DismissReason.cancel
+      ) {
+        swalWithBootstrapButtons.fire(
+          'Cancelado',
+          'El producto no se ha eliminado  :)',
+          'error'
+        )
+      }
+    })
+  }
+</script>
 {% endblock js %}

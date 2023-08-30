@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.files.storage import FileSystemStorage
-
+from GYM.settings import MEDIA_URL,STATIC_URL
 from AppUsers.models import User
 
 # Create your models here.
@@ -52,6 +52,10 @@ class Producto(models.Model):
         verbose_name = 'Producto'
         verbose_name_plural = 'Productos'
         ordering = ['id']
+    def get_image(self):
+        if self.img:
+            return '{}{}'.format(MEDIA_URL,self.img)
+        return '{}{}'.format(STATIC_URL,'assets/img/no-photo.jpg')
 
 class Compra(models.Model):
     cantidad = models.PositiveIntegerField(verbose_name='Cantidad', null=False)

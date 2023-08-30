@@ -54,6 +54,9 @@ class CreateProducto(CreateView):
         data['titulo'] = 'Crear producto'
         data['modulo'] = 'Producto'
         return data
+    def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        messages.success(request, "Producto creado correctamente!")
+        return super().post(request, *args, **kwargs)
     
 
 class ListProducto(ListView):
@@ -66,8 +69,9 @@ class ListProducto(ListView):
         data['titulo'] = 'Lista de producto'
         data['modulo'] = 'Producto'
         data['icono']  = '<i class="bi bi-plus-lg"></i>'
-        data['productos'] = Producto.objects.all()
+        data['productos'] = Producto.objects.filter(estado=0)
         return data
+    
 
 
 class UpdateProducto(UpdateView):
@@ -83,4 +87,14 @@ class UpdateProducto(UpdateView):
         data['titulo'] = 'Actualizar producto'
         data['modulo'] = 'Producto'
         return data
+    def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        messages.success(request, "Producto actualizado correctamente!")
+        return super().post(request, *args, **kwargs)
+def DeleteProducto(request, pk):
+        pro = Producto.objects.get(id=pk)
+        pro.estado = True
+        pro.save()
+        messages.success(request, "Eliminado correctamente!")
+        return redirect(to='lista_productos')
+
 

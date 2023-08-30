@@ -30,15 +30,23 @@
                 <!-- Floating Labels Form -->
                 <form class="row g-3" method="post" enctype="multipart/form-data" action='.'>
                   {% csrf_token %}
+                  
                   {% for field in form.visible_fields %}
                   
                   
-                  
+                 
                   {% if  field.label == 'Foto del producto'%}
                     <div class="col-md-12">     
                       <div class="form-floating">
-                        <input type="file" name="img" accept="image/*" id="id_img" class='form-control'>
-                        <label for="floatingName" autofocus>Foto del producto</label>
+                        
+                        <input type="file" name="img" accept="image/*" id="id_img" class='form-control' value="{{obj.img.url}}">
+                        <label for="floatingName">Foto del producto</label>
+                      </div>
+                    </div>
+                    <div class="col-md-12">     
+                      <div class="form-floating">
+                        <img src="{{object.get_image}}" class="img-fluid d-block mx-auto" style="width: 100px; height:100px; border-radius: 20px;">
+                        <label for="floatingName" class="text-white">Foto actual:</label>
                       </div>
                     </div>
                   {% else %}
@@ -46,7 +54,7 @@
                           
                     <div class="form-floating">
                       {{ field }}
-                      <label for="floatingName" autofocus>{{field.label}}</label>
+                      <label for="floatingName">{{field.label}}</label>
                     </div>
                   </div>
                   {% endif %}
@@ -76,6 +84,43 @@
 {% endblock cuerpo %}
 {% block js %}
 <script>
-  
+  function eliminarProducto(id){
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: 'btn btn-primary',
+        cancelButton: 'btn btn-danger'
+      },
+      buttonsStyling: false
+    })
+    
+    swalWithBootstrapButtons.fire({
+      title: 'Seguro que lo desea eliminar?',
+      text: "Esta accion no se puede revertir!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Confirmar!',
+      cancelButtonText: 'No, cancelar!',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        
+        swalWithBootstrapButtons.fire(
+          'Borrado!',
+          'Producto eliminado con exito.',
+          'success'
+        )
+        
+      } else if (
+        /* Read more about handling dismissals below */
+        result.dismiss === Swal.DismissReason.cancel
+      ) {
+        swalWithBootstrapButtons.fire(
+          'Cancelado',
+          'El producto no se ha eliminado  :)',
+          'error'
+        )
+      }
+    })
+  }
 </script>
 {% endblock js %}

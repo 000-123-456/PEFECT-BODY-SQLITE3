@@ -1080,12 +1080,31 @@
   <!--Plugins de confirmacion-->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
-    
+  <!--Sweet Alert 2-->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
   <!-- Template Main JS File -->
   <script src="{% static 'assets/js/main.js' %}"></script>
   {% block js %}{% endblock js %}
-
+  {% if messages %}
+      {% for m in messages %}
+      <script>
+        const swalWithBootstrapButtons2 = Swal.mixin({
+          customClass: {
+            confirmButton: 'btn btn-primary',
+            cancelButton: 'btn btn-danger'
+          },
+          buttonsStyling: false
+        })
+          swalWithBootstrapButtons2.fire({
+            "title":"Felicitaciones!",
+            "text":"{{m}}",
+            "icon":"success"
+          })
+      </script>
+      {% endfor %}
+{% endif %}
 </body>
 
 </html>
