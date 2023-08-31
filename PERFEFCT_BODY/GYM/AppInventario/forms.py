@@ -1,4 +1,4 @@
-from django.forms import  ModelForm, Select, TextInput,Textarea,DateInput,ImageField
+from django.forms import  ModelForm, Select, TextInput,Textarea,DateInput,ImageField,Form
 from AppInventario.models import *
 class FormCategoria(ModelForm):   
     class Meta:
@@ -40,7 +40,7 @@ class FormProducto(ModelForm):
             'nombre': 'Nombre',
             'descripcion': 'Descripcion del producto',
             'precio_venta': 'Precio de venta $',
-            'categoriaP':'Categoria del producto',
+            'categoriaP':'Selecciona una categoria',
             'img':'Foto del producto',
             'nivel_bajo':'Cantidad baja de producto',
         }
@@ -76,6 +76,8 @@ class FormProducto(ModelForm):
                     attrs={
                         'class': 'form-control',
                         'placeholder': 'Seleccione la categoria',
+                        'id':'selectPro',
+                        
                         
                     }
                 ),

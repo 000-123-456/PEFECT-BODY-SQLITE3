@@ -87,9 +87,17 @@ class UpdateProducto(UpdateView):
         data['titulo'] = 'Actualizar producto'
         data['modulo'] = 'Producto'
         return data
-    def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
-        messages.success(request, "Producto actualizado correctamente!")
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        text ='Fecha fuera de rango\t'
+        text+='Valor invalido'
+        messages.success(request,text)
+        # if form.is_valid():
+        #     
+        # else:
+            
         return super().post(request, *args, **kwargs)
+    
 def DeleteProducto(request, pk):
         pro = Producto.objects.get(id=pk)
         pro.estado = True

@@ -76,6 +76,11 @@
 {% endblock cuerpo %}
 {% block js %}
 <script>
-  
+  $(document).ready(function() {
+    $('#selectPro').select2({
+      theme: "bootstrap-5",
+      placeholder:"Seleccione una categoria" 
+  });
+  });
 </script>
 {% endblock js %}

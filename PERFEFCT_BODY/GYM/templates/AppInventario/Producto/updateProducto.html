@@ -122,5 +122,13 @@
       }
     })
   }
+  //Codigo para autocompletar SELECT
+  $(document).ready(function() {
+    $('#selectPro').select2({
+      theme: "bootstrap-5",
+      placeholder:"Seleccione una categoria",
+      selectOnClose: true,
+  });
+  });
 </script>
 {% endblock js %}
