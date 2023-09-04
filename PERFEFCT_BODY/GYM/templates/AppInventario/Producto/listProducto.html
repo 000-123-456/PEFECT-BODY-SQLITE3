@@ -32,9 +32,25 @@
               {% endif %}
             <br>
             <div class="card">
+              
               <div class="card-body">
+                <div class="d-flex align-items-center">
+                  <div class="dropdown ms-auto" >
+                      
+                      <a class="dropdown-toggle dropdown-toggle-nocaret" href="#" data-bs-toggle="dropdown">
+                        <i class='bx bx-dots-horizontal-rounded font-22 text-option display-6'></i>
+                      </a>
+                    
+                      <ul class="dropdown-menu">
+                   
+                          <li><a class="dropdown-item" href="#"><i class="fa fa-trash text-danger"></i> Inactivos</a>
+                          </li>
+                      </ul>
+                  </div>
+              </div> 
                 <h5 class="card-title text-warning">{{titulo}}</h5>
                 <hr>
+                
                 <table class="table bg-black text-white strip rounded autofit" id="data">
                     <thead>
                       <tr>
@@ -123,5 +139,11 @@
       }
     })
   }
+  let table = new DataTable('#data', {
+      "language": {
+        "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
+      },
+      responsive: true,
+  });
 </script>
 {% endblock js %}
