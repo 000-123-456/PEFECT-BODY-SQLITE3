@@ -1,7 +1,7 @@
 from django.db import models
 from AppUsers.models import User
 from AppControlDeClientes.op import *
-
+from GYM.settings import MEDIA_URL,STATIC_URL
 
 class Membresia(models.Model):
     nombre = models.CharField(max_length=50, null=False, verbose_name='Nombre')
@@ -24,7 +24,11 @@ class Miembro(models.Model):
     direcccion = models.CharField(max_length=100, null=False, verbose_name='Dirección')
     nombreContact = models.CharField(max_length=50, null=False, verbose_name='Nombre de contacto')
     telefonoContact = models.CharField(max_length=9, null=True, verbose_name='Teléfono de contacto')
+    estado_membresia = models.BooleanField(default=False, verbose_name='Estado') # ACTIVO VENCIDO
     estado = models.BooleanField(default=False, verbose_name='Estado')
+    ## ---- EL MIEMBRO ES EL QUE SE DESACTIVA O SE ACTIVA DEPEDIENDO LA FECHA ----
+    fecha_inicio = models.DateField(null=True,blank=True)
+    fecha_fin = models.DateField(null=True,blank=True)
     def __str__(self) -> str:
         return self.nombre
     
@@ -41,7 +45,8 @@ class HistorialMiembro(models.Model):
     imc = models.CharField(max_length=50, null=False, verbose_name='IMC')
     fecha_registro = models.DateField(auto_now=True)
     descripcion = models.CharField(max_length=100, null=True, verbose_name='Descripcion')
-
+    ###----- CLAVES FORANEAS --------
+    miembro = models.ForeignKey(Miembro, on_delete=models.PROTECT, verbose_name='Miembro')
     def __str__(self) -> str:
         return self.id
         
@@ -53,12 +58,12 @@ class HistorialMiembro(models.Model):
 
 
 class VentaMembresia(models.Model):
-    fecha_inicio = models.DateField()
-    fecha_fin = models.DateField()
+    fecha = models.DateField(auto_now=True)
     monto_pagado = models.DecimalField(max_digits=15,decimal_places=2,null=False,verbose_name="Total pagado")
+    ###----- CLAVES FORANEAS --------
     empleado = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name='Empleado')
     membresia = models.ForeignKey(Membresia, on_delete=models.PROTECT, verbose_name='Membresia')
-    miembro = models.ForeignKey(Miembro, on_delete=models.PROTECT, verbose_name='Miembro')
+    miembro = models.ForeignKey(Miembro, on_delete=models.PROTECT, verbose_name='Miembro',null=True, blank=True)
     def __str__(self) -> str:
         return self.id
     
@@ -70,12 +75,14 @@ class VentaMembresia(models.Model):
 
 class Asistencia(models.Model):
     tipo = models.PositiveIntegerField(null=True, blank=True, choices=opTipo, verbose_name='Tipo')
-    monto_pagado = models.DecimalField(max_digits=15,decimal_places=2,null=False,verbose_name="Total pagado")
-    fecha_asistencia = models.DateField(auto_now=True)
+    monto_pagado = models.DecimalField(max_digits=15,decimal_places=2,null=True,verbose_name="Total pagado")
+    fecha = models.DateField(auto_now=True)
     nombre = models.CharField(max_length=50, null=False, verbose_name='Nombre')
+    fecha_created = models.DateTimeField(auto_now=True)
+    ###----- CLAVES FORANEAS --------
     miembro = models.ForeignKey(Miembro, on_delete=models.PROTECT, verbose_name='Miembro', null=True, blank=True)
     empleado = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name='Empleado')
-    fecha_created = models.DateTimeField(auto_now=True)
+  
     def __str__(self) -> str:
         return self.id
     
@@ -90,8 +97,9 @@ class Dieta(models.Model):
     nombre = models.CharField(max_length=50, null=False, verbose_name='Nombre')
     imagen = models.ImageField(upload_to='Plato/%Y/%m/%d',null=True,blank=True)
     detalle_alimento = models.CharField(max_length=100, null=True, verbose_name='Detalle_Alimento')
-    miembro = models.ForeignKey(Miembro, on_delete=models.PROTECT, verbose_name='Miembro', null=True, blank=True)
     tiempo_comida = models.CharField(max_length=100, null=True, verbose_name='Tiempo_Comida')
+    ###----- CLAVES FORANEAS --------
+    miembro = models.ForeignKey(Miembro, on_delete=models.PROTECT, verbose_name='Miembro', null=True, blank=True)
   
     def __str__(self) -> str:
         return self.id
@@ -104,15 +112,15 @@ class Dieta(models.Model):
 
 
 
-class Rutinaejercicio(models.Model):
+class RutinaEjercicio(models.Model):
     dia = models.CharField(max_length=50, null=False, verbose_name='Dia')
     tipo_ejercicio = models.CharField(max_length=50, null=False, verbose_name='Tipo_ejercicio')
     links_video = models.CharField(max_length=50, null=False, verbose_name='Links_video')
     detalle_ejercicio = models.CharField(max_length=100, null=True, verbose_name='Detalle_Ejercicio')
-    miembro = models.ForeignKey(Miembro, on_delete=models.PROTECT, verbose_name='Miembro', null=True, blank=True)
     recomendacion = models.CharField(max_length=100, null=True, verbose_name='Recomendacion')
+    ###----- CLAVES FORANEAS --------
+    miembro = models.ForeignKey(Miembro, on_delete=models.PROTECT, verbose_name='Miembro', null=True, blank=True)
     
-  
     def __str__(self) -> str:
         return self.id
         

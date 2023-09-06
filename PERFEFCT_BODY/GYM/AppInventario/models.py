@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.files.storage import FileSystemStorage
 from GYM.settings import MEDIA_URL,STATIC_URL
-from AppUsers.models import User
+from AppUsers.models import User,Empresa
 from AppInventario.opciones import *
 
 # Create your models here.
@@ -24,7 +24,9 @@ class Proveedor(models.Model):
 
 class Categoria(models.Model):
     nombre = models.CharField(max_length=50, null=False, verbose_name='Nombre')
-    
+    # -----Perecedero es para saber si los productos de esta categoria perecen o tiene fecha de caducidad-------
+    perecedero = models.BooleanField(default=False, verbose_name='Perecedero')
+    estado = models.BooleanField(default=False, verbose_name='Estado')
     def __str__(self) -> str:
         return self.nombre
     
@@ -60,13 +62,16 @@ class Producto(models.Model):
 
 class Compra(models.Model):
     cantidad = models.PositiveIntegerField(verbose_name='Cantidad', null=False)
+    precio_unitario = models.DecimalField(max_digits=15,decimal_places=2,null=False,verbose_name="Precio unitario")
     total = models.DecimalField(max_digits=15,decimal_places=2,null=False,verbose_name="Total de compra")
     fecha_vec = models.DateField(verbose_name='Fecha de vencimiento')
     fecha_compra = models.DateField(auto_now=True)
-    producto = models.ForeignKey(Producto,null=False,verbose_name='Producto',on_delete=models.PROTECT)
-    proveedor = models.ForeignKey(Proveedor,null=False,verbose_name='Proveedor',on_delete=models.PROTECT)
     fecha_created = models.DateTimeField(auto_now_add=True)
     fecha_updated = models.DateTimeField(auto_now_add=True)
+    ## CLAVES FORANEAS
+    producto = models.ForeignKey(Producto,null=False,verbose_name='Producto',on_delete=models.PROTECT)
+    proveedor = models.ForeignKey(Proveedor,null=False,verbose_name='Proveedor',on_delete=models.PROTECT)
+    
     def __str__(self) -> str:
         return self.id
     
@@ -79,8 +84,10 @@ class Compra(models.Model):
 class Venta(models.Model):
     total = models.DecimalField(max_digits=15,decimal_places=2,null=False,verbose_name="Total")
     fecha_venta = models.DateField(auto_now=True)
-    empleado = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name='Empleado')
     fecha_created = models.DateTimeField(auto_now=True)
+    ## CLAVES FORANEAS
+    empleado = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name='Empleado')
+    
     def __str__(self) -> str:
         return self.id
     
@@ -92,9 +99,12 @@ class Venta(models.Model):
 
 class LineaVenta(models.Model):
     cantidad = models.PositiveIntegerField(default=0, verbose_name='Cantidad')
-    precio = models.DecimalField(max_digits=15,decimal_places=2,null=False,verbose_name="Precio")
+    precio_vendido = models.DecimalField(max_digits=15,decimal_places=2,null=False,verbose_name="Precio vendido")
+    subtotal = models.DecimalField(max_digits=15,decimal_places=2,null=False,verbose_name="Subtotal")
+    ## CLAVES FORANEAS
     producto = models.ForeignKey(Producto,null=False,verbose_name='Producto',on_delete=models.PROTECT)
     venta = models.ForeignKey(Venta,null=False,verbose_name='Venta',on_delete=models.PROTECT)
+
     def __str__(self) -> str:
         return self.id
     
@@ -110,7 +120,9 @@ class Maquinaria(models.Model):
     foto = models.ImageField(upload_to='maquinaria/',null=True,blank=True)
     categoria = models.CharField(max_length=50, null=False, verbose_name='Categoria')
     estado_maquina = models.CharField(max_length=50, null=True, choices=opEstadoM, verbose_name='Estado de Maquina')
-
+    ## CLAVES FORANEAS
+    empresa = models.ForeignKey(Empresa, on_delete=models.PROTECT, verbose_name='Empresa', null=True, blank=True)
+    ## FIN CLAVES FOREANEAS
     def __str__(self) -> str:
         return self.nombre
     class Meta:
@@ -124,15 +136,14 @@ class Maquinaria(models.Model):
         return '{}{}'.format(STATIC_URL,'assets/img/no-photo.jpg')
     
 class HistorialMaquinaria(models.Model):
-    tipo = models.CharField(max_length=50, null=True, verbose_name='Tipo') ##preventivo 
+    tipo = models.CharField(max_length=50, null=True, verbose_name='Tipo') ##preventivo o correctivo 
     detalle = models.CharField(max_length=100, null=True, verbose_name='Detalle')
-    maquinaria = models.ForeignKey(Maquinaria,null=False,verbose_name='Maquinaria',on_delete=models.PROTECT)
     fecha_fin = models.DateField(verbose_name='Fecha final')
     fecha_ini = models.DateField(verbose_name='Fecha de inicio')
-
+    ## CLAVES FORANEAS
+    maquinaria = models.ForeignKey(Maquinaria,null=False,verbose_name='Maquinaria',on_delete=models.PROTECT)
     def __str__(self) -> str:
         return self.id
-    
     class Meta:
         db_table = 'historialmaquinaria'
         verbose_name = 'HistorialMaquinaria'
