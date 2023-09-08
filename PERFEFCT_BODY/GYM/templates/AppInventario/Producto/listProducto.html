@@ -9,9 +9,15 @@
     
         <div class="row">
           {% comment %} <div class="col-lg-1"></div> {% endcomment %}
-          <div class="col-lg-8"></div>
-          <div class="col-lg-4 d-flex flex-row-reverse">
-            <a href="{% url 'crear_producto' %}" class="btn btn-primary"><b><i class="bi bi-plus-lg"></i> Nuevo producto</b></a>
+         
+          <div class="col-lg-12 d-flex flex-row-reverse">
+            <a href="{% url 'crear_producto' %}" class="btn btn-danger">
+              <b><i class="bi bi-trash"></i> Papelera</b>
+            </a>
+            <a href="{% url 'crear_producto' %}" class="btn btn-primary mx-1">
+              <b><i class="bi bi-plus-lg"></i> Nuevo producto</b>
+            </a>
+            
             <br>
         </div>
           <br>
@@ -48,11 +54,11 @@
                       </ul>
                   </div>
               </div> 
-                <h5 class="card-title text-warning">{{titulo}}</h5>
+                <h5 class="card-title text-warning"> <i class="bi bi-list-task"></i> {{titulo}}</h5>
                 <hr>
                 
                 <table class="table bg-black text-white strip rounded autofit" id="data">
-                    <thead>
+                    <thead class="bg-warning text-black">
                       <tr>
                         <th scope="col">#</th>
                         <th scope="col">Nombre</th>

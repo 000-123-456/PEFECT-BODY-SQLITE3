@@ -28,8 +28,7 @@ class Categoria(models.Model):
     perecedero = models.BooleanField(default=False, verbose_name='Perecedero')
     estado = models.BooleanField(default=False, verbose_name='Estado')
     def __str__(self) -> str:
-        return self.nombre
-    
+        return "{}{()}".format(self.nombre,self.perecedero)
     class Meta:
         db_table = 'categoria'
         verbose_name = 'Categoria'

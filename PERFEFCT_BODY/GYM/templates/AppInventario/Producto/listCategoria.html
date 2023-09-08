@@ -9,33 +9,42 @@
     
   <div class="row">
     {% comment %} <div class="col-lg-1"></div> {% endcomment %}
-    <div class="col-lg-8"></div>
-    <div class="col-lg-4 d-flex flex-row-reverse">
+    
+    <div class="col-lg-12 d-flex flex-row-reverse">
+      <a href="{% url 'crear_producto' %}" class="btn btn-danger mx-1">
+        <b><i class="bi bi-trash"></i> Papelera</b>
+      </a>
       <button type="button" class="btn btn-primary btn-large" data-bs-toggle="modal" data-bs-target="#agregarCategoria">
-        <b> <i class="bi bi-plus-square-fill"></i> Agregar categoria</b>
-  </div>
+        <b><i class="bi bi-plus-lg"></i> Agregar categoría</b></button>
+        
+    </div>
     <br>
     <br>
     <div class="modal fade" id="agregarCategoria" tabindex="-1">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Agregar categoria</h5>
+            <h5 class="modal-title text-warning"><b><i class="bi bi-plus-lg"></i> Agregar categoría</b></h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <div class="modal-body">
+          <div class="modal-body mx-4">
             <!--Formulario de Categoria-->
             <form class="row g-3" method="post" autocomplete='off' id='formAdd'>
               <input type="hidden" name="action" value="add">
               {% csrf_token %}
-              <div class="form-floating">
+              <div class="form-floating mb-3">
                   <input type="text" name="nombre" class="form-control" placeholder="Ingrese nombre " maxlength="50" required="" id="id_nombre">
-                  <label for="floatingName" autofocus="">Nombre de categoria</label>
+                  <label for="floatingName" autofocus="">Nombre de categoría</label>
+              </div>
+              <div class="row mb-3 ">
+                <label class="col-sm-2 col-form-label d-inline text-white">¿Perece?</label>
+                <div class="col-sm-10 d-inline mt-2">
+                    <input class="form-check-input" type="checkbox"  name="perecedero">
                 </div>
-
+              </div>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <div class="modal-footer justify-content-center">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
             <button type="submit" class="btn btn-primary">Guardar</button>
           </div>
       </form>
@@ -48,23 +57,29 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Modificar categoria</h5>
+        <h5 class="modal-title text-warning"><b> <i class="bi bi-pencil-square"></i> Modificar categoría</b></h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body mx-4">
         <!--Formulario de Categoria-->
         <form class="row g-3" method="post" autocomplete='off' id='formUpdate'>
           <input type="hidden" name="action" value="update">
           <input type="hidden" name="id" value="" class="updateI">
           {% csrf_token %}
-          <div class="form-floating">
-              <input type="text" name="nombre" class="form-control updateI" placeholder="Ingrese nombre " maxlength="50" required="" id="id_nombre">
-              <label for="floatingName" autofocus="">Nombre de categoria</label>
+          <div class="form-floating mb-3">
+            <input type="text" name="nombre" class="form-control" placeholder="Ingrese nombre " maxlength="50" required="" id="id_nombre">
+            <label for="floatingName" autofocus="">Nombre de categoría</label>
+        </div>
+        <div class="row mb-3 ">
+          <label class="col-sm-2 col-form-label d-inline text-white">¿Perece?</label>
+          <div class="col-sm-10 d-inline mt-2">
+              <input class="form-check-input" type="checkbox"  name="perecedero">
           </div>
+        </div>
 
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
         <button type="submit" class="btn btn-primary">Guardar</button>
       </div>
   </form>
@@ -90,29 +105,30 @@
       <br>
       <div class="card">
         <div class="card-body">
-          <h5 class="card-title text-warning">{{titulo}}</h5>
+          <h5 class="card-title text-warning"><i class="bi bi-list-task"></i> {{titulo}}</h5>
           <hr>
-          <table class="table bg-black text-white strip rounded autofit" id="data">
-              <thead>
+          <table class="table bg-black text-white strip rounded align-middle" style="text-align: center" id="data">
+              <thead class="bg-warning text-black">
                 <tr>
                   <th scope="col">#</th>
                   <th scope="col">Nombre</th>
+                  <th scope="col">¿Perece?</th>
                   <th scope="col">Opciones</th>
-                  
                 </tr>
               </thead>
-              <tbody>
+              <tbody >
                 {% if categorias %} {% for c in categorias %}
-                <tr>
+                <tr >
                   <td>{{c.id}}</td>
                   <td>{{ c.nombre }}</td>
+                  <td class="display-6">{% if c.perecedero %} <i class="bi bi-check-lg text-success"></i>{% else %}<i class="bi bi-x-lg text-danger"></i>{% endif %}</td>
                   <td>
                     <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modificarCategoria">
                       <i class="bi bi-pencil-square btnUC"></i>
                     </button>
-                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modificarCategoria">
-                        <i class="bi bi-trash btnEM"></i>
-                    </button>
+                    <a type="button" class="btn btn-danger" href="#" onclick="eliminarCategoria({{c.id}})">
+                      <i class="bi bi-trash btnUM"></i>
+                  </a>
                   </td>
                 </tr>
             
@@ -137,40 +153,39 @@
 
 
     <Script type="application/javascript">
-        $('formAdd').on('submit', function (e){
-            e.preventDefault();
-            var parameters = $(this).serializeArray();
-            $.confirm({
-                theme: 'material',
-                title: 'Confirmación',
-                icon: 'fa fa-info',
-                content: 'Estas seguro de realizar la siguiente accion?',
-                columnClass: 'medium',
-                typeAnimated: true,
-                cancelButtonClass: 'btn-primary',
-                draggable: true,
-                dragWindowBorder: false,
-                buttons: {
-                    info: {
-                        text: "Si",
-                        btnClass: 'btn-primary',
-                        action: function () {
-                            let formulario = document.getElementById('formAdd');
-                            formulario.submit();
-                        }
-                    },
-                    danger: {
-                        text: "No",
-                        btnClass: 'btn-secondary',
-                        action: function () {
-                            
-                        }
-                    },
-                }
-            })
-
-        });
-
+      function eliminarCategoria(id){
+        const swalWithBootstrapButtons = Swal.mixin({
+          customClass: {
+            confirmButton: 'btn btn-primary',
+            cancelButton: 'btn btn-danger'
+          },
+          buttonsStyling: false
+        })
+        
+        swalWithBootstrapButtons.fire({
+          title: 'Seguro que lo desea eliminar?',
+          text: "Esta acción no se puede revertir!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Confirmar!',
+          cancelButtonText: 'Cancelar!',
+          reverseButtons: true
+        }).then((result) => {
+          if (result.isConfirmed) {
+            
+            window.location.href = "EliminarCategoria/"+id+"/"
+          } else if (
+            /* Read more about handling dismissals below */
+            result.dismiss === Swal.DismissReason.cancel
+          ) {
+            swalWithBootstrapButtons.fire(
+              'Operación cancelada',
+              'La categoría no se ha eliminado  :)',
+              'error'
+            )
+          }
+        })
+      }
         const table = document.getElementById("data")
         const modal = document.getElementById("modificarCategoria")
         const inputs = document.querySelectorAll(".updateI")
@@ -201,17 +216,17 @@
                 index.value = data[count].innerText
                 count+=1;
             }
-        }
-        
-
-
-
-        
-        
-
-    
-        
+        }   
     </Script>
+    <script>
+      
+      let table = new DataTable('#data', {
+          "language": {
+            "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
+          },
+          responsive: true,
+      });
+    </script>
 
 {% endblock js %}
 

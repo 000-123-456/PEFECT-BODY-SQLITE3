@@ -22,7 +22,11 @@ class ListCategoria(TemplateView):
         try:
             action= request.POST['action']
             if action == 'add':
-                Categoria(nombre=request.POST['nombre']).save()
+                perecedero_res=False
+                if 'perecedero' in request.POST:
+                    perecedero_res=True
+                print(request.POST)
+                Categoria(nombre=request.POST['nombre'],perecedero=perecedero_res).save()
             elif action == 'update':
                cate = Categoria.objects.get(id=request.POST['id'])
                cate.nombre = request.POST['nombre']
@@ -35,7 +39,7 @@ class ListCategoria(TemplateView):
         
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        data['titulo'] = 'Categorias de productos'
+        data['titulo'] = 'Listado de categorías'
         data['modulo'] = 'Producto'
         data['categorias'] = Categoria.objects.all()
         data['form'] = FormCategoria()
