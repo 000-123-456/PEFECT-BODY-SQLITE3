@@ -38,11 +38,11 @@ class FormProducto(ModelForm):
         }
         labels={
             'nombre': 'Nombre',
-            'descripcion': 'Descripcion del producto',
-            'precio_venta': 'Precio de venta $',
-            'categoriaP':'Selecciona una categoria',
-            'img':'Foto del producto',
-            'nivel_bajo':'Cantidad baja de producto',
+            'descripcion': 'Descripción',
+            'precio_venta': 'Precio de venta $0.00',
+            'categoriaP':'Categoría',
+            'img':'Foto',
+            'nivel_bajo':'Cantidad mínima',
         }
         
         widgets={
@@ -92,6 +92,9 @@ class FormProducto(ModelForm):
                 ),
 
         }
+    def __init__(self, *args, **kargs):
+        super().__init__(*args, **kargs)
+        self.fields['categoriaP'].queryset = Categoria.objects.filter(estado=0)
 
 FormProducto.field_order = [
             'nombre',

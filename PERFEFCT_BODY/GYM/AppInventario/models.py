@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.files.storage import FileSystemStorage
+from django.forms import model_to_dict
 from GYM.settings import MEDIA_URL,STATIC_URL
 from AppUsers.models import User,Empresa
 from AppInventario.opciones import *
@@ -23,12 +24,15 @@ class Proveedor(models.Model):
         ordering = ['id']
 
 class Categoria(models.Model):
-    nombre = models.CharField(max_length=50, null=False, verbose_name='Nombre')
+    nombre = models.CharField(max_length=50, null=False, verbose_name='Nombre', unique=True)
     # -----Perecedero es para saber si los productos de esta categoria perecen o tiene fecha de caducidad-------
     perecedero = models.BooleanField(default=False, verbose_name='Perecedero')
     estado = models.BooleanField(default=False, verbose_name='Estado')
     def __str__(self) -> str:
-        return "{}{()}".format(self.nombre,self.perecedero)
+        return self.nombre
+    def toJSON(self):
+        item = model_to_dict(self)
+        return item
     class Meta:
         db_table = 'categoria'
         verbose_name = 'Categoria'

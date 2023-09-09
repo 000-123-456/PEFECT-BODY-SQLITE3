@@ -1095,10 +1095,10 @@
   <!--Select2-->
   <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.full.min.js"></script>
 
-
+  {% block js %}{% endblock js %}
   <!-- Template Main JS File -->
   <script src="{% static 'assets/js/main.js' %}"></script>
-  {% block js %}{% endblock js %}
+ 
   {% if messages %}
       {% for m in messages %}
       <script>

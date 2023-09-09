@@ -39,25 +39,11 @@
             <br>
             <div class="card">
               
-              <div class="card-body">
-                <div class="d-flex align-items-center">
-                  <div class="dropdown ms-auto" >
-                      
-                      <a class="dropdown-toggle dropdown-toggle-nocaret" href="#" data-bs-toggle="dropdown">
-                        <i class='bx bx-dots-horizontal-rounded font-22 text-option display-6'></i>
-                      </a>
-                    
-                      <ul class="dropdown-menu">
-                   
-                          <li><a class="dropdown-item" href="#"><i class="fa fa-trash text-danger"></i> Inactivos</a>
-                          </li>
-                      </ul>
-                  </div>
-              </div> 
+              <div class="card-body"> 
                 <h5 class="card-title text-warning"> <i class="bi bi-list-task"></i> {{titulo}}</h5>
                 <hr>
                 
-                <table class="table bg-black text-white strip rounded autofit" id="data">
+                <table class="table bg-black text-white strip rounded" style="text-align: center" id="data">
                     <thead class="bg-warning text-black">
                       <tr>
                         <th scope="col">#</th>
@@ -67,7 +53,6 @@
                         <th scope="col">Categoria</th>
                         <th scope="col">Imagen</th>
                         <th scope="col">Opciones</th>
-                        
                       </tr>
                     </thead>
                     <tbody>
@@ -122,8 +107,7 @@
     })
     
     swalWithBootstrapButtons.fire({
-      title: 'Seguro que lo desea eliminar?',
-      text: "Esta accion no se puede revertir!",
+      title: '¿Seguro que desea eliminar el producto?',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Confirmar!',
@@ -145,11 +129,13 @@
       }
     })
   }
+  {% if productos %}
   let table = new DataTable('#data', {
       "language": {
-        "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
+          "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
       },
       responsive: true,
   });
+  {% endif %}
 </script>
 {% endblock js %}

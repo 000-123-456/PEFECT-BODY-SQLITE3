@@ -1,0 +1,93 @@
+{% extends 'layout/index.html' %}
+{% load static %}
+{% block titulo %}   {{titulo}}   {% endblock titulo %}
+{% block tituloP %}  {{titulo}}   {% endblock tituloP %}
+{% block modulo %}   {{modulo}}   {% endblock modulo %}
+{% block tituloS %}  {{titulo}}   {% endblock tituloS %}
+{% block cuerpo %}
+<section class="section">
+    
+    <div class="row">
+      {% comment %} <div class="col-lg-1"></div> {% endcomment %}
+     
+      <div class="col-lg-6 d-flex">
+        <a href="{% url 'lista_categoria' %}" class="btn btn-primary">
+          <b><i class="bi bi-arrow-left"></i> Regresar</b>
+        </a> 
+        <br>
+      </div>
+      <div class="col-lg-6 d-flex flex-row-reverse">
+        <a href="{% url 'lista_categoria' %}" class="btn btn-success">
+            <i class="bi bi-arrow-repeat"></i> Restaurar todo</b>
+        </a> 
+        <br>
+      </div>
+      <br>
+      <br>
+      <div class="col-lg-12">
+            
+            <!-- Horizontal Form -->
+
+            {% if form.errors %}
+            {% for field  in form  %}
+                    {% for error in field.errors %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Notificacion: </strong>{{error}}.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" arial-label="Close"></button>
+                    </div>
+                    {% endfor %}
+            {% endfor %}
+          {% endif %}
+        <br>
+        <div class="card">
+          
+          <div class="card-body">
+            <h5 class="card-title text-warning"> <i class="bi bi-list-task"></i> {{titulo}}</h5>
+            <hr>
+            
+            <table class="table bg-black text-white strip rounded autofit" style="text-align: center" id="data">
+                <thead class="bg-warning text-black">
+                  <tr>
+                    <th scope="col">#</th>
+                  <th scope="col">Nombre</th>
+                  <th scope="col">¿Perece?</th>
+                  <th scope="col">Opciones</th>
+                    
+                  </tr>
+                </thead>
+                <tbody>
+                    {% if categorias %} {% for c in categorias %}
+                    <tr >
+                      <td>{{forloop.counter}}</td>
+                      <td>{{ c.nombre }}</td>
+                      <td class="display-6">{% if c.perecedero %} <i class="bi bi-check-lg text-success"></i>{% else %}<i class="bi bi-x-lg text-danger"></i>{% endif %}</td>
+                      <td>
+                        </button>
+                        <a class="btn btn-success" href="#" onclick="altaCategoria({{c.id}})">
+                        <i class="bi bi-arrow-repeat"></i>
+                      </a>
+                      </td>
+                    </tr>
+                
+                    {% endfor %} {% else %}
+              
+                  <td colspan="9" style="text-align: center">
+                    <b>No hay datos para mostrar</b>
+                  </td>
+                  {% endif %}
+                </tbody>
+              </table>
+          </div>
+        </div>
+      </div>
+      {% comment %} <div class="col-lg-1"></div> {% endcomment %}
+    </div>
+    
+  </section>
+
+
+
+{% endblock cuerpo %}
+{% block js %}
+    <Script type="application/javascript" src="{% static 'assets/js/AppInventario/Producto/listCategoriaBajas.js' %}"></Script>
+{% endblock js %}
