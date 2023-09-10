@@ -9,18 +9,13 @@
     
     <div class="row">
       {% comment %} <div class="col-lg-1"></div> {% endcomment %}
-     
-      <div class="col-lg-6 d-flex">
+      <div class="d-flex justify-content-between bd-highlight mb-3">
         <a href="{% url 'lista_categoria' %}" class="btn btn-primary">
-          <b><i class="bi bi-arrow-left"></i> Regresar</b>
+            <b><i class="bi bi-arrow-left"></i> Regresar</b>
         </a> 
-        <br>
-      </div>
-      <div class="col-lg-6 d-flex flex-row-reverse">
-        <a href="{% url 'lista_categoria' %}" class="btn btn-success">
-            <i class="bi bi-arrow-repeat"></i> Restaurar todo</b>
+        <a href="{% url 'alta_todas_categoria' %}" class="btn btn-success">
+            <b><i class="bi bi-arrow-repeat"></i> Restaurar todo</b>
         </a> 
-        <br>
       </div>
       <br>
       <br>

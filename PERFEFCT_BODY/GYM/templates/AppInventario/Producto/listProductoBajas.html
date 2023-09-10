@@ -9,17 +9,16 @@
     
         <div class="row">
           {% comment %} <div class="col-lg-1"></div> {% endcomment %}
-         
-          <div class="col-lg-12 d-flex flex-row-reverse">
-            <a href="{% url 'lista_bajas_productos' %}" class="btn btn-danger">
-              <b><i class="bi bi-trash"></i> Papelera</b>
-            </a>
-            <a href="{% url 'lista_bajas_productos' %}" class="btn btn-primary mx-1">
-              <b><i class="bi bi-plus-lg"></i> Nuevo producto</b>
-            </a>
-            
-            <br>
-        </div>
+
+          <div class="d-flex justify-content-between bd-highlight mb-3">
+            <a href="{% url 'lista_productos' %}" class="btn btn-primary">
+                <b><i class="bi bi-arrow-left"></i> Regresar</b>
+            </a> 
+            <a href="{% url 'alta_todos_productos' %}" class="btn btn-success">
+                <b><i class="bi bi-arrow-repeat"></i> Restaurar todo</b>
+            </a> 
+          </div>
+ 
           <br>
           <br>
           <div class="col-lg-12">
@@ -39,11 +38,11 @@
             <br>
             <div class="card">
               
-              <div class="card-body"> 
+              <div class="card-body table-responsive-sm"> 
                 <h5 class="card-title text-warning"> <i class="bi bi-list-task"></i> {{titulo}}</h5>
                 <hr>
                 
-                <table class="table bg-black text-white strip rounded mb-4" style="text-align: center" id="data">
+                <table class="table bg-black text-white strip rounded mb-4 " style="text-align: center" id="data">
                     <thead class="bg-warning text-black">
                       <tr>
                         <th scope="col">#</th>
@@ -64,20 +63,11 @@
                         <td>{{ p.cantidad }}</td>
                         <td>{{ p.categoriaP }}</td>
                         <td>
-                            <img src="{{p.get_image}}" class="img-fluid d-block mx-auto" style="width: 70px; height:70px; border-radius: 20px;">
+                            <img src="{{p.get_image}}" class="img-fluid d-block mx-auto img-table">
                         </td>
-                        
                         <td>
-                          <a type="button" class="btn btn-primary" href="{%url 'actualizar_producto' p.id %}">
-                            <i class="bi bi-eye"></i>
-                          </a>
-                          <a type="button" class="btn btn-secondary" href="{%url 'actualizar_producto' p.id %}">
-                            <i class="bi bi-pencil-square"></i>
-                          </a>
-                          
-                          
-                          <a type="button" class="btn btn-danger" href="#" onclick="eliminarProducto({{p.id}})">
-                              <i class="bi bi-trash btnUM"></i>
+                          <a type="button" class="btn btn-success" href="#" onclick="AltaProducto({{p.id}})">
+                            <i class="bi bi-arrow-repeat"></i>
                           </a>
                         </td>
                       </tr>
@@ -101,39 +91,8 @@
 
 {% endblock cuerpo %}
 {% block js %}
+<Script type="application/javascript" src="{% static 'assets/js/AppInventario/Producto/listProductoBajas.js' %}"></Script>
 <script>
-  function eliminarProducto(id){
-    const swalWithBootstrapButtons = Swal.mixin({
-      customClass: {
-        confirmButton: 'btn btn-primary',
-        cancelButton: 'btn btn-danger'
-      },
-      buttonsStyling: false
-    })
-    
-    swalWithBootstrapButtons.fire({
-      title: '¿Seguro que desea eliminar el producto?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Confirmar!',
-      cancelButtonText: 'Cancelar!',
-      reverseButtons: true
-    }).then((result) => {
-      if (result.isConfirmed) {
-        
-        window.location.href = "EliminarProducto/"+id+"/"
-      } else if (
-        /* Read more about handling dismissals below */
-        result.dismiss === Swal.DismissReason.cancel
-      ) {
-        swalWithBootstrapButtons.fire(
-          'Operacion cancelada',
-          'El producto no se ha eliminado  :)',
-          'error'
-        )
-      }
-    })
-  }
   {% if productos %}
   let table = new DataTable('#data', {
       "language": {
