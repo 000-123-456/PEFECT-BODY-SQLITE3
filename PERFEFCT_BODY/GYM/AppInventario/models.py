@@ -41,7 +41,7 @@ class Categoria(models.Model):
 
 class Producto(models.Model):
     nombre = models.CharField(max_length=50, null=False, verbose_name='Nombre')
-    descripcion = models.CharField(max_length=100, null=True, verbose_name='Descripcion')
+    descripcion = models.CharField(max_length=100, null=True, verbose_name='Descripcion', blank=True)
     cantidad = models.PositiveIntegerField(default=0, verbose_name='Cantidad')
     precio_venta = models.DecimalField(max_digits=15,decimal_places=2,null=False,verbose_name="Precio de venta")
     estado = models.BooleanField(default=False, verbose_name='Estado')
