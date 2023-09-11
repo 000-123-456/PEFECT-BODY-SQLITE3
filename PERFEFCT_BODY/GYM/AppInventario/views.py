@@ -109,7 +109,7 @@ class ListCategoriaBajas(TemplateView):
 ##--------------- FIN VISTAS CATEGORIA ------------------------------------------
 
 
-
+##--------------- INICIO VISTAS PRODUCTO ------------------------------------------
 class CreateProducto(CreateView):
     model = Producto
     form_class = FormProducto
@@ -204,4 +204,4 @@ def AltaTodosProducto(request):
         messages.error(request, "¡Error, la accion no se pudo realizar!")
     return redirect(to='lista_productos')
 
-
+##--------------- FIN VISTAS PRODUCTO ------------------------------------------

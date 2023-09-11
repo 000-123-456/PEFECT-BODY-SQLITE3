@@ -21,6 +21,6 @@ urlpatterns = [
     path('Producto/ProductosEliminados/AltaTodos/',login_required(views.AltaTodosProducto), name='alta_todos_productos'),
     path('Producto/ActualizarProductos/<int:pk>/', login_required(views.UpdateProducto.as_view()), name='actualizar_producto'),
     path('Producto/EliminarProducto/<int:pk>/', login_required(views.DeleteProducto), name='eliminar_producto'),
-    ##-----------------------FIN VISTAS DE CATEGORIA---------------------------------------
+    ##-----------------------FIN VISTAS DE PRODUCTO---------------------------------------
 ]
 urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
