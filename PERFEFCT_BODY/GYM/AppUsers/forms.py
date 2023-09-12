@@ -1,6 +1,6 @@
-from AppUsers.models import User
+from AppUsers.models import User,Empresa
 from django.contrib.auth.forms import UserCreationForm
-from django.forms import  DateField, DateInput, ModelForm, Select, TextInput
+from django.forms import  DateField, DateInput, ModelForm, Select, TextInput,ClearableFileInput,NumberInput,Textarea
 
 class RegistroUsuarioForm(UserCreationForm):
     class Meta:
@@ -65,3 +65,84 @@ class RegistroUsuarioForm(UserCreationForm):
             
             }
         
+#------------------------------------------------------Empresa---------------------------------------------
+class FormEmpresa(ModelForm):
+   
+    class Meta:
+        model=Empresa
+        fields = [
+            'nombre',
+            'tarifa',
+            'logo',
+            'telefono',
+            'direcccion',
+           
+        ]
+        labels={
+            'nombre': 'Nombre',
+            'tarifa': 'Tarifa de la empresa ',
+            'logo': 'logo de la empresa',
+            'telefono': 'Telefono de la empresa',
+            'direcccion':'Direccion de la empresa',
+        }
+
+
+
+
+
+
+
+
+#-----------------------------------------------------------widgets
+        widgets={
+                'nombre': TextInput(
+                    attrs={
+                        'class': 'form-control',
+                        'placeholder': 'Perfect Body',
+                       
+                    }
+                ),
+                'tarifa': NumberInput(
+                    attrs={
+                        'type': 'number',
+                        'step': '0.01',
+                        'class': 'form-control',
+                        'placeholder': '0.00',
+                    }
+                ),
+               'logo': ClearableFileInput(  
+                attrs={
+                    'class': 'form-control',
+                     }
+                ),
+                'telefono': TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'placeholder': '0000-0000',
+                    'id': 'telefono',
+                    'pattern': '[0-9]{4}[-][0-9]{4}',
+                     }
+                ),
+                'direcccion': Textarea(
+                    attrs={
+                        'style':'height: 100px',
+                        'class': 'form-control',
+                        'placeholder': 'Casa #,Barrio,Municipio',
+                       
+                    }
+                ),
+               
+        }
+
+
+
+
+FormEmpresa.field_order = [
+            'nombre',
+            'tarifa',
+            'logo',
+            'telefono',
+            'direcccion',  
+        ]
+
+

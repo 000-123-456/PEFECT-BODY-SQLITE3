@@ -1,0 +1,68 @@
+
+{% extends 'AppUsers/login.html' %}
+{% load static %}
+{% block lb %}
+{% endblock lb %}
+{% block titulo3%} {% endblock titulo3%}
+{% block titulo%}CREAR EMPRESA{% endblock titulo%}
+{% block titulo2%}Ingresa La Información de Tu Empresa{% endblock titulo2%}
+{% block formulario %}
+{% csrf_token %}
+    <div class="email">
+        <label for="email">{{form.logo.label}}</label>
+        <div class="sec-2">
+            <ion-icon name="person-circle-outline"></ion-icon>
+            {{form.logo}}
+            <img src="{% static 'assets/img/no-photo.jpg' %}" class="img-fluid d-block mx-auto" style="width: 70px; height:70px; border-radius: 20px; margin-top: 10px;">
+        </div>
+    </div>
+    <div class="email">
+        <label for="email">{{form.nombre.label}}</label>
+        <div class="sec-2">
+            <ion-icon name="text-outline"></ion-icon>
+            {{form.nombre}}
+        </div>
+    </div>
+    <div class="email">
+        <label for="email">{{form.tarifa.label}}</label>
+        <div class="sec-2">
+            <ion-icon name="text-outline"></ion-icon>
+            {{form.tarifa}}
+        </div>
+    </div>
+    <div class="email">
+        <label for="email">{{form.telefono.label}}</label>
+        <div class="sec-2">
+            <ion-icon name="mail-outline"></ion-icon>
+            {{form.telefono}}
+        </div>
+    </div>
+    <div class="email">
+        <label for="email">{{form.direcccion.label}}</label>
+        <div class="sec-2">
+            <ion-icon name="text-outline"></ion-icon>
+            {{form.direcccion}}
+        </div>
+    </div>  
+
+  <button class="btn bg-black text-warning" type="submit">Registrar</button>
+
+
+{% endblock formulario %}
+{% block js%}
+<script>
+IMask(
+    document.getElementById('telefono'),
+    {
+      mask: [
+        {
+          mask: "[0000]-[0000]"
+        }
+       
+      ]
+    }
+  )
+ 
+ 
+</script>
+  {% endblock js %}

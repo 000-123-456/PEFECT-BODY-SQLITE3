@@ -5,7 +5,7 @@ from AppUsers.opciones import opRol
 
 class Empresa(models.Model):
     nombre = models.CharField(max_length=50, null=False, verbose_name='Nombre')
-    tarifa = models.PositiveIntegerField(verbose_name='Tarifa', null=False)
+    tarifa = models.DecimalField(max_digits=15,decimal_places=2,null=False,verbose_name="Tarifa")
     logo = models.ImageField(upload_to='Empresa/%Y/%m/%d',null=True,blank=True)
     telefono = models.CharField(max_length=9, null=True, verbose_name='Teléfono') 
     direcccion = models.CharField(max_length=100, null=False, verbose_name='Dirección')
