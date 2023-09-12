@@ -1,0 +1,76 @@
+
+{% extends 'AppUsers/User/login.html' %}
+{% load static %}
+{% block lb %}
+
+{% endblock lb %}
+{% block formulario %}
+{% csrf_token %}
+<div class="col-12">
+    <label for="yourUsername" class="form-label text-black" >Nombres</label>
+    <div class="input-group has-validation">
+      <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-person-fill"></i></span>
+      <input autofocus type="text" name="username" class="form-control" id="yourUsername" required>
+      <div class="invalid-feedback">Por favor ingrese su usuario.</div>
+    </div>
+  </div>
+  
+  <div class="col-12">
+    <label for="yourUsername" class="form-label text-black" >Apellidos</label>
+    <div class="input-group has-validation">
+      <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-person-fill"></i></span>
+      <input autofocus type="text" name="username" class="form-control" id="yourUsername" required>
+      <div class="invalid-feedback">Por favor ingrese su usuario.</div>
+    </div>
+  </div>
+  <div class="col-12">
+    <label for="yourUsername" class="form-label text-black" >Email</label>
+    <div class="input-group has-validation">
+      <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-envelope-fill"></i></span>
+      <input autofocus type="text" name="username" class="form-control" id="yourUsername" required>
+      <div class="invalid-feedback">Por favor ingrese su usuario.</div>
+    </div>
+  </div>
+  <div class="col-12">
+    <label for="yourUsername" class="form-label text-black" >Usuario</label>
+    <div class="input-group has-validation">
+      <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-person-fill"></i></span>
+      <input autofocus type="text" name="username" class="form-control" id="yourUsername" required>
+      <div class="invalid-feedback">Por favor ingrese su usuario.</div>
+    </div>
+  </div>
+    <div class="email">
+        <label for="email">{{form.rol.label}}</label>
+        <div class="sec-2">
+            <ion-icon name="bag-outline"></ion-icon>
+            <select name='rol' class="form-control">
+                <option value="1">ADMINISTRADOR</option>
+              </select>  
+        </div>
+    </div>
+    <div class="col-12">
+        <label for="yourUsername" class="form-label text-black" >Contraseña</label>
+        <div class="input-group has-validation">
+          <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-lock-fill"></i></span>
+          <input type="password" name="password" class="form-control" id="yourPassword" required>
+          <div class="invalid-feedback">Por favor ingrese su usuario.</div>
+        </div>
+      </div>
+      <div class="col-12">
+        <label for="yourUsername" class="form-label text-black" >Ingrese nuevamente su contraseña</label>
+        <div class="input-group has-validation">
+          <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-lock-fill"></i></span>
+          <input type="password" name="password" class="form-control" id="yourPassword" required>
+          <div class="invalid-feedback">Por favor ingrese su usuario.</div>
+        </div>
+      </div>
+    
+  
+
+
+      <div class="col-12">
+        <button class="btn bg-black text-white w-100" type="submit">Registrarse</button>
+      </div>
+
+
+{% endblock formulario %}

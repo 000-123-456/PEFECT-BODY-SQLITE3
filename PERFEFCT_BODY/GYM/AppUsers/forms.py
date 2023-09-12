@@ -51,7 +51,7 @@ class RegistroUsuarioForm(UserCreationForm):
                 ),
                  'rol': Select(
                     attrs={
-                        'class': 'form-select',
+                        'class': 'form-control',
                         'placeholder': 'Seleccione el rol...'
                     }
                 ),
