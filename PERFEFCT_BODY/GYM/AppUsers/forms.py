@@ -80,10 +80,10 @@ class FormEmpresa(ModelForm):
         ]
         labels={
             'nombre': 'Nombre',
-            'tarifa': 'Tarifa de la empresa ',
-            'logo': 'logo de la empresa',
-            'telefono': 'Telefono de la empresa',
-            'direcccion':'Direccion de la empresa',
+            'tarifa': 'Tarifa  ',
+            'logo': 'logo ',
+            'telefono': 'Telefono ',
+            'direcccion':'Direccion ',
         }
 
 

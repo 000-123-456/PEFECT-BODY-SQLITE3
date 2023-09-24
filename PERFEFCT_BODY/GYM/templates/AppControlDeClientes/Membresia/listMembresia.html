@@ -49,7 +49,7 @@
                         <th scope="col">#</th>
                         <th scope="col">Nombre</th>
                         <th scope="col">Precio</th>
-                        <th scope="col">Duracion</th>               
+                        <th scope="col">Duración (Meses)</th>               
                         <th scope="col">Opciones</th>
                       </tr>
                     </thead>
@@ -62,9 +62,7 @@
                         <td>{{ m.duracion }}</td>
                        
                         <td>
-                          <a type="button" class="btn btn-primary" href="{%url 'actualizar_membresia' m.id %}">
-                            <i class="bi bi-eye"></i>
-                          </a>
+                       
                           <a type="button" class="btn btn-secondary" href="{%url 'actualizar_membresia' m.id %}">
                             <i class="bi bi-pencil-square"></i>
                           </a>

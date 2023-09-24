@@ -7,9 +7,15 @@ from django.views.generic import ListView, CreateView, UpdateView
 from AppControlDeClientes.models import Miembro,Membresia
 from AppControlDeClientes.forms import FormMiembro,FormMembresia
 from django.contrib import messages
+
+from AppUsers.models import Empresa
 # Create your views here.
 def prueba(request):
-     return render(request, "layout/index.html")
+     data = {
+    'empresa': Empresa.objects.first(),
+    
+    }
+     return render(request, "layout/index.html",data)
 
 
     
@@ -39,6 +45,7 @@ class CreateMembresia(CreateView):
         return super().dispatch(request, *args, **kwargs)  
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
+        data['empresa'] = Empresa.objects.first()
         data['titulo'] = 'Crear membresia'
         data['modulo'] = 'Membresia'
         data['membresias'] = Membresia.objects.filter(estado=0)
@@ -54,6 +61,7 @@ class ListMembresia(ListView):
         return super().dispatch(request, *args, **kwargs)  
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
+        data['empresa'] = Empresa.objects.first()
         data['titulo'] = 'Lista de Membresia'
         data['modulo'] = 'Membresia'
         data['icono']  = '<i class="bi bi-plus-lg"></i>'
@@ -68,6 +76,7 @@ class ListMembresiaBajas(ListView):
         return super().dispatch(request, *args, **kwargs)  
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
+        data['empresa'] = Empresa.objects.first()
         data['titulo'] = 'Membresia eliminada'
         data['modulo'] = 'Membresia'
         data['icono']  = '<i class="bi bi-plus-lg"></i>'
@@ -85,6 +94,7 @@ class UpdateMembresia(UpdateView):
         return super().dispatch(request, *args, **kwargs)  
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
+        data['empresa'] = Empresa.objects.first()
         data['titulo'] = 'Actualizar Membresia'
         data['modulo'] = 'Membresia'
         return data
