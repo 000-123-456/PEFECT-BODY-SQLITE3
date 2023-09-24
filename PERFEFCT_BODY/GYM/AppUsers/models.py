@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from AppUsers.opciones import opRol
+from GYM.settings import MEDIA_URL,STATIC_URL
 # Create your models here.
 
 class Empresa(models.Model):
@@ -18,6 +19,12 @@ class Empresa(models.Model):
         verbose_name = 'Empresa'
         verbose_name_plural = 'Empresas'
         ordering = ['id']
+    def get_image(self):
+        if self.logo:
+            return '{}{}'.format(MEDIA_URL,self.logo)
+        return '{}{}'.format(STATIC_URL,'assets/logo/no-photo.jpg')
+
+
 
 class User(AbstractUser):
     rol = models.PositiveIntegerField(null=True, blank=True, choices=opRol, name='rol', verbose_name='Rol')

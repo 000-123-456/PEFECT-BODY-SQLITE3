@@ -1,5 +1,5 @@
 from django.forms import  ModelForm, Select, TextInput,Textarea,DateInput
-from AppControlDeClientes.models import Miembro
+from AppControlDeClientes.models import Miembro,Membresia
 class FormMiembro(ModelForm):
     
     class Meta:
@@ -81,3 +81,57 @@ FormMiembro.field_order = [
             
         ]
         
+#----------------------------------------------Membresia---------------------------------------------------
+class FormMembresia(ModelForm):
+    
+    class Meta:
+        model=Membresia
+        fields = {
+            'nombre',
+            'precio',
+            'duracion',
+          
+        }
+        labels={
+            'nombre': 'Nombre',
+            'precio': 'Precio',
+            'duracion': 'Duracion',
+            
+        }
+        
+        widgets={
+                'nombre': TextInput(
+                    attrs={
+                        'class': 'form-control',
+                        'placeholder': 'Ingrese nombre completo',
+                        
+                    }
+                ),
+                'precio': TextInput(
+                    attrs={
+                        
+                        'class': 'form-control',
+                        'placeholder': 'Ingrese nombre completo',
+                        'autocomplete':"off",
+                        
+                    }
+                ),
+                'duracion': TextInput(
+                    attrs={
+                         'class': 'form-control',
+                        'placeholder': 'Ingrese nombre completo',
+                        'autocomplete':"off",
+                        
+                    }
+                )
+         
+         
+        }
+
+FormMembresia.field_order = [
+            'nombre',
+            'precio',
+            'duracion'
+        ]
+        
+

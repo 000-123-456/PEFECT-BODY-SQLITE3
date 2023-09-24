@@ -11,11 +11,11 @@
           {% comment %} <div class="col-lg-1"></div> {% endcomment %}
          
           <div class="col-lg-12 d-flex flex-row-reverse">
-            <a href="{% url 'lista_bajas_productos' %}" class="btn btn-danger">
+            <a href="{% url 'lista_bajas_membresias' %}" class="btn btn-danger">
               <b><i class="bi bi-trash"></i> Papelera</b>
             </a>
-            <a href="{% url 'crear_producto' %}" class="btn btn-primary mx-1">
-              <b><i class="bi bi-plus-lg"></i> Nuevo producto</b>
+            <a href="{% url 'crear_membresia' %}" class="btn btn-primary mx-1">
+              <b><i class="bi bi-plus-lg"></i> Nueva Membresia</b>
             </a>
             
             <br>
@@ -48,38 +48,32 @@
                       <tr>
                         <th scope="col">#</th>
                         <th scope="col">Nombre</th>
-                        <th scope="col">P.V</th>
-                        <th scope="col">Cantidad</th>
-                        <th scope="col">Categoria</th>
-                        <th scope="col">Imagen</th>
+                        <th scope="col">Precio</th>
+                        <th scope="col">Duracion</th>               
                         <th scope="col">Opciones</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {% if productos %} {% for p in productos %}
+                      {% if membresias %} {% for m in membresias %}
                       <tr>
                         <td>{{forloop.counter}}</td>
-                        <td>{{ p.nombre }}</td>
-                        <td>{{ p.precio_venta }}</td>
-                        <td>{{ p.cantidad }}</td>
-                        <td>{{ p.categoriaP }}</td>
+                        <td>{{ m.nombre }}</td>
+                        <td>{{ m.precio }}</td>
+                        <td>{{ m.duracion }}</td>
+                       
                         <td>
-                            <img src="{{p.get_image}}" class="img-fluid d-block mx-auto" style="width: 70px; height:70px; border-radius: 20px;">
-                        </td>
-                        
-                        <td>
-                          <a type="button" class="btn btn-primary" href="{%url 'actualizar_producto' p.id %}">
+                          <a type="button" class="btn btn-primary" href="{%url 'actualizar_membresia' m.id %}">
                             <i class="bi bi-eye"></i>
                           </a>
-                          <a type="button" class="btn btn-secondary" href="{%url 'actualizar_producto' p.id %}">
+                          <a type="button" class="btn btn-secondary" href="{%url 'actualizar_membresia' m.id %}">
                             <i class="bi bi-pencil-square"></i>
                           </a>
-                          <a class="btn btn-danger" href="#" onclick="eliminarProducto({{p.id}})">
+                          
+                          <a class="btn btn-danger" href="#" onclick="EliminarMembresia({{m.id}})">
                             <i class="bi bi-trash btnUM"></i>
                         </a>
                           
-                          
-                         
+                       
                         </td>
                       </tr>
                   
@@ -101,9 +95,10 @@
 
 
 {% endblock cuerpo %}
+
 {% block js %}
 <script>
-  function eliminarProducto(id){
+  function EliminarMembresia(id){
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
         confirmButton: 'btn btn-primary',
@@ -113,7 +108,7 @@
     })
     
     swalWithBootstrapButtons.fire({
-      title: '¿Seguro que desea eliminar el producto?',
+      title: '¿Seguro que desea eliminar la Membresia de este Cliente?',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Confirmar!',
@@ -122,14 +117,14 @@
     }).then((result) => {
       if (result.isConfirmed) {
         
-        window.location.href = "EliminarProducto/"+id+"/"
+        window.location.href = "EliminarMembresia/"+id+"/"
       } else if (
         /* Read more about handling dismissals below */
         result.dismiss === Swal.DismissReason.cancel
       ) {
         swalWithBootstrapButtons.fire(
           'Operacion cancelada',
-          'El producto no se ha eliminado  :)',
+          'la Membresia no se ha eliminado  :)',
           'error'
         )
       }

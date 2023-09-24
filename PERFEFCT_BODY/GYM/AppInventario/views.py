@@ -141,6 +141,7 @@ class ListProducto(ListView):
         data['icono']  = '<i class="bi bi-plus-lg"></i>'
         data['productos'] = Producto.objects.filter(estado=0)
         return data
+    
 class ListProductoBajas(ListView):
     model = Producto
     template_name = 'AppInventario/Producto/listProductoBajas.html'
