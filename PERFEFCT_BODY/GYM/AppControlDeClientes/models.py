@@ -6,7 +6,7 @@ from GYM.settings import MEDIA_URL,STATIC_URL
 class Membresia(models.Model):
     nombre = models.CharField(max_length=50, null=False, verbose_name='Nombre')
     precio = models.DecimalField(max_digits=15,decimal_places=2,null=False,verbose_name="Precio")
-    duracion = models.PositiveIntegerField(default=0, verbose_name='Duracion')
+    duracion = models.PositiveIntegerField(verbose_name='Duracion')
     estado = models.BooleanField(default=False, verbose_name='Estado')
     def __str__(self) -> str:
         return self.nombre
@@ -97,10 +97,12 @@ class Dieta(models.Model):
     nombre = models.CharField(max_length=50, null=False, verbose_name='Nombre')
     imagen = models.ImageField(upload_to='Plato/%Y/%m/%d',null=True,blank=True)
     detalle_alimento = models.CharField(max_length=100, null=True, verbose_name='Detalle_Alimento')
+    ##Campo Caloria
+    ##Porciones
     tiempo_comida = models.CharField(max_length=100, null=True, verbose_name='Tiempo_Comida')
     ###----- CLAVES FORANEAS --------
     miembro = models.ForeignKey(Miembro, on_delete=models.PROTECT, verbose_name='Miembro', null=True, blank=True)
-  
+    ##Que tome una agua
     def __str__(self) -> str:
         return self.id
     

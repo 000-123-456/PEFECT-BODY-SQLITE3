@@ -80,20 +80,13 @@ class FormEmpresa(ModelForm):
         ]
         labels={
             'nombre': 'Nombre',
-            'tarifa': 'Tarifa  ',
-            'logo': 'logo ',
-            'telefono': 'Telefono ',
-            'direcccion':'Direccion ',
+            'tarifa': 'Tarifa',
+            'logo': 'Logo',
+            'telefono': 'Telefono',
+            'direcccion':'Direccion',
         }
 
-
-
-
-
-
-
-
-#-----------------------------------------------------------widgets
+#-------------------Widgets-------------------
         widgets={
                 'nombre': TextInput(
                     attrs={
@@ -139,8 +132,8 @@ class FormEmpresa(ModelForm):
 
 FormEmpresa.field_order = [
             'nombre',
-            'tarifa',
             'logo',
+            'tarifa',
             'telefono',
             'direcccion',  
         ]

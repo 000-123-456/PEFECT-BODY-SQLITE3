@@ -104,6 +104,7 @@ class FormMembresia(ModelForm):
                     attrs={
                         'class': 'form-control',
                         'placeholder': 'Ingrese nombre completo',
+                        'autocomplete':"off",
                         
                     }
                 ),
@@ -114,14 +115,17 @@ class FormMembresia(ModelForm):
                         'placeholder': 'Ingrese nombre completo',
                         'autocomplete':"off",
                         
+
+                        
                     }
                 ),
                 'duracion': TextInput(
                     attrs={
-                         'class': 'form-control',
+                        'type':'number',
+                        'class': 'form-control',
                         'placeholder': 'Ingrese nombre completo',
                         'autocomplete':"off",
-                        
+                        'value':"",
                     }
                 )
          
