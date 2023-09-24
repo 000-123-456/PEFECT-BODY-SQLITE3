@@ -25,5 +25,6 @@ urlpatterns = [
     path('',include("AppControlDeClientes.urls")),
     path('',include("AppUsers.urls")),
     path('',include("AppInventario.urls")),
+    path('',include("AppInventarioMaquinaria.urls")),
 ]
 urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

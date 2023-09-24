@@ -1,0 +1,142 @@
+{% extends 'layout/index.html' %}
+{% load static %}
+{% block titulo %}   {{titulo}}   {% endblock titulo %}
+{% block tituloP %}  {{titulo}}   {% endblock tituloP %}
+{% block modulo %}
+  <a href="{% url 'listar_maquina' %}">   
+    {{modulo}}
+  </a>   
+{% endblock modulo %}
+{% block tituloS %}  {{titulo2}}   {% endblock tituloS %}
+{% block cuerpo %}
+<section class="section">
+    
+        <div class="row">
+          {% comment %} <div class="col-lg-1"></div> {% endcomment %}
+         
+          <div class="col-lg-12 d-flex flex-row-reverse">
+            <a href="{% url 'listar_baja_maquina'%}" class="btn btn-danger">
+              <b><i class="bi bi-trash"></i> Papelera</b>
+            </a>
+            <a href="{% url 'añadir_maquina' %}" class="btn btn-primary mx-1">
+              <b><i class="bi bi-plus-lg"></i> Añadir máquina</b>
+            </a>
+            
+            <br>
+        </div>
+          <br>
+          <br>
+          <div class="col-lg-12">
+                
+                <!-- Horizontal Form -->
+
+                {% if form.errors %}
+                {% for field  in form  %}
+                        {% for error in field.errors %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>Notificacion: </strong>{{error}}.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" arial-label="Close"></button>
+                        </div>
+                        {% endfor %}
+                {% endfor %}
+              {% endif %}
+            <br>
+            <div class="card">
+              
+              <div class="card-body"> 
+                <h5 class="card-title text-warning"> <i class="bi bi-list-task"></i> {{titulo2}}</h5>
+                <hr>
+                
+                <table class="table bg-black text-white strip rounded mb-4" style="text-align: center" id="data">
+                    <thead class="bg-warning text-black">
+                      <tr>
+                        <th scope="col" style="text-align: center;">#</th>
+                        <th scope="col" style="text-align: center;">Modelo</th>
+                        <th scope="col" style="text-align: center;">Descripción</th>
+                        <th scope="col" style="text-align: center;">Categoría</th>
+                        <th scope="col" style="text-align: center;">Estado</th>
+                        <th scope="col" style="text-align: center;">Imagen</th>
+                        <th scope="col" style="text-align: center;">Opciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% if maquinas %} {% for m in maquinas %}
+                      <tr>
+                        <td style="vertical-align: middle;">{{forloop.counter}}</td>
+                        <td style="vertical-align: middle;">{{ m.nombre }}</td>
+                        <td style="vertical-align: middle;">{{ m.descripcion }}</td>
+                        <td style="vertical-align: middle;">{{ m.categoriaM }}</td>
+                        <td style="vertical-align: middle;">{{ m.estado_maquina }}</td>
+                        <td>
+                            <img src="{{m.get_image}}" class="img-fluid d-block mx-auto" style="width: 70px; height:70px; border-radius: 20px;">
+                        </td>
+                        
+                        <td style="vertical-align: middle;">
+                          <a type="button" class="btn btn-primary">
+                            <i class="bi bi-card-checklist"></i>
+                          </a>
+                          <a type="button" class="btn btn-secondary" href="{%url 'editar_maquina' m.id %}">
+                            <i class="bi bi-pencil-square"></i>
+                          </a>
+                          
+                          
+                          <a type="button" class="btn btn-danger" href="#" onclick="eliminarMaquina({{m.id}})">
+                              <i class="bi bi-trash btnUM"></i>
+                          </a>
+                        </td>
+                      </tr>
+                  
+                      {% endfor %} {% else %}
+                      <td colspan="9" style="text-align: center">
+                        <b>No hay datos para mostrar</b>
+                      </td>
+                      {% endif %}
+                    </tbody>
+                  </table>
+              </div>
+            </div>
+          </div>
+          {% comment %} <div class="col-lg-1"></div> {% endcomment %}
+        </div>
+        
+      </section>
+
+
+
+{% endblock cuerpo %}
+{% block js %}
+<script>
+  function eliminarMaquina(id) {
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: 'btn btn-danger ml-2', // Botón "Eliminar" a la izquierda en rojo
+        cancelButton: 'btn btn-warning mr-2', // Botón "Cancelar" a la derecha en amarillo
+      },
+      buttonsStyling: false,
+    });
+  
+    swalWithBootstrapButtons
+      .fire({
+        title: '¿Seguro que desea eliminar?',
+        text: 'Esta acción no se puede revertir!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Eliminar',
+        cancelButtonText: 'Cancelar',
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = "../Eliminar/" + id + "/";
+        }
+      });
+  }
+  {% if maquinas %}
+  let table = new DataTable('#data', {
+      "language": {
+          "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
+      },
+      responsive: true,
+  });
+  {% endif %}
+</script>
+{% endblock js %}
