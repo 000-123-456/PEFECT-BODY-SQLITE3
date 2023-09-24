@@ -1,0 +1,112 @@
+{% extends 'layout/index.html' %}
+{% load static %}
+{% block titulo %}   {{titulo}}   {% endblock titulo %}
+{% block tituloP %}  {{titulo}}   {% endblock tituloP %}
+{% block modulo %}
+  <a href="{% url 'listar_maquina' %}">   
+    {{modulo}}
+  </a>   
+{% endblock modulo %}
+{% block tituloS %}  {{titulo2}}   {% endblock tituloS %}
+{% block cuerpo %}
+<section class="section">
+    
+        <div class="row">
+          {% comment %} <div class="col-lg-1"></div> {% endcomment %}
+
+          <div class="d-flex justify-content-between bd-highlight mb-3">
+            <a href="{% url 'listar_maquina' %}" class="btn btn-primary">
+                <b><i class="bi bi-arrow-left"></i> Regresar</b>
+            </a> 
+            {% if maquinas %}
+            <a href="{% url 'alta_todas_maquina' %}" class="btn btn-success">
+                <b><i class="bi bi-arrow-repeat"></i> Restaurar todo</b>
+            </a>
+            {% else %}
+            <button class="btn btn-success disabled" aria-disabled="true">
+                <b><i class="bi bi-arrow-repeat"></i> Restaurar todo</b>
+            </button>
+            {% endif %}
+          </div>
+ 
+          <br>
+          <br>
+          <div class="col-lg-12">
+                
+                <!-- Horizontal Form -->
+
+                {% if form.errors %}
+                {% for field  in form  %}
+                        {% for error in field.errors %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>Notificacion: </strong>{{error}}.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" arial-label="Close"></button>
+                        </div>
+                        {% endfor %}
+                {% endfor %}
+              {% endif %}
+            <br>
+            <div class="card">
+              
+              <div class="card-body table-responsive-sm"> 
+                <h5 class="card-title text-warning"> <i class="bi bi-list-task"></i> {{titulo2}}</h5>
+                <hr>
+                
+                <table class="table bg-black text-white strip rounded mb-4 " style="text-align: center" id="data">
+                    <thead class="bg-warning text-black">
+                      <tr>
+                        <th scope="col" style="text-align: center;">#</th>
+                        <th scope="col" style="text-align: center;">Modelo</th>
+                        <th scope="col" style="text-align: center;">Descripción</th>
+                        <th scope="col" style="text-align: center;">Categoría</th>
+                        <th scope="col" style="text-align: center;">Imagen</th>
+                        <th scope="col" style="text-align: center;">Opciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% if maquinas %} {% for m in maquinas %}
+                      <tr>
+                        <td style="vertical-align: middle;">{{forloop.counter}}</td>
+                        <td style="vertical-align: middle;">{{ m.nombre }}</td>
+                        <td style="vertical-align: middle;">{{ m.descripcion }}</td>
+                        <td style="vertical-align: middle;">{{ m.categoriaM }}</td>
+                        <td>
+                            <img src="{{m.get_image}}" class="img-fluid d-block mx-auto" style="width: 70px; height:70px; border-radius: 20px;">
+                        </td>
+                        <td style="vertical-align: middle;">
+                          <a type="button" class="btn btn-success" href="{% url 'alta_maquina' m.id %}">
+                            <i class="bi bi-arrow-repeat"></i>
+                          </a>
+                        </td>
+                      </tr>
+                  
+                      {% endfor %} {% else %}
+                      <td colspan="9" style="text-align: center">
+                        <b>No hay datos para mostrar</b>
+                      </td>
+                      {% endif %}
+                    </tbody>
+                  </table>
+              </div>
+            </div>
+          </div>
+          {% comment %} <div class="col-lg-1"></div> {% endcomment %}
+        </div>
+        
+      </section>
+
+
+
+{% endblock cuerpo %}
+{% block js %}
+<script>
+  {% if maquinas %}
+  let table = new DataTable('#data', {
+      "language": {
+          "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
+      },
+      responsive: true,
+  });
+  {% endif %}
+</script>
+{% endblock js %}

@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'AppControlDeClientes',
     'AppUsers',
     'AppInventario',
+    'AppInventarioMaquinaria',
 ]
 
 MIDDLEWARE = [
