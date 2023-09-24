@@ -14,6 +14,7 @@
             </a>  
         </div>
         <br>
+        {% if categorias %}
           <div class="col-lg-3"></div>
           <div class="col-lg-6">             
                 <!-- Horizontal Form -->
@@ -28,6 +29,7 @@
                 {% endfor %}
               {% endif %}
               <br>
+          
             <div class="card">
               <div class="card-body">
                 <h5 class="card-title text-warning"><i class="bi bi-plus-lg"></i> {{titulo}}</h5>
@@ -68,6 +70,14 @@
   
           </div>
           <div class="col-lg-3"></div>
+        {% else %}
+        <section class="section error-404  mt-0 d-flex flex-column align-items-center justify-content-center">
+          <h2>¡Error, no ha registrado ninguna categoría!</h2>
+          <h2>Se debe registrar por lo menos una categoría antes de registrar un producto</h2>
+          <a class="btn" href="{% url 'lista_categoria' %}">Registrar categoría</a>
+          <img src=" {% static 'assets/img/not-found.svg'%}" class="img-fluid" alt="Page Not Found">
+        </section>
+        {% endif %}
         </div>
         
       </section>

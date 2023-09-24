@@ -11,8 +11,8 @@
   <meta content="" name="keywords">
 
   <!-- Favicons -->
-  <link href="{% static 'assets/img/logo-dark.png' %}" rel="icon" />
-  <link href="{% static 'assets/img/logo-dark.png' %}" rel="apple-touch-icon" />
+  <link href="{{empresa.get_image}}" rel="icon" />
+  <link href="{{empresa.get_image}}" rel="apple-touch-icon" />
 
   <!-- Google Fonts -->
   <link href="https://fonts.gstatic.com" rel="preconnect">
@@ -42,14 +42,6 @@
   {% endblock lib%}
   <!-- Template Main CSS File -->
   <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
-
-  <!-- =======================================================
-  * Template Name: NiceAdmin
-  * Updated: Mar 09 2023 with Bootstrap v5.2.3
-  * Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
 </head>
 
 <body>
@@ -59,7 +51,7 @@
 
     <div class="d-flex align-items-center justify-content-between">
       <a href="index.html" class="logo d-flex align-items-center">
-        <img src="{% static 'assets/img/logo-dark.png' %}" alt="">
+        <img src="{{empresa.get_image}}" alt="">
         <span class="d-none d-lg-block">Perfect Body</span>
       </a>
       <i class="bi bi-list toggle-sidebar-btn"></i>
@@ -309,29 +301,12 @@
           </li>
         </ul>
       </li><!-- End Charts Nav -->
-
       <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-buildings-fill"></i><span>Empresa</span><i class="bi bi-chevron-down ms-auto"></i>
+        <a class="nav-link collapsed" href="{% url 'actualizar_empresa' empresa.id %}">
+          <i class="bi bi-buildings-fill"></i><span>Empresa</span>
         </a>
-        <ul id="icons-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-          <li>
-            <a href="{% url 'actualizar_empresa' empresa.id %}">
-              <i class="bi bi-circle"></i><span>Actualizar Empresa </span>
-            </a>
-          </li>
-          <li>
-            <a href="icons-remix.html">
-              <i class="bi bi-circle"></i><span>Remix Icons</span>
-            </a>
-          </li>
-          <li>
-            <a href="icons-boxicons.html">
-              <i class="bi bi-circle"></i><span>Boxicons</span>
-            </a>
-          </li>
-        </ul>
-      </li><!-- End Icons Nav -->
+      </li><!-- End Login Page Nav -->
+      
 
       <li class="nav-heading">MENÚ INVENTARIO</li>
 
@@ -1082,10 +1057,6 @@
 
   <!-- ======= Footer ======= -->
   <footer id="footer" class="footer">
-   
-    <div class="credits">
-      Diseñado por estudiantes de diseño 2 - Derechos reservados.
-    </div>
   </footer><!-- End Footer -->
 
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center bg-black"><i class="bi bi-arrow-up-short text-warning"></i></a>
