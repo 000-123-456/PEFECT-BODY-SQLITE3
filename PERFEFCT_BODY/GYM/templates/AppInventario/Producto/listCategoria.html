@@ -15,7 +15,8 @@
         <b><i class="bi bi-trash"></i> Papelera</b>
       </a>
       <button type="button" class="btn btn-primary btn-large" data-bs-toggle="modal" data-bs-target="#agregarCategoria">
-        <b><i class="bi bi-plus-lg"></i> Agregar categoría</b></button>
+        <b><i class="bi bi-plus-lg"></i> Agregar categoría</b>
+      </button>
         
     </div>
     <br>
@@ -23,8 +24,8 @@
     <div class="modal fade" id="agregarCategoria" tabindex="-1">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title text-warning"><b><i class="bi bi-plus-lg"></i> Agregar categoría</b></h5>
+          <div class="modal-header bg-warning">
+            <h5 class="modal-title text-black"><b><i class="bi bi-plus-lg"></i> Agregar categoría</b></h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body mx-4">
@@ -32,9 +33,9 @@
             <form class="row g-3" method="post" autocomplete='off' id='formAdd'>
               <input type="hidden" name="action" value="add">
               {% csrf_token %}
-              <div class="form-floating mb-3">
+              <div class="form-floating mb-3 mt-4">
                   <input type="text" name="nombre" class="form-control" placeholder="Ingrese nombre " maxlength="50" required="" id="add_nombre">
-                  <label for="floatingName" autofocus="">Nombre de categoría</label>
+                  <label for="floatingName" autofocus="">Nombre</label>
               </div>
               <div class="row mb-3 ">
                 <label class="col-sm-2 col-form-label d-inline text-white">¿Perece?</label>
@@ -44,8 +45,8 @@
               </div>
           </div>
           <div class="modal-footer justify-content-center">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-            <button type="submit" class="btn btn-primary">Guardar</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><b>Cerrar</b></button>
+            <button type="submit" class="btn btn-primary text-black"><b>Guardar</b></button>
           </div>
       </form>
       
@@ -56,8 +57,8 @@
 <div class="modal fade" id="modificarCategoria" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title text-warning"><b> <i class="bi bi-pencil-square"></i> Modificar categoría</b></h5>
+      <div class="modal-header bg-warning">
+        <h5 class="modal-title text-black"><b> <i class="bi bi-pencil-square"></i> Modificar categoría</b></h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body mx-4">

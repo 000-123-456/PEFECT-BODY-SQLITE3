@@ -1276,12 +1276,21 @@ hr{
 
 }
 .dataTables_wrapper .dataTables_paginate{
-  background: #191919 !important;
+  background: transparent !important;
 
 }
 .dataTables_wrapper .dataTables_paginate .paginate_button{
   color: #FED201 !important;
-  background: #191919;
+  background: transparent;
+  font-weight: bold;
+  
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover{
+  color: #6d7045 !important;
+  background: transparent;
+  font-weight: bold;
+  border: none;
+
   
 }
 
@@ -1289,10 +1298,34 @@ hr{
   color: #000;
   background: #FED201;
 }
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover{
+  color: #000;
+  background: #e9fe01;
+}
 .img-table{
   width: 70px; 
   height:70px; 
   border-radius: 20px;
+}
+.dataTables_filter {
+  position: relative;
+}
+
+.dataTables_filter input {
+  width: 250px;
+  height: 32px;
+  background: #fcfcfc;
+  border: 1px solid #aaa;
+  border-radius: 5px;
+  
+  text-indent: 10px;
+}
+
+.dataTables_filter .bi-search {
+  position: absolute;
+  top: 4px;
+  left: auto;
+  right: 10px;
 }
 
 

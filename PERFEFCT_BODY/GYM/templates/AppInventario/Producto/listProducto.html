@@ -49,8 +49,6 @@
                         <th scope="col">#</th>
                         <th scope="col">Nombre</th>
                         <th scope="col">P.V</th>
-                        <th scope="col">Cantidad</th>
-                        <th scope="col">Categoria</th>
                         <th scope="col">Imagen</th>
                         <th scope="col">Opciones</th>
                       </tr>
@@ -58,16 +56,14 @@
                     <tbody>
                       {% if productos %} {% for p in productos %}
                       <tr>
-                        <td>{{forloop.counter}}</td>
-                        <td>{{ p.nombre }}</td>
-                        <td>$ {{ p.precio_venta }}</td>
-                        <td>{{ p.cantidad }}</td>
-                        <td>{{ p.categoriaP }}</td>
-                        <td>
+                        <td style="vertical-align: middle;">{{forloop.counter}}</td>
+                        <td style="vertical-align: middle;">{{ p.nombre }}</td>
+                        <td style="vertical-align: middle;">$ {{ p.precio_venta }}</td>
+                        <td style="vertical-align: middle;">
                             <img src="{{p.get_image}}" class="img-fluid d-block mx-auto" style="width: 70px; height:70px; border-radius: 20px;">
                         </td>
                         
-                        <td>
+                        <td style="vertical-align: middle;">
                           <a type="button" class="btn btn-primary" href="{%url 'actualizar_producto' p.id %}">
                             <i class="bi bi-eye"></i>
                           </a>
@@ -102,45 +98,47 @@
 
 {% endblock cuerpo %}
 {% block js %}
+<Script type="application/javascript" src="{% static 'assets/js/AppInventario/Producto/listProducto.js' %}"></Script>
+
 <script>
-  function eliminarProducto(id){
-    const swalWithBootstrapButtons = Swal.mixin({
-      customClass: {
-        confirmButton: 'btn btn-primary',
-        cancelButton: 'btn btn-danger'
-      },
-      buttonsStyling: false
-    })
-    
-    swalWithBootstrapButtons.fire({
-      title: '¿Seguro que desea eliminar el producto?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Confirmar!',
-      cancelButtonText: 'Cancelar!',
-      reverseButtons: true
-    }).then((result) => {
-      if (result.isConfirmed) {
-        
-        window.location.href = "EliminarProducto/"+id+"/"
-      } else if (
-        /* Read more about handling dismissals below */
-        result.dismiss === Swal.DismissReason.cancel
-      ) {
-        swalWithBootstrapButtons.fire(
-          'Operacion cancelada',
-          'El producto no se ha eliminado  :)',
-          'error'
-        )
-      }
-    })
-  }
+  const dataTableOptions = {
+    //scrollX: "400px",
+    lengthChange: false,
+    filter:[
+      { className: "form-control"},
+    ],
+    lengthMenu: [5, 10, 15, 20, 100, 200, 500],
+    columnDefs: [
+        { className: "text-center", targets: [0, 1, 2, 3, 4] },
+        { orderable: false, targets: [3, 4] },
+        { searchable: false, targets: [0,3,4] },
+        //{ width: "5%", targets: [0] }
+    ],
+    pageLength: 3,
+    destroy: true,
+    language: {
+        lengthMenu: "Mostrar _MENU_ registros por página",
+        zeroRecords: "Ningún usuario encontrado",
+        info: "Mostrando de _START_ a _END_ de un total de _TOTAL_ registros",
+        infoEmpty: "Ningún usuario encontrado",
+        infoFiltered: "(filtrados desde _MAX_ registros totales)",
+        search: "",
+        loadingRecords: "Cargando...",
+        paginate: {
+            first: "Primero",
+            last: "Último",
+            next: "Siguiente",
+            previous: "Anterior"
+        }
+    }
+};
+
   {% if productos %}
-  let table = new DataTable('#data', {
-      "language": {
-          "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
-      },
-      responsive: true,
+  let table = new DataTable('#data', dataTableOptions);
+  //remove the default 'Search' text for all DataTable search boxes
+  $('[type=search]').each(function () {
+    $(this).attr("placeholder", "Buscar...");
+    $(this).before('<span class="bi bi-search"></span>');
   });
   {% endif %}
 </script>
