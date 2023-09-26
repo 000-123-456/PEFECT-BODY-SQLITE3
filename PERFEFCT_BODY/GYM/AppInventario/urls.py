@@ -14,7 +14,7 @@ urlpatterns = [
     ##-----------------------FIN VISTAS DE CATEGORIA---------------------------------------
 
     ##-----------------------INICIO VISTAS DE PRODUCTO--------------------------------------- 
-    path('Producto/<str:name>/',login_required(views.get_producto), name='get_producto'),
+    path('Producto/get_producto/<str:name>/',login_required(views.get_producto), name='get_producto'),
     path('Producto/CrearProducto/',login_required(views.CreateProducto.as_view()), name='crear_producto'),
     path('Producto/',login_required(views.ListProducto.as_view()), name='lista_productos'),
     path('Producto/ProductosEliminados/',login_required(views.ListProductoBajas.as_view()), name='lista_bajas_productos'),

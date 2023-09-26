@@ -44,9 +44,20 @@ class CreateMaquinaria(CreateView):
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        # Imprime los errores si el formulario no es válido
-        print("Errores en el formulario:", form.errors)
-        messages.error(self.request, "Error al añadir la máquina. Por favor, verifica los datos.")
+        # Obtener una lista de mensajes de error como texto plano
+        error_messages = []
+        for field, errors in form.errors.as_text():
+            for error in errors:
+                error_messages.append(f"{field}: {error}")
+        
+        # Concatenar todos los mensajes de error en una sola cadena de texto
+        error_message = "Error al añadir la máquina. Por favor, verifica los datos: " + ", ".join(error_messages)
+        
+        # Imprimir los errores en la consola
+        print("Errores en el formulario:", error_message)
+        
+        # Agregar el mensaje de error personalizado a la lista de mensajes de la sesión
+        messages.error(self.request, error_message)
         return super().form_invalid(form)
 
 class ListMaquinaria(ListView):

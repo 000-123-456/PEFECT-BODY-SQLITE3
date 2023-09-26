@@ -127,9 +127,14 @@ class CreateProducto(CreateView):
         data['modulo'] = 'Producto'
         data['categorias'] = Categoria.objects.filter(estado=0)
         return data
-    def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
-        messages.success(request, "Producto creado correctamente!")
-        return super().post(request, *args, **kwargs)
+    
+    def form_valid(self, form):
+        messages.success(self.request, "Máquina añadida correctamente!")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, format(form.errors.as_text()))
+        return super().form_invalid(form)
     
 def get_producto(request, name):
     data={}
@@ -186,11 +191,24 @@ class UpdateProducto(UpdateView):
         data['titulo'] = 'Actualizar producto'
         data['modulo'] = 'Producto'
         return data
-    def post(self, request, *args, **kwargs):
-        # form = self.form_class(request.POST)
-        messages.success(request,'¡Producto actualizado correctamente!')
-        return super().post(request, *args, **kwargs)
     
+        return super().post(request, *args, **kwargs)
+    def form_valid(self, form):
+        messages.success(self.request, "Máquina añadida correctamente!")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        # Obtiene la instancia del modelo que se está actualizando
+        instance = self.get_object()
+        
+        # Envía el objeto instance como contexto a la plantilla
+        context = self.get_context_data(object=instance)
+        
+        # Agrega mensajes de error al contexto
+        messages.error(self.request, format(form.errors.as_text()))
+        
+        # Retorna la respuesta con el contexto actualizado
+        return self.render_to_response(context)
 def DeleteProducto(request, pk):
     try:
         pro = Producto.objects.get(id=pk)
