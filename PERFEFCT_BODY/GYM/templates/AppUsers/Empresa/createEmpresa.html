@@ -8,14 +8,7 @@
 {% block titulo2%}Ingresa La Información de Tu Empresa{% endblock titulo2%}
 {% block formulario %}
 {% csrf_token %}
-    <div class="email">
-        <label for="email">{{form.logo.label}}</label>
-        <div class="sec-2">
-            <ion-icon name="person-circle-outline"></ion-icon>
-            {{form.logo}}
-            <img src="{% static 'assets/img/no-photo.jpg' %}" class="img-fluid d-block mx-auto" style="width: 70px; height:70px; border-radius: 20px; margin-top: 10px;">
-        </div>
-    </div>
+    
     <div class="email">
         <label for="email">{{form.nombre.label}}</label>
         <div class="sec-2">
