@@ -131,7 +131,18 @@ class CreateProducto(CreateView):
         messages.success(request, "Producto creado correctamente!")
         return super().post(request, *args, **kwargs)
     
-
+def get_producto(request, name):
+    data={}
+    try:
+        product = Producto.objects.get(nombre=name)
+        data = product.toJSON()
+        data['categoria'] = str(product.categoriaP)
+        data['img'] = str(product.get_image())
+        data['message']= 'success'
+    except Exception as e :
+        data = {'message': 'Not Found'}
+        print(e)
+    return JsonResponse(data)
 class ListProducto(ListView):
     model = Producto
     template_name = 'AppInventario/Producto/listProducto.html'

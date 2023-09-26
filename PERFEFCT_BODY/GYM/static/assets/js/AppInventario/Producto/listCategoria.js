@@ -30,12 +30,12 @@ function eliminarCategoria(id){
       }
     })
   }
-    const table = document.getElementById("data")
+    const tabla = document.getElementById("data")
     const modal = document.getElementById("modificarCategoria")
     const inputs = document.querySelectorAll(".updateI")
     let count=0;
     
-    table.addEventListener('click',(e) => {
+    tabla.addEventListener('click',(e) => {
         e.stopPropagation();
         
         //console.log(e.target.class)

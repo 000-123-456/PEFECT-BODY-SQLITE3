@@ -30,6 +30,7 @@ class CreateMiembro(CreateView):
         return super().post(request, *args, **kwargs)
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
+        data['empresa'] = Empresa.objects.first()
         data['titulo'] = 'Crear Miembro'
         data['modulo'] = 'Miembro'
         return data

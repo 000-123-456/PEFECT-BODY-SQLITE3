@@ -39,7 +39,7 @@ class Categoria(models.Model):
         ordering = ['id']
 
 class Producto(models.Model):
-    nombre = models.CharField(max_length=50, null=False, verbose_name='Nombre')
+    nombre = models.CharField(max_length=50, null=False, verbose_name='Nombre',unique=True)
     descripcion = models.CharField(max_length=100, null=True, verbose_name='Descripcion', blank=True)
     cantidad = models.PositiveIntegerField(default=0, verbose_name='Cantidad')
     precio_venta = models.DecimalField(max_digits=15,decimal_places=2,null=False,verbose_name="Precio de venta")
@@ -61,6 +61,9 @@ class Producto(models.Model):
         if self.img:
             return '{}{}'.format(MEDIA_URL,self.img)
         return '{}{}'.format(STATIC_URL,'assets/img/no-photo.jpg')
+    def toJSON(self):
+        item = model_to_dict(self, exclude=['img'])
+        return item
 
 class Compra(models.Model):
     cantidad = models.PositiveIntegerField(verbose_name='Cantidad', null=False)
