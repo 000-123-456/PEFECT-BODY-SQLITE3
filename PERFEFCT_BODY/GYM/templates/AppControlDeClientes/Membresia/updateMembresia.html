@@ -39,7 +39,7 @@
                   
                   {% for field in form.visible_fields %}
 
-                      <div class="col-md-{% if field.label == 'Precio de venta $0.00' or field.label == 'Cantidad mínima'  %}6{% else %}12{% endif %}">
+                      <div class="col-md-{% if field.label == 'Precio' or field.label == 'Duración'  %}6{% else %}12{% endif %}">
                           
                         <div class="form-floating">
                           {{ field }}

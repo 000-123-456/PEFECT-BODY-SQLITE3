@@ -10,6 +10,13 @@ from typing import Any
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from AppUsers.models import Empresa
 from django.contrib import messages
+
+
+from django.shortcuts import redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from django.urls import reverse
+
 # Create your views here.
 class RegistroUsuario(CreateView):
     model = User
@@ -36,21 +43,45 @@ class CrearEmpresa(CreateView):
 
 
 
+#class UpdateEmpresa(UpdateView):
+ #   model = Empresa
+  #  form_class = FormEmpresa
+   # success_url= reverse_lazy('lista_empresas')
+    #template_name = 'AppUsers/Empresa/updateEmpresa.html'
+    #success_message = "¡Registro actualizado con éxito!"
+    #def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+     #   return super().dispatch(request, *args, **kwargs)  
+    #def get_context_data(self, **kwargs):
+     #   data = super().get_context_data(**kwargs)
+      #  data['empresa'] = Empresa.objects.first()
+       # data['titulo'] = 'Actualizar empresa'
+        #data['modulo'] = 'Empresa'
+        #return data
+    #def post(self, request, *args, **kwargs):
+        # form = self.form_class(request.POST)
+        #messages.success(request,'Empresa actualizada correctamente!')
+        #return super().post(request, *args, **kwargs)
+    
+@method_decorator(login_required, name='dispatch')
 class UpdateEmpresa(UpdateView):
     model = Empresa
     form_class = FormEmpresa
-    success_url= reverse_lazy('lista_empresas')
     template_name = 'AppUsers/Empresa/updateEmpresa.html'
     success_message = "¡Registro actualizado con éxito!"
-    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        return super().dispatch(request, *args, **kwargs)  
+
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        data['empresa'] = Empresa.objects.first()
+        data['empresa'] = get_object_or_404(Empresa)
         data['titulo'] = 'Actualizar empresa'
         data['modulo'] = 'Empresa'
         return data
-    def post(self, request, *args, **kwargs):
-        # form = self.form_class(request.POST)
-        messages.success(request,'Empresa actualizada correctamente!')
-        return super().post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        # Lógica para guardar los datos actualizados
+        instance = form.save()
+
+        # Mostrar mensaje de éxito
+        messages.success(self.request, self.success_message)
+
+        # Redirigir a la misma página (actualización de empresa)
+        return redirect(reverse('actualizar_empresa', kwargs={'pk': instance.pk}))

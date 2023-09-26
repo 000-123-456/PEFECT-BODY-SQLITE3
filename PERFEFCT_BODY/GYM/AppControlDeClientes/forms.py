@@ -95,7 +95,7 @@ class FormMembresia(ModelForm):
         labels={
             'nombre': 'Nombre',
             'precio': 'Precio',
-            'duracion': 'Duracion',
+            'duracion': 'Duración',
             
         }
         
@@ -110,7 +110,7 @@ class FormMembresia(ModelForm):
                 ),
                 'precio': TextInput(
                     attrs={
-                        
+                        'type':'number',
                         'class': 'form-control',
                         'placeholder': 'Ingrese nombre completo',
                         'autocomplete':"off",
