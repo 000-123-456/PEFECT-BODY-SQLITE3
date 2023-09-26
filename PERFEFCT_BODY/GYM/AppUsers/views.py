@@ -39,14 +39,14 @@ class CrearEmpresa(CreateView):
 class UpdateEmpresa(UpdateView):
     model = Empresa
     form_class = FormEmpresa
-    emp = Empresa.objects.first()
-    success_url= '/Empresa/ActualizarEmpresas/'+str(emp.id)+'/'
+    success_url= reverse_lazy('lista_empresas')
     template_name = 'AppUsers/Empresa/updateEmpresa.html'
     success_message = "¡Registro actualizado con éxito!"
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         return super().dispatch(request, *args, **kwargs)  
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
+        data['empresa'] = Empresa.objects.first()
         data['titulo'] = 'Actualizar empresa'
         data['modulo'] = 'Empresa'
         return data
