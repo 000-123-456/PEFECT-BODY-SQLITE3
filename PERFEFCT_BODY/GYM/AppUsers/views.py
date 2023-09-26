@@ -66,6 +66,10 @@ class CrearEmpresa(CreateView):
 class UpdateEmpresa(UpdateView):
     model = Empresa
     form_class = FormEmpresa
+
+    emp = Empresa.objects.first()
+    success_url= '/Empresa/ActualizarEmpresas/'+str(emp.id)+'/'
+
     template_name = 'AppUsers/Empresa/updateEmpresa.html'
     success_message = "¡Registro actualizado con éxito!"
 
