@@ -30,8 +30,8 @@ class Maquinaria(models.Model):
 class HistorialMaquinaria(models.Model):
     tipo = models.CharField(max_length=50, null=True, choices=opTipoM, verbose_name='Tipo') ##preventivo o correctivo 
     detalle = models.CharField(max_length=100, null=True, verbose_name='Detalle')
-    fecha_fin = models.DateField(verbose_name='Fecha final')
-    fecha_ini = models.DateField(verbose_name='Fecha de inicio')
+    fecha_fin = models.DateField(null=True, verbose_name='Fecha final')
+    fecha_ini = models.DateField(null=True,verbose_name='Fecha de inicio')
     ## CLAVES FORANEAS
     maquinaria = models.ForeignKey(Maquinaria,null=False,verbose_name='Maquinaria',on_delete=models.PROTECT)
     def __str__(self) -> str:

@@ -9,6 +9,40 @@
 {% endblock modulo %}
 {% block tituloS %}  {{titulo2}}   {% endblock tituloS %}
 {% block cuerpo %}
+
+<div class="modal fade" id="modalMantenimiento" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-warning">
+        <h5 class="modal-title text-black"><b><i class="bi bi-plus-lg"></i> Enviar a mantenimiento</b></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body mx-4">
+        <!--Formulario de Categoria-->
+        <form class="row g-3" method="post" autocomplete='off' id='formAdd'>
+          <input type="hidden" name="action" value="add">
+          <input type="hidden" name="id" value="add">
+          {% csrf_token %}
+          <div class="form-floating mb-3 mt-4">
+            <input type="date" name="fecha_ini" class="form-control" placeholder="Ingrese la fecha" required="" id="add_fecha_ini">
+            <label for="floatingName" autofocus="">Fecha</label>
+        </div>
+        <div class="form-floating mb-3 mt-4">
+          <textarea name="detalle" class="form-control" placeholder="Ingrese los detalles" rows="4" id="descripcion"></textarea>
+          <label for="floatingName">Detalles</label>
+        </div>
+  
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><b>Cerrar</b></button>
+        <button type="submit" class="btn btn-primary text-black"><b>Guardar</b></button>
+      </div>
+  </form>
+  
+    </div>
+  </div>
+</div>
+
 <section class="section">
     
         <div class="row">
@@ -48,20 +82,20 @@
                 <hr>
                 
                 <table class="table bg-black text-white strip rounded mb-4" style="text-align: center" id="data">
-                    <thead class="bg-warning text-black">
-                      <tr>
-                        <th scope="col" style="text-align: center;">#</th>
-                        <th scope="col" style="text-align: center;">Modelo</th>
-                        <th scope="col" style="text-align: center;">Descripción</th>
-                        <th scope="col" style="text-align: center;">Categoría</th>
-                        <th scope="col" style="text-align: center;">Estado</th>
-                        <th scope="col" style="text-align: center;">Imagen</th>
-                        <th scope="col" style="text-align: center;">Opciones</th>
+                  <thead class="bg-warning text-black">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Modelo</th>
+                        <th scope="col">Descripción</th>
+                        <th scope="col">Categoría</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Imagen</th>
+                        <th scope="col">Opciones</th>
                       </tr>
                     </thead>
                     <tbody>
                       {% if maquinas %} {% for m in maquinas %}
-                      <tr>
+                      <tr id="maquina-{{ m.id }}">
                         <td style="vertical-align: middle;">{{forloop.counter}}</td>
                         <td style="vertical-align: middle;">{{ m.nombre }}</td>
                         <td style="vertical-align: middle;">{{ m.descripcion }}</td>
@@ -72,9 +106,20 @@
                         </td>
                         
                         <td style="vertical-align: middle;">
-                          <a type="button" class="btn btn-primary">
-                            <i class="bi bi-card-checklist"></i>
-                          </a>
+                        
+                          
+                          <!--Boton que despliega el menu-->
+                          <div class="dropdown" style="display: inline-block;">
+                            <a type="button" class="btn btn-primary" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-maquina-id="{{ m.id }}">
+                              <i class="bi bi-card-checklist"></i>
+                              <i class="dropdown-toggle"></i>
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                              <a class="dropdown-item" href="{%url 'editar_maquina' m.id %}"><i class="bi bi-journal"></i>&nbsp;Historial</a>
+                              <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalMantenimiento"><i class="bi bi-gear"></i>&nbsp;Enviar a mantemiento</a>
+                              <a class="dropdown-item" href="#"><i class="bi bi-wrench"></i>&nbsp;Enviar a reparación</a>
+                            </div>
+                          </div>
                           <a type="button" class="btn btn-secondary" href="{%url 'editar_maquina' m.id %}">
                             <i class="bi bi-pencil-square"></i>
                           </a>
@@ -105,38 +150,48 @@
 
 {% endblock cuerpo %}
 {% block js %}
+<script type="application/javascript" src="{% static 'assets/js/AppInventario/Maquinaria/listaMaquinaria.js' %}"></script>
 <script>
-  function eliminarMaquina(id) {
-    const swalWithBootstrapButtons = Swal.mixin({
-      customClass: {
-        confirmButton: 'btn btn-danger ml-2', // Botón "Eliminar" a la izquierda en rojo
-        cancelButton: 'btn btn-warning mr-2', // Botón "Cancelar" a la derecha en amarillo
-      },
-      buttonsStyling: false,
-    });
-  
-    swalWithBootstrapButtons
-      .fire({
-        title: '¿Seguro que desea eliminar?',
-        text: 'Esta acción no se puede revertir!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Eliminar',
-        cancelButtonText: 'Cancelar',
-      })
-      .then((result) => {
-        if (result.isConfirmed) {
-          window.location.href = "../Eliminar/" + id + "/";
+  const dataTableOptions = {
+    //scrollX: "400px",
+    lengthChange: false,
+    filter:[
+      { className: "form-control"},
+    ],
+    lengthMenu: [5, 10, 15, 20, 100, 200, 500],
+    columnDefs: [
+        { className: "text-center", targets: [0, 1, 2, 3, 4, 5, 6] },
+        { orderable: false, targets: [5, 6] },
+        { searchable: false, targets: [0,5,6] },
+        //{ width: "5%", targets: [0] }
+    ],
+    pageLength: 3,
+    destroy: true,
+    language: {
+        lengthMenu: "Mostrar _MENU_ registros por página",
+        zeroRecords: "Ninguna máquina encontrada",
+        info: "Mostrando de _START_ a _END_ de un total de _TOTAL_ registros",
+        infoEmpty: "Ningún usuario encontrado",
+        infoFiltered: "(filtrados desde _MAX_ registros totales)",
+        search: "",
+        loadingRecords: "Cargando...",
+        paginate: {
+            first: "Primero",
+            last: "Último",
+            next: "Siguiente",
+            previous: "Anterior"
         }
-      });
-  }
+    }
+};
+
   {% if maquinas %}
-  let table = new DataTable('#data', {
-      "language": {
-          "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
-      },
-      responsive: true,
+  let table = new DataTable('#data', dataTableOptions);
+  //remove the default 'Search' text for all DataTable search boxes
+  $('[type=search]').each(function () {
+    $(this).attr("placeholder", "Buscar...");
+    $(this).before('<span class="bi bi-search"></span>');
   });
   {% endif %}
-</script>
+
+
 {% endblock js %}

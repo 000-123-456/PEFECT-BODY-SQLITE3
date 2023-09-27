@@ -15,5 +15,7 @@ urlpatterns = [
 
     path('Maquinaria/Editar/<int:pk>/',login_required(views.UpdateMaquinaria.as_view()), name='editar_maquina'),
 
+    path('HistorialMaquinaria/Agregar/', views.agregar_historial_maquinaria, name='agregar_historial_maquinaria'),
+
 ]
 urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

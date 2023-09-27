@@ -13,6 +13,6 @@ opCategoriaM = (
 )
 
 opTipoM = (
-    ('Preventivo', 'Preventivo'),
-    ('Correctivo', 'Correctivo'),
+    ('Mantenimiento', 'Mantenimiento'),
+    ('Reparacion', 'Reparación'),
 )

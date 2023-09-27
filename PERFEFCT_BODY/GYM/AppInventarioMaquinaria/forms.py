@@ -1,5 +1,5 @@
 from AppInventarioMaquinaria.models import *
-from django.forms import ModelForm, TextInput, Select, FileInput
+from django.forms import DateInput, ModelForm, TextInput, Select, FileInput
 from AppInventarioMaquinaria.opciones import *
 
 class FormMaquinaria(ModelForm):   
@@ -101,3 +101,91 @@ FormMaquinaria.field_order = [
             'categoriaM',
             'foto'
         ]
+
+class FormHistorialMaquinaria(ModelForm):
+    class Meta:
+        model= HistorialMaquinaria
+        fields = {
+            'tipo',
+            'detalle',
+            'fecha_fin',
+            'fecha_ini',
+            'maquinaria'
+        }
+        labels={
+            'tipo': 'Tipo',
+            'detalle': 'Detalle',
+            'fecha_fin': 'Fecha final',
+            'fecha_ini':'Fecha de inicio',
+            'maquinaria':'Maquinaria'
+        }
+        widgets={
+            'tipo': Select(choices=opTipoM,
+                attrs={
+                    'class': 'form-control',
+
+                    
+                }
+            ),
+            'detalle': TextInput(
+                attrs={
+                    'class': 'form-control',
+
+                }
+            ),
+            'fecha_fin': DateInput(
+                attrs={
+                    'class': 'form-control', 
+                    'type': 'date'
+                }
+            ),
+            'fecha_ini': DateInput(
+                attrs={
+                    'class': 'form-control', 
+                    'type': 'date'
+                }
+            ),
+            'maquinaria': Select(
+                attrs={
+                    'class': 'form-control', 
+                    'id': 'SelectMaquinaria'
+                }
+            ),
+        }
+
+
+class FormInicioHistorialMaquinaria(ModelForm):
+    class Meta:
+        model= HistorialMaquinaria
+        fields = {
+            'detalle',
+            'fecha_ini',
+            'maquinaria'
+        }
+        labels={
+            'detalle': 'Detalle',
+            'fecha_ini':'Fecha de inicio',
+            'maquinaria':'Maquinaria'
+        }
+        widgets={
+            'detalle': TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'placeholder': 'Ingrese los detalles',
+                    'autocomplete':"off", 
+                }
+            ),
+            'fecha_ini': DateInput(
+                attrs={
+                    'class': 'form-control', 
+                    'type': 'date'
+                }
+            ),
+            'maquinaria': Select(
+                attrs={
+                    'class': 'form-control', 
+                    'id': 'SelectMaquinaria'
+                }
+            ),
+        }
+    
