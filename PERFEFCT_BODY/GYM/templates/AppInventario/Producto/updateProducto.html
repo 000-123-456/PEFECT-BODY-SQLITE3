@@ -18,7 +18,7 @@
                 
                 <!-- Horizontal Form -->
 
-                {% if form.errors %}
+              {% if form.errors %}
                 {% for field  in form  %}
                         {% for error in field.errors %}
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -31,7 +31,7 @@
             <br>
             <div class="card">
               <div class="card-body">
-                <h5 class="card-title"><i class="bi bi-pencil-square"></i> {{titulo}}</h5>
+                <h5 class="card-title text-warning"><i class="bi bi-pencil-square"></i> {{titulo}}</h5>
                 
                 <!-- Floating Labels Form -->
                 <form class="row g-3" method="post" enctype="multipart/form-data" action='.'>
@@ -48,15 +48,16 @@
                         <label for="floatingName">Foto</label>
                       </div>
                     </div>
-                    <div class="col-md-12">     
-                      <div class="form-floating">
-                        <img src="{{object.get_image}}" class="img-fluid d-block mx-auto" style="width: 100px; height:100px; border-radius: 20px;">
-                        <label for="floatingName" class="text-white">Foto actual:</label>
+                    <div class="col-md-12 align-top">     
+                      <div class="form-floating align-top">
+                        <img src="{{object.get_image}}" class="img-fluid d-block mx-auto align-top" style="width: 100px; height:100px; border-radius: 20px;">
+                        <label for="floatingName" class="text-white align-top">Foto actual:</label>
                       </div>
                     </div>
                   {% else %}
                     
-                      <div class="col-md-{% if field.label == 'Precio de venta $0.00' or field.label == 'Cantidad mínima'  %}6{% else %}12{% endif %}">
+                      <div class="col-md-{% if field.label == 'Precio de venta' or field.label == 'Cantidad mínima'  %}6{% else %}12{% endif %}">
+                    
                           
                         <div class="form-floating">
                           {{ field }}
@@ -90,44 +91,6 @@
 {% endblock cuerpo %}
 {% block js %}
 <script>
-  function eliminarProducto(id){
-    const swalWithBootstrapButtons = Swal.mixin({
-      customClass: {
-        confirmButton: 'btn btn-primary',
-        cancelButton: 'btn btn-danger'
-      },
-      buttonsStyling: false
-    })
-    
-    swalWithBootstrapButtons.fire({
-      title: 'Seguro que lo desea eliminar?',
-      text: "Esta accion no se puede revertir!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Confirmar!',
-      cancelButtonText: 'No, cancelar!',
-      reverseButtons: true
-    }).then((result) => {
-      if (result.isConfirmed) {
-        
-        swalWithBootstrapButtons.fire(
-          'Borrado!',
-          'Producto eliminado con exito.',
-          'success'
-        )
-        
-      } else if (
-        /* Read more about handling dismissals below */
-        result.dismiss === Swal.DismissReason.cancel
-      ) {
-        swalWithBootstrapButtons.fire(
-          'Cancelado',
-          'El producto no se ha eliminado  :)',
-          'error'
-        )
-      }
-    })
-  }
   //Codigo para autocompletar SELECT
   $(document).ready(function() {
     $('#selectPro').select2({
@@ -136,5 +99,36 @@
       selectOnClose: true,
   });
   });
+  {% if form.errors %}
+      // Crear una lista para almacenar los mensajes de error
+      var errorMessages = [];
+
+      {% for field in form %}
+      {% for error in field.errors %}
+      
+          // Agregar cada mensaje de error junto con el nombre del campo a la lista
+          errorMessages.push("{{ field.label|escapejs }}: " + "{{ error|escapejs }}".toLowerCase());
+        
+      {% endfor %}
+  {% endfor %}
+
+      // Comprobar si hay mensajes de error
+      if (errorMessages.length > 0) {
+          // Utilizar SweetAlert para mostrar todos los mensajes de error en una sola alerta
+          const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+              confirmButton: 'btn btn-primary',
+              cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false
+          })
+          swalWithBootstrapButtons.fire({
+              icon: 'error',
+              title: 'Datos incorrectos en los siguientes campos:',
+              html: errorMessages.join('<br>'),
+          });
+      }
+ 
+{% endif %}
 </script>
 {% endblock js %}

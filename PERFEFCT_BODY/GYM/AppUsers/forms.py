@@ -83,7 +83,7 @@ class FormEmpresa(ModelForm):
             'tarifa': 'Tarifa',
             'logo': 'Logo',
             'telefono': 'Telefono',
-            'direcccion':'Direccion',
+            'direcccion':'Dirección',
         }
 
 #-------------------Widgets-------------------
@@ -110,6 +110,7 @@ class FormEmpresa(ModelForm):
                 ),
                 'telefono': TextInput(
                 attrs={
+                 
                     'class': 'form-control',
                     'placeholder': '0000-0000',
                     'id': 'telefono',

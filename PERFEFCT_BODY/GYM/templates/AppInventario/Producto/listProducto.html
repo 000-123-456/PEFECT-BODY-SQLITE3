@@ -92,7 +92,7 @@
                         <th scope="col">#</th>
                         <th scope="col">Nombre</th>
                         <th scope="col">P.V</th>
-                        <th scope="col">Imagen</th>
+                        <th scope="col">Foto</th>
                         <th scope="col">Opciones</th>
                       </tr>
                     </thead>
@@ -103,7 +103,7 @@
                         <td style="vertical-align: middle;">{{ p.nombre }}</td>
                         <td style="vertical-align: middle;">$ {{ p.precio_venta }}</td>
                         <td style="vertical-align: middle;">
-                            <img src="{{p.get_image}}" class="img-fluid d-block mx-auto" style="width: 70px; height:70px; border-radius: 20px;">
+                            <img src="{{p.get_image}}" class="img-fluid" style="width: 70px; height:70px; border-radius: 20px;">
                         </td>
                         
                         <td style="vertical-align: middle;">

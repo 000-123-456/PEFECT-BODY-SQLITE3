@@ -39,7 +39,7 @@ class FormProducto(ModelForm):
         labels={
             'nombre': 'Nombre',
             'descripcion': 'Descripción',
-            'precio_venta': 'Precio de venta $0.00',
+            'precio_venta': 'Precio de venta',
             'categoriaP':'Categoría',
             'img':'Foto',
             'nivel_bajo':'Cantidad mínima',

@@ -28,18 +28,25 @@ class ListCategoria(TemplateView):
                 if 'perecedero' in request.POST:
                     perecedero_res=True
                 print(request.POST)
-                Categoria(nombre=request.POST['nombre'],perecedero=perecedero_res).save()
-                messages.success(request,"¡Categoría agregada correctamente!")
+                try: 
+                    Categoria(nombre=request.POST['nombre'],perecedero=perecedero_res).save()
+                    messages.success(request,"Categoría agregada correctamente")
+                except Exception as e:
+                    messages.error(request,"Ya existe una categoría con el mismo nombre")
             elif action == 'update':
                print(request.POST['id'])
                cate = Categoria.objects.get(id=request.POST['id'])
                perecedero_res=False
+               
                if 'perecedero' in request.POST:
                     perecedero_res=True
-               cate.nombre = request.POST['nombre']
-               cate.perecedero = perecedero_res
-               cate.save()
-               messages.success(request,"¡Categoría modificada correctamente!")
+               try:
+                    cate.nombre = request.POST['nombre']
+                    cate.perecedero = perecedero_res
+                    cate.save()
+                    messages.success(request,"Categoría modificada correctamente")
+               except Exception as e:
+                    messages.error(request,"Ya existe una categoría con el mismo nombre")
             else:
                 data['error']= 'Ha ocurrido un error'         
         except Exception as e:
@@ -127,9 +134,14 @@ class CreateProducto(CreateView):
         data['modulo'] = 'Producto'
         data['categorias'] = Categoria.objects.filter(estado=0)
         return data
-    def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
-        messages.success(request, "Producto creado correctamente!")
-        return super().post(request, *args, **kwargs)
+    
+    def form_valid(self, form):
+        messages.success(self.request, "Máquina añadida correctamente!")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, format(form.errors.as_text()))
+        return super().form_invalid(form)
     
 def get_producto(request, name):
     data={}
@@ -186,11 +198,24 @@ class UpdateProducto(UpdateView):
         data['titulo'] = 'Actualizar producto'
         data['modulo'] = 'Producto'
         return data
-    def post(self, request, *args, **kwargs):
-        # form = self.form_class(request.POST)
-        messages.success(request,'¡Producto actualizado correctamente!')
-        return super().post(request, *args, **kwargs)
     
+        return super().post(request, *args, **kwargs)
+    def form_valid(self, form):
+        messages.success(self.request, "Máquina añadida correctamente!")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        # Obtiene la instancia del modelo que se está actualizando
+        instance = self.get_object()
+        
+        # Envía el objeto instance como contexto a la plantilla
+        context = self.get_context_data(object=instance)
+        
+        # Agrega mensajes de error al contexto
+        messages.error(self.request, format(form.errors.as_text()))
+        
+        # Retorna la respuesta con el contexto actualizado
+        return self.render_to_response(context)
 def DeleteProducto(request, pk):
     try:
         pro = Producto.objects.get(id=pk)

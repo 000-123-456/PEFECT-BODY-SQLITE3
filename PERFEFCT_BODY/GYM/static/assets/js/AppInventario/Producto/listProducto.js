@@ -32,7 +32,7 @@ function eliminarProducto(id){
   }
   let obtenerProducto = async (nombre) => {
     try {
-      const response = await fetch(`./${nombre}/`)
+      const response = await fetch(`./get_producto/${nombre}/`)
       const data = await response.json()
       if(data.message === 'success'){
         inputs[0].src = data.img
