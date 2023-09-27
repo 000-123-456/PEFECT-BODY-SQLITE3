@@ -28,18 +28,25 @@ class ListCategoria(TemplateView):
                 if 'perecedero' in request.POST:
                     perecedero_res=True
                 print(request.POST)
-                Categoria(nombre=request.POST['nombre'],perecedero=perecedero_res).save()
-                messages.success(request,"¡Categoría agregada correctamente!")
+                try: 
+                    Categoria(nombre=request.POST['nombre'],perecedero=perecedero_res).save()
+                    messages.success(request,"Categoría agregada correctamente")
+                except Exception as e:
+                    messages.error(request,"Ya existe una categoría con el mismo nombre")
             elif action == 'update':
                print(request.POST['id'])
                cate = Categoria.objects.get(id=request.POST['id'])
                perecedero_res=False
+               
                if 'perecedero' in request.POST:
                     perecedero_res=True
-               cate.nombre = request.POST['nombre']
-               cate.perecedero = perecedero_res
-               cate.save()
-               messages.success(request,"¡Categoría modificada correctamente!")
+               try:
+                    cate.nombre = request.POST['nombre']
+                    cate.perecedero = perecedero_res
+                    cate.save()
+                    messages.success(request,"Categoría modificada correctamente")
+               except Exception as e:
+                    messages.error(request,"Ya existe una categoría con el mismo nombre")
             else:
                 data['error']= 'Ha ocurrido un error'         
         except Exception as e:

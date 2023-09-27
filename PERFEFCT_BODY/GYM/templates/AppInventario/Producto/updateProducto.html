@@ -18,7 +18,7 @@
                 
                 <!-- Horizontal Form -->
 
-                {% if form.errors %}
+              {% if form.errors %}
                 {% for field  in form  %}
                         {% for error in field.errors %}
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -48,10 +48,10 @@
                         <label for="floatingName">Foto</label>
                       </div>
                     </div>
-                    <div class="col-md-12">     
-                      <div class="form-floating">
-                        <img src="{{object.get_image}}" class="img-fluid d-block mx-auto" style="width: 100px; height:100px; border-radius: 20px;">
-                        <label for="floatingName" class="text-white">Foto actual:</label>
+                    <div class="col-md-12 align-top">     
+                      <div class="form-floating align-top">
+                        <img src="{{object.get_image}}" class="img-fluid d-block mx-auto align-top" style="width: 100px; height:100px; border-radius: 20px;">
+                        <label for="floatingName" class="text-white align-top">Foto actual:</label>
                       </div>
                     </div>
                   {% else %}
@@ -105,8 +105,10 @@
 
       {% for field in form %}
       {% for error in field.errors %}
+      
           // Agregar cada mensaje de error junto con el nombre del campo a la lista
-          errorMessages.push("{{ field.label|escapejs }}: {{ error|escapejs }}");
+          errorMessages.push("{{ field.label|escapejs }}: " + "{{ error|escapejs }}".toLowerCase());
+        
       {% endfor %}
   {% endfor %}
 

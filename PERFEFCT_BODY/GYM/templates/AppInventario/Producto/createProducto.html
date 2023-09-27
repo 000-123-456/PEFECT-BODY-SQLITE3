@@ -91,7 +91,7 @@
       {% for field in form %}
       {% for error in field.errors %}
           // Agregar cada mensaje de error junto con el nombre del campo a la lista
-          errorMessages.push("{{ field.label|escapejs }}: {{ error|escapejs }}");
+          errorMessages.push("{{ field.label|escapejs }}: " + "{{ error|escapejs }}".toLowerCase());
       {% endfor %}
   {% endfor %}
 
