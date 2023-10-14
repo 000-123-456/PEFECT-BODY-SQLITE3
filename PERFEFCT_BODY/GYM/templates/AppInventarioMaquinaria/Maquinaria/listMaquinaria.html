@@ -109,17 +109,7 @@
                         
                           
                           <!--Boton que despliega el menu-->
-                          <div class="dropdown" style="display: inline-block;">
-                            <a type="button" class="btn btn-primary" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-maquina-id="{{ m.id }}">
-                              <i class="bi bi-card-checklist"></i>
-                              <i class="dropdown-toggle"></i>
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                              <a class="dropdown-item" href="{%url 'editar_maquina' m.id %}"><i class="bi bi-journal"></i>&nbsp;Historial</a>
-                              <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalMantenimiento"><i class="bi bi-gear"></i>&nbsp;Enviar a mantemiento</a>
-                              <a class="dropdown-item" href="#"><i class="bi bi-wrench"></i>&nbsp;Enviar a reparación</a>
-                            </div>
-                          </div>
+                         
                           <a type="button" class="btn btn-secondary" href="{%url 'editar_maquina' m.id %}">
                             <i class="bi bi-pencil-square"></i>
                           </a>
@@ -193,5 +183,5 @@
   });
   {% endif %}
 
-
+</script>
 {% endblock js %}

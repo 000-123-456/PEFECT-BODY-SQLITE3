@@ -55,7 +55,10 @@ class ListCategoria(TemplateView):
         
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        data['empresa'] = Empresa.objects.first()
+        try:
+             data['empresa'] = Empresa.objects.first()
+        except:
+             data['empresa'] = 'Error'
         data['titulo'] = 'Listado de categorías'
         data['modulo'] = 'Producto'
         data['categorias'] = Categoria.objects.filter(estado=0)
@@ -109,7 +112,10 @@ class ListCategoriaBajas(TemplateView):
         return super().dispatch(request, *args, **kwargs)
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        data['empresa'] = Empresa.objects.first()
+        try:
+             data['empresa'] = Empresa.objects.first()
+        except:
+             data['empresa'] = 'Error'
         data['titulo'] = 'Categorías eliminadas'
         data['modulo'] = 'Producto'
         data['categorias'] = Categoria.objects.filter(estado=1)
@@ -129,7 +135,10 @@ class CreateProducto(CreateView):
         return super().dispatch(request, *args, **kwargs)  
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        data['empresa'] = Empresa.objects.first()
+        try:
+             data['empresa'] = Empresa.objects.first()
+        except:
+             data['empresa'] = 'Error'
         data['titulo'] = 'Crear producto'
         data['modulo'] = 'Producto'
         data['categorias'] = Categoria.objects.filter(estado=0)
@@ -162,7 +171,10 @@ class ListProducto(ListView):
         return super().dispatch(request, *args, **kwargs)  
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        data['empresa'] = Empresa.objects.first()
+        try:
+             data['empresa'] = Empresa.objects.first()
+        except:
+             data['empresa'] = 'Error'
         data['titulo'] = 'Lista de producto'
         data['modulo'] = 'Producto'
         data['icono']  = '<i class="bi bi-plus-lg"></i>'
@@ -176,7 +188,10 @@ class ListProductoBajas(ListView):
         return super().dispatch(request, *args, **kwargs)  
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        data['empresa'] = Empresa.objects.first()
+        try:
+             data['empresa'] = Empresa.objects.first()
+        except:
+             data['empresa'] = 'Error'
         data['titulo'] = 'Producto eliminados'
         data['modulo'] = 'Producto'
         data['icono']  = '<i class="bi bi-plus-lg"></i>'
@@ -194,7 +209,10 @@ class UpdateProducto(UpdateView):
         return super().dispatch(request, *args, **kwargs)  
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        data['empresa'] = Empresa.objects.first()
+        try:
+             data['empresa'] = Empresa.objects.first()
+        except:
+             data['empresa'] = 'Error'
         data['titulo'] = 'Actualizar producto'
         data['modulo'] = 'Producto'
         return data

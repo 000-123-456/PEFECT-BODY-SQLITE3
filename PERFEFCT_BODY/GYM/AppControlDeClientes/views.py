@@ -11,15 +11,17 @@ from django.contrib import messages
 from AppUsers.models import Empresa
 # Create your views here.
 def prueba(request):
-     data = {
-    'empresa': Empresa.objects.first(),
-    
-    }
-     return render(request, "layout/index.html",data)
-
-
-    
-
+    try:
+        data = {
+            'empresa': Empresa.objects.first(),
+            
+            }
+    except:
+        data = {
+                    'empresa': Empresa.objects.first(),
+                    
+        }
+    return render(request, "layout/index.html",data)
 
 class CreateMiembro(CreateView):
     model = Miembro
@@ -30,7 +32,10 @@ class CreateMiembro(CreateView):
         return super().post(request, *args, **kwargs)
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        data['empresa'] = Empresa.objects.first()
+        try:
+             data['empresa'] = Empresa.objects.first()
+        except:
+             data['empresa'] = 'Error'
         data['titulo'] = 'Crear Miembro'
         data['modulo'] = 'Miembro'
         return data
@@ -46,14 +51,22 @@ class CreateMembresia(CreateView):
         return super().dispatch(request, *args, **kwargs)  
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        data['empresa'] = Empresa.objects.first()
+        try:
+             data['empresa'] = Empresa.objects.first()
+        except:
+             data['empresa'] = 'Error'
         data['titulo'] = 'Crear membresia'
         data['modulo'] = 'Membresia'
         data['membresias'] = Membresia.objects.filter(estado=0)
         return data
-    def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
-        messages.success(request, "Membresia creada correctamente!")
-        return super().post(request, *args, **kwargs)
+    
+    def form_valid(self, form):
+        messages.success(self.request, "Membresia creada correctamente")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, format(form.errors.as_text()))
+        return super().form_invalid(form)
 
 class ListMembresia(ListView):
     model = Membresia
@@ -62,7 +75,10 @@ class ListMembresia(ListView):
         return super().dispatch(request, *args, **kwargs)  
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        data['empresa'] = Empresa.objects.first()
+        try:
+             data['empresa'] = Empresa.objects.first()
+        except:
+             data['empresa'] = 'Error'
         data['titulo'] = 'Lista de Membresia'
         data['modulo'] = 'Membresia'
         data['icono']  = '<i class="bi bi-plus-lg"></i>'
@@ -77,7 +93,10 @@ class ListMembresiaBajas(ListView):
         return super().dispatch(request, *args, **kwargs)  
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        data['empresa'] = Empresa.objects.first()
+        try:
+             data['empresa'] = Empresa.objects.first()
+        except:
+             data['empresa'] = 'Error'
         data['titulo'] = 'Membresia eliminada'
         data['modulo'] = 'Membresia'
         data['icono']  = '<i class="bi bi-plus-lg"></i>'
@@ -95,14 +114,20 @@ class UpdateMembresia(UpdateView):
         return super().dispatch(request, *args, **kwargs)  
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        data['empresa'] = Empresa.objects.first()
+        try:
+             data['empresa'] = Empresa.objects.first()
+        except:
+             data['empresa'] = 'Error'
         data['titulo'] = 'Actualizar Membresia'
         data['modulo'] = 'Membresia'
         return data
-    def post(self, request, *args, **kwargs):
-        # form = self.form_class(request.POST)
-        messages.success(request,'Membresia actualizado correctamente!')
-        return super().post(request, *args, **kwargs)
+    def form_valid(self, form):
+        messages.success(self.request, "Membresia actualizada correctamente")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, format(form.errors.as_text()))
+        return super().form_invalid(form)
     
 def DeleteMembresia(request, pk):
     try:

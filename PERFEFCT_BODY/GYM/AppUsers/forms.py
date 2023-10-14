@@ -97,8 +97,7 @@ class FormEmpresa(ModelForm):
                 ),
                 'tarifa': NumberInput(
                     attrs={
-                        'type': 'number',
-                        'step': '0.01',
+                        'type': 'text',
                         'class': 'form-control',
                         'placeholder': '0.00',
                     }

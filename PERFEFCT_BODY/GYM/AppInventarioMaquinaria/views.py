@@ -25,7 +25,10 @@ class CreateMaquinaria(CreateView):
         return super().dispatch(request, *args, **kwargs)  
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        data['empresa'] = Empresa.objects.first()
+        try:
+             data['empresa'] = Empresa.objects.first()
+        except:
+             data['empresa'] = 'Error'
         data['titulo'] = 'Máquina'
         data['titulo2'] = 'Añadir'
         data['modulo'] = 'Maquinaria'
@@ -97,7 +100,10 @@ class ListMaquinaria(TemplateView):
     
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        data['empresa'] = Empresa.objects.first()
+        try:
+             data['empresa'] = Empresa.objects.first()
+        except:
+             data['empresa'] = 'Error'
         data['titulo'] = 'Maquinarias'
         data['titulo2'] = 'Lista'
         data['modulo'] = 'Maquinaria'
@@ -173,7 +179,10 @@ class UpdateMaquinaria(UpdateView):
         return super().dispatch(request, *args, **kwargs)  
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        data['empresa'] = Empresa.objects.first()
+        try:
+             data['empresa'] = Empresa.objects.first()
+        except:
+             data['empresa'] = 'Error'
         data['titulo'] = 'Máquina'
         data['titulo2'] = 'Editar'
         data['modulo'] = 'Maquinaria'

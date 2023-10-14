@@ -18,16 +18,7 @@
                 
                 <!-- Horizontal Form -->
 
-                {% if form.errors %}
-                {% for field  in form  %}
-                        {% for error in field.errors %}
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <strong>Notificacion: </strong>{{error}}.
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" arial-label="Close"></button>
-                        </div>
-                        {% endfor %}
-                {% endfor %}
-              {% endif %}
+               
             <br>
             <div class="card">
               <div class="card-body">
@@ -113,5 +104,37 @@
       responsive: true,
   });
   {% endif %}
+
+  {% if form.errors %}
+      // Crear una lista para almacenar los mensajes de error
+      var errorMessages = [];
+
+      {% for field in form %}
+      {% for error in field.errors %}
+      
+          // Agregar cada mensaje de error junto con el nombre del campo a la lista
+          errorMessages.push("{{ field.label|escapejs }}: " + "{{ error|escapejs }}".toLowerCase());
+        
+      {% endfor %}
+  {% endfor %}
+
+      // Comprobar si hay mensajes de error
+      if (errorMessages.length > 0) {
+          // Utilizar SweetAlert para mostrar todos los mensajes de error en una sola alerta
+          const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+              confirmButton: 'btn btn-primary',
+              cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false
+          })
+          swalWithBootstrapButtons.fire({
+              icon: 'error',
+              title: 'Datos incorrectos en los siguientes campos:',
+              html: errorMessages.join('<br>'),
+          });
+      }
+ 
+{% endif %}
 </script>
 {% endblock js %}

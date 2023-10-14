@@ -110,7 +110,7 @@ class FormMembresia(ModelForm):
                 ),
                 'precio': TextInput(
                     attrs={
-                        'type':'number',
+                        'type':'text',
                         'class': 'form-control',
                         'placeholder': 'Ingrese nombre completo',
                         'autocomplete':"off",

@@ -66,26 +66,25 @@ class CrearEmpresa(CreateView):
 class UpdateEmpresa(UpdateView):
     model = Empresa
     form_class = FormEmpresa
-
-    emp = Empresa.objects.first()
-    success_url= '/Empresa/ActualizarEmpresas/'+str(emp.id)+'/'
-
     template_name = 'AppUsers/Empresa/updateEmpresa.html'
     success_message = "¡Registro actualizado con éxito!"
 
+    def get_success_url(self):
+        try:
+            emp = Empresa.objects.first()
+            url = '/Empresa/ActualizarEmpresas/' + str(emp.id) + '/'
+            return url
+        except Empresa.DoesNotExist:
+            # En caso de que no se encuentre una empresa, redirigir a otra URL
+            return '/otra_url/'
+
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        data['empresa'] = get_object_or_404(Empresa)
+        try:
+            data['empresa'] = Empresa.objects.first()
+        except Empresa.DoesNotExist:
+            data['empresa'] = 'Error'
         data['titulo'] = 'Actualizar empresa'
         data['modulo'] = 'Empresa'
         return data
-
-    def form_valid(self, form):
-        # Lógica para guardar los datos actualizados
-        instance = form.save()
-
-        # Mostrar mensaje de éxito
-        messages.success(self.request, self.success_message)
-
-        # Redirigir a la misma página (actualización de empresa)
-        return redirect(reverse('actualizar_empresa', kwargs={'pk': instance.pk}))
+    
