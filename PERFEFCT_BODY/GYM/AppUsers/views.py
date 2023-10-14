@@ -76,7 +76,7 @@ class UpdateEmpresa(UpdateView):
             return url
         except Empresa.DoesNotExist:
             # En caso de que no se encuentre una empresa, redirigir a otra URL
-            return '/otra_url/'
+            return '/'
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
