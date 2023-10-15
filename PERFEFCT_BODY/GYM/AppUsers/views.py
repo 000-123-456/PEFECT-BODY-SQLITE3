@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
-from django.contrib.auth.models import User
+from AppUsers.models import User
 from django.contrib.auth.forms import UserCreationForm
 from AppUsers.forms import RegistroUsuarioForm,FormEmpresa
 from django.contrib.auth.views import LoginView
@@ -10,6 +10,7 @@ from typing import Any
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from AppUsers.models import Empresa
 from django.contrib import messages
+from django.contrib.auth import login, authenticate
 
 
 from django.shortcuts import redirect, get_object_or_404
@@ -22,14 +23,31 @@ class RegistroUsuario(CreateView):
     model = User
     template_name = "AppUsers/User/signIn.html"
     form_class= RegistroUsuarioForm
-    success_url = reverse_lazy('prueba')
+    success_url = reverse_lazy('registrar_empresa')
+    def form_valid(self, form):
+        # Registra al usuario y luego inicia sesión
+        response = super().form_valid(form)
+        user = form.save()
+        user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password1'])
+        if user is not None:
+            login(self.request, user)
+        return response
+    def form_invalid(self, form):
+        messages.error(self.request, format(form.errors.as_text()))
+        return super().form_invalid(form)
 
 class LoginFormView(LoginView):
     template_name='AppUsers/User/login.html'
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             return redirect('prueba')
+        if User.objects.count()==0:
+            return redirect('registrar')
         return super().dispatch(request, *args, **kwargs)
+    def form_invalid(self, form):
+        messages.error(self.request, "Usuario no encontrado. Por favor, verifique sus credenciales e inténtelo de nuevo.")
+        return super().form_invalid(form)
+    
     
 #-------------------------------------------------EMPRESA-----------------------------
 

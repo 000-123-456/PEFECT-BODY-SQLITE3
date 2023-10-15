@@ -9,7 +9,7 @@ urlpatterns = [
 
 
     #------------------------------INICIO DE LAS VISTAS DE MIEMBRO-------------------------------------------------------
-    path('Miembro/CrearMiembro/',views.CreateMiembro.as_view(), name='crear_miembro'),
+    path('Miembro/CrearMiembro/',views.RegistroMiembroView.as_view(), name='crear_miembro'),
 
 
     #----------------------------INICIO DE LAS VISTAS DE MEMBRESIA --------------------------------------------------------

@@ -18,7 +18,6 @@ class Membresia(models.Model):
         ordering = ['id']
 
 class Miembro(models.Model):
-    nombre = models.CharField(max_length=50, null=False, verbose_name='Nombres')
     fecha_nac =  models.DateField(verbose_name='Fecha de nacimiento')
     telefono = models.CharField(max_length=9, null=True, verbose_name='Teléfono') 
     direcccion = models.CharField(max_length=100, null=False, verbose_name='Dirección')
@@ -29,8 +28,10 @@ class Miembro(models.Model):
     ## ---- EL MIEMBRO ES EL QUE SE DESACTIVA O SE ACTIVA DEPEDIENDO LA FECHA ----
     fecha_inicio = models.DateField(null=True,blank=True)
     fecha_fin = models.DateField(null=True,blank=True)
+    ###----- CLAVES FORANEAS --------
+    user = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name='user', null=True, blank=True)
     def __str__(self) -> str:
-        return self.nombre
+        return self.id
     
     class Meta:
         db_table = 'miembro'

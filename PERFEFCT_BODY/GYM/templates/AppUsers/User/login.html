@@ -112,10 +112,33 @@
 <!-- IMASK -->
 <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3/jquery.inputmask.bundle.js"></script>
 <script src="https://unpkg.com/imask"></script>
-
+<!--Sweet Alert 2-->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <!-- Template Main JS File -->
 <script src="{% static 'assets/js/main.js' %}"></script>
 </body>
-{% block js %}{% endblock js %}
+{% if messages %}
+      {% for m in messages %}
+      <script>
+        const swalWithBootstrapButtons2 = Swal.mixin({
+          customClass: {
+            confirmButton: 'btn btn-primary',
+            cancelButton: 'btn btn-danger'
+          },
+          buttonsStyling: false
+        })
+        const title = {% if m.tags == "error" %}"¡Error!"{% endif %}{% if m.tags == "warning" %}"¡Advertencia!"{% endif %}{% if m.tags == "success" %}"¡Felicitaciones!"{% endif %}
+          
+       swalWithBootstrapButtons2.fire({
+            "title": title,
+            "text":"{{m}}",
+            "icon":"{{m.tags}}"
+          })
+      </script>
+      {% endfor %}
+{% endif %}
+{% block js %}
+  
+{% endblock js %}
 
 </html>

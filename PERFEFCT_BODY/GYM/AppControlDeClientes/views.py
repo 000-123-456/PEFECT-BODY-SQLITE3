@@ -7,8 +7,10 @@ from django.views.generic import ListView, CreateView, UpdateView
 from AppControlDeClientes.models import Miembro,Membresia
 from AppControlDeClientes.forms import FormMiembro,FormMembresia
 from django.contrib import messages
-
-from AppUsers.models import Empresa
+from AppUsers.models import Empresa,User
+from AppUsers.forms import RegistroUsuarioForm
+from .op import generar_clave_temporal_segura
+from django.core.mail import send_mail
 # Create your views here.
 def prueba(request):
     try:
@@ -22,6 +24,46 @@ def prueba(request):
                     
         }
     return render(request, "layout/index.html",data)
+
+
+
+class RegistroMiembroView(CreateView):
+    template_name = 'AppControlDeClientes/Miembro/createMiembro.html'
+    form_class = FormMiembro
+    success_url = reverse_lazy('crear_miembro')
+    def form_valid(self, form):
+        miembro = form.save()
+        user_form = RegistroUsuarioForm(self.request.POST)
+        if user_form.is_valid():
+            user = user_form.save(commit=False)
+            user.set_password(str(generar_clave_temporal_segura()))
+            user.username = user.email
+            user.save()
+            miembro.user = user
+            miembro.save()
+            # Envía un correo electrónico al usuario con su username y password
+            subject = 'Registro exitoso'
+            message = f'Se ha registrado exitosamente.\nUsername: {user.username}\nPassword: {user.password}'
+            from_email = 'tu@email.com'
+            recipient_list = [user.email]
+            send_mail(subject, message, from_email, recipient_list)
+            return super().form_valid(form)
+        else:
+
+            print(user_form.errors)
+            return render(self.request, self.template_name, {'form': form, 'user_form': user_form, 'empresa':Empresa.objects.first(), 'titulo':'Crear Miembro','modulo':'Miembro'})
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data['miembro_form'] = FormMiembro()  # Formulario de Miembro
+        data['user_form'] = RegistroUsuarioForm()  # Formulario de Usuario
+        data['titulo'] = 'Crear Miembro'
+        data['modulo'] = 'Miembro'
+        try:
+            data['empresa'] = Empresa.objects.first()
+        except Miembro.DoesNotExist:
+            data['empresa'] = 'Error'
+        return data
 
 class CreateMiembro(CreateView):
     model = Miembro
