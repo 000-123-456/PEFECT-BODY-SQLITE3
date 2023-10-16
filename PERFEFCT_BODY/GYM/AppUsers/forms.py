@@ -8,6 +8,7 @@ class RegistroUsuarioForm(UserCreationForm):
         self.fields['username'].required = False
         self.fields['password1'].required = False
         self.fields['password2'].required = False
+        self.fields['empresa'].required = False
     class Meta:
         model = User
         fields=[
@@ -16,13 +17,15 @@ class RegistroUsuarioForm(UserCreationForm):
             'last_name',
             'email',
             'rol',
+            'empresa',
         ]
         labels={
             'username': 'Usuario',
             'first_name': 'Nombres',
             'last_name': 'Apellidos',
-            'email': 'Correo electronico',
+            'email': 'Correo electrónico',
             'rol':'Rol',
+            'empresa':'Empresa',
         }
         widgets={
                 'username': TextInput(

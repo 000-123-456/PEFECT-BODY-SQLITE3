@@ -22,6 +22,7 @@ class FormMiembro(ModelForm):
         widgets={
                 'telefono':  TextInput(
                     attrs={
+                
                         'class': 'form-control',
                         'placeholder': 'Ingrese nombre completo',
                         'pattern': '[0-9]{4}[-][0-9]{4}',
@@ -46,6 +47,7 @@ class FormMiembro(ModelForm):
                 ),
                 'nombreContact': TextInput(
                     attrs={
+                        
                         'class': 'form-control',
                         'placeholder': 'Ingrese nombre completo',
                        

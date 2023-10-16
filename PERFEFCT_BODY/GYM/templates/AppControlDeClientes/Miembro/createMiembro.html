@@ -9,7 +9,7 @@
     
         <div class="row">
           <div class="col-lg-12 d-flex">
-            <a href="{% url 'lista_productos' %}" class="btn btn-primary">
+            <a href="{% url 'lista_miembros' %}" class="btn btn-primary">
               <b><i class="bi bi-arrow-left"></i> Regresar</b>
             </a>  
         </div>
@@ -53,12 +53,12 @@
                     {% csrf_token %}
                     
                         {% for field in user_form.visible_fields %}
-                        {% if field.name != 'password1' and field.name != 'password2' and field.name != 'username' and field.name != 'rol' %}
+                        {% if field.name != 'password1' and field.name != 'password2' and field.name != 'username' and field.name != 'rol' and field.name != 'empresa' %}
                             
-                            <div class="col-md-6">
+                            <div class="col-md-{% if field.name != 'email'%}6{% else %}12{% endif %}">
                                     <div class="form-floating">
                                         {{ field }}
-                                        <label for="floatingName" autofocus>{{ field.label }}</label>
+                                        <label for="floatingName" autofocus>{{ field.label }}{% if field.name %}<span class="text-danger"> *</span>{% endif %}</label>
                                     </div>
                             </div>
                            
@@ -73,7 +73,7 @@
                                 
                                 <div class="form-floating">
                                 {{ field }}
-                                <label for="floatingName" autofocus>{{field.label}}</label>
+                                <label for="floatingName" autofocus>{{field.label}}{% if field.name == 'fecha_nac' %}<span class="text-danger"> *</span>{% endif %}</label>
                                 </div>
                             </div>
                         {% endif %}

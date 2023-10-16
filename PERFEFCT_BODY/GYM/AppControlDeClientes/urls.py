@@ -10,6 +10,7 @@ urlpatterns = [
 
     #------------------------------INICIO DE LAS VISTAS DE MIEMBRO-------------------------------------------------------
     path('Miembro/CrearMiembro/',views.RegistroMiembroView.as_view(), name='crear_miembro'),
+    path('Miembro/',views.ListMiembro.as_view(), name='lista_miembros'),
 
 
     #----------------------------INICIO DE LAS VISTAS DE MEMBRESIA --------------------------------------------------------

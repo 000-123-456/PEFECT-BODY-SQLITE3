@@ -59,7 +59,7 @@
                     <p class="text-center small"> {% block titulo2%}Ingresa tu usuario y contraseña para iniciar{% endblock titulo2%}</p>
                   </div>
 
-                  <form class="row g-3 needs-validation" method="post" enctype="multipart/form-data" action='.' novalidate>
+                  <form class="row g-3 needs-validation" method="post" enctype="multipart/form-data" novalidate>
                     {% csrf_token %}
                     {% block formulario %}
                     <div class="col-12">
@@ -72,9 +72,9 @@
                     </div>
 
                     <div class="col-12">
-                      <label for="yourPassword" class="form-label text-black">Contraseña</label>
+                      <label for="yourPassword" class="form-label">Contraseña</label>
                       <input type="password" name="password" class="form-control" id="yourPassword" required>
-                      <div class="invalid-feedback">Por favor ingrese su contraseña!</div>
+                      <div class="invalid-feedback">Por favor ingrese su contraseña.</div>
                     </div>
                     <div class="col-12">
                       <button class="btn bg-black text-white w-100" type="submit">Login</button>
