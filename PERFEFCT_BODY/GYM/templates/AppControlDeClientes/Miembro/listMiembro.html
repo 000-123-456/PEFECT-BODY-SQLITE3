@@ -1,0 +1,190 @@
+{% extends 'layout/index.html' %}
+{% load static %}
+{% block titulo %}   {{titulo}}   {% endblock titulo %}
+{% block tituloP %}  {{titulo}}   {% endblock tituloP %}
+{% block modulo %}   {{modulo}}   {% endblock modulo %}
+{% block tituloS %}  {{titulo}}   {% endblock tituloS %}
+{% block cuerpo %}
+{% comment %} ------------MODAL VER PRODUCTO-----------------{% endcomment %}
+<div class="modal fade" id="verProducto" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-warning">
+        <h5 class="modal-title text-black" id="exampleSideModal2"><b>Información del miembro</b></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-6 mb-4">
+            <div class="bg-image hover-overlay ripple shadow-2-strong" data-mdb-ripple-color="light">
+              <img src="https://mdbcdn.b-cdn.net/img/new/standard/city/041.webp" class="img-fluid verP" alt="Hollywood Sign">
+              <a href="#!">
+               
+              </a>
+            </div>
+          </div>
+
+          <div class="col-md-6 mb-4 text-white">
+            <strong><p id='nombreP' class='verP text-warning'>Doloremque vero ex debitis veritatis?</p></strong>
+            <p><strong>Precio: </strong><span id='precioP' class="verP text-white">20.00</span></p>
+            <p><strong>Cantidad: </strong> <span id='cantidadP' class="verP text-white">30</span></p>
+            <p><strong>Cantidad mínima: </strong> <span id='cantidadP' class="verP text-white">30</span></p>
+            <p><strong>Categoría: </strong> <span id='categoriaP' class="verP text-white">Pan dulce</span></p>
+            <p>
+              <strong>Descripción:</strong>
+              <span id='descripcionP' class="verP text-white">Pan de miga</span>
+              
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><b>Cerrar</b></button>
+      </div>
+  </form>
+  
+    </div>
+  </div>
+</div>
+
+
+{% comment %} ------------MODAL VER PRODUCTO----------------- {% endcomment %}
+
+<section class="section">
+        <div class="row">
+          {% comment %} <div class="col-lg-1"></div> {% endcomment %}
+          <div class="col-lg-12 d-flex flex-row-reverse">
+            <a href="{% url 'lista_bajas_productos' %}" class="btn btn-danger">
+              <b><i class="bi bi-trash"></i> Papelera</b>
+            </a>
+            <a href="{% url 'crear_miembro' %}" class="btn btn-primary mx-1">
+              <b><i class="bi bi-plus-lg"></i> Nuevo miembro</b>
+            </a>
+            
+            <br>
+        </div>
+          <br>
+          <br>
+          <div class="col-lg-12">
+                
+                <!-- Horizontal Form -->
+
+                {% if form.errors %}
+                {% for field  in form  %}
+                        {% for error in field.errors %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>Notificacion: </strong>{{error}}.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" arial-label="Close"></button>
+                        </div>
+                        {% endfor %}
+                {% endfor %}
+              {% endif %}
+            <br>
+            <div class="card">
+              
+              <div class="card-body"> 
+                <h5 class="card-title text-warning"> <i class="bi bi-list-task"></i> {{titulo}}</h5>
+                <hr>
+                
+                <table class="table bg-black text-white strip rounded mb-4" style="text-align: center" id="data">
+                    <thead class="bg-warning text-black">
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Correo</th>
+                        <th scope="col">Teléfono</th>
+                        <th scope="col">Opciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% if miembros %} {% for m in miembros %}
+                      <tr>
+                        <td style="vertical-align: middle;">{{forloop.counter}}</td>
+                        <td style="vertical-align: middle;">{{ m.user.first_name }} {{ m.user.last_name }}</td>
+                        <td style="vertical-align: middle;">{{ m.user.email }}</td>
+                        <td style="vertical-align: middle;">{{ m.telefono }}</td>
+                            
+                        
+                        
+                        <td style="vertical-align: middle;">
+                          
+                          <button type="button" class="btn btn-primary btnVP" data-bs-toggle="modal" data-bs-target="#verProducto">
+                            <i class="bi bi-eye iVP"></i>
+                          </button>
+                          <a type="button" class="btn btn-secondary" href="#">
+                            <i class="bi bi-pencil-square"></i>
+                          </a>
+                          <a class="btn btn-danger" href="#" onclick="eliminarProducto({{m.id}})">
+                            <i class="bi bi-trash btnUM"></i>
+                        </a>
+                          
+                          
+                         
+                        </td>
+                      </tr>
+                  
+                      {% endfor %} {% else %}
+                      <td colspan="9" style="text-align: center">
+                        <b>No hay datos para mostrar</b>
+                      </td>
+                      {% endif %}
+                    </tbody>
+                  </table>
+              </div>
+            </div>
+          </div>
+          {% comment %} <div class="col-lg-1"></div> {% endcomment %}
+        </div>
+        
+      </section>
+
+
+
+{% endblock cuerpo %}
+{% block js %}
+
+<script>
+  const dataTableOptions = {
+    //scrollX: "400px",
+    lengthChange: false,
+    filter:[
+      { className: "form-control"},
+    ],
+    lengthMenu: [5, 10, 15, 20, 100, 200, 500],
+    columnDefs: [
+        { className: "text-center", targets: [0, 1, 2, 3, 4] },
+        { orderable: false, targets: [3, 4] },
+        { searchable: false, targets: [0,3,4] },
+        //{ width: "5%", targets: [0] }
+    ],
+    pageLength: 3,
+    destroy: true,
+    language: {
+        lengthMenu: "Mostrar _MENU_ registros por página",
+        zeroRecords: "Ningún producto encontrado",
+        info: "Mostrando de _START_ a _END_ de un total de _TOTAL_ registros",
+        infoEmpty: "Ningún producto encontrado",
+        infoFiltered: "(filtrados desde _MAX_ registros totales)",
+        search: "",
+        loadingRecords: "Cargando...",
+        paginate: {
+            first: "Primero",
+            last: "Último",
+            next: "Siguiente",
+            previous: "Anterior"
+        }
+    }
+};
+
+  {% if productos %}
+  let table = new DataTable('#data', dataTableOptions);
+  //remove the default 'Search' text for all DataTable search boxes
+  $('[type=search]').each(function () {
+    $(this).attr("placeholder", "Buscar...");
+    $(this).before('<span class="bi bi-search"></span>');
+  });
+  {% endif %}
+</script>
+<Script type="application/javascript" src="{% static 'assets/js/AppInventario/Producto/listProducto.js' %}"></Script>
+
+{% endblock js %}

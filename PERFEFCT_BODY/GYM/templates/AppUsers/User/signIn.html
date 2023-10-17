@@ -7,32 +7,32 @@
 {% block formulario %}
 {% csrf_token %}
 <div class="col-12">
-    <label for="yourUsername" class="form-label text-black" >Nombres</label>
+    <label for="yourUsername" class="form-label text-black" >Nombres:</label>
     <div class="input-group has-validation">
       <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-person-fill"></i></span>
-      <input autofocus type="text" name="username" class="form-control" id="yourUsername" required>
+      <input autofocus type="text" name="first_name" class="form-control" id="yourUsername" required>
       <div class="invalid-feedback">Por favor ingrese su usuario.</div>
     </div>
   </div>
   
   <div class="col-12">
-    <label for="yourUsername" class="form-label text-black" >Apellidos</label>
+    <label for="yourUsername" class="form-label text-black" >Apellidos:</label>
     <div class="input-group has-validation">
       <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-person-fill"></i></span>
-      <input autofocus type="text" name="username" class="form-control" id="yourUsername" required>
+      <input autofocus type="text" name="last_name" class="form-control" id="yourUsername" required>
       <div class="invalid-feedback">Por favor ingrese su usuario.</div>
     </div>
   </div>
   <div class="col-12">
-    <label for="yourUsername" class="form-label text-black" >Email</label>
+    <label for="yourUsername" class="form-label text-black" >Email:</label>
     <div class="input-group has-validation">
       <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-envelope-fill"></i></span>
-      <input autofocus type="text" name="username" class="form-control" id="yourUsername" required>
+      <input autofocus type="text" name="email" class="form-control" id="yourUsername" required>
       <div class="invalid-feedback">Por favor ingrese su usuario.</div>
     </div>
   </div>
   <div class="col-12">
-    <label for="yourUsername" class="form-label text-black" >Usuario</label>
+    <label for="yourUsername" class="form-label text-black" >Usuario:</label>
     <div class="input-group has-validation">
       <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-person-fill"></i></span>
       <input autofocus type="text" name="username" class="form-control" id="yourUsername" required>
@@ -49,18 +49,18 @@
         </div>
     </div>
     <div class="col-12">
-        <label for="yourUsername" class="form-label text-black" >Contraseña</label>
+        <label for="yourUsername" class="form-label text-black" >Contraseña:</label>
         <div class="input-group has-validation">
           <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-lock-fill"></i></span>
-          <input type="password" name="password" class="form-control" id="yourPassword" required>
+          <input type="password" name="password1" class="form-control" id="yourPassword" required>
           <div class="invalid-feedback">Por favor ingrese su usuario.</div>
         </div>
       </div>
       <div class="col-12">
-        <label for="yourUsername" class="form-label text-black" >Ingrese nuevamente su contraseña</label>
+        <label for="yourUsername" class="form-label text-black" >Confirme su contraseña:</label>
         <div class="input-group has-validation">
           <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-lock-fill"></i></span>
-          <input type="password" name="password" class="form-control" id="yourPassword" required>
+          <input type="password" name="password2" class="form-control" id="yourPassword" required>
           <div class="invalid-feedback">Por favor ingrese su usuario.</div>
         </div>
       </div>
@@ -74,3 +74,36 @@
 
 
 {% endblock formulario %}
+{% block js %}
+<script>
+{% if form.errors %}
+      // Crear una lista para almacenar los mensajes de error
+      var errorMessages = [];
+
+      {% for field in form %}
+      {% for error in field.errors %}
+          // Agregar cada mensaje de error junto con el nombre del campo a la lista
+          errorMessages.push("{{ field.label|escapejs }}: " + "{{ error|escapejs }}".toLowerCase());
+      {% endfor %}
+  {% endfor %}
+  // Comprobar si hay mensajes de error
+  if (errorMessages.length > 0) {
+    // Utilizar SweetAlert para mostrar todos los mensajes de error en una sola alerta
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: 'btn btn-primary',
+        cancelButton: 'btn btn-danger'
+      },
+      buttonsStyling: false
+    })
+    swalWithBootstrapButtons.fire({
+        icon: 'error',
+        title: 'Datos incorrectos en los siguientes campos:',
+        html: errorMessages.join('<br>'),
+    });
+}
+
+{% endif %}
+
+</script>
+  {% endblock js %}

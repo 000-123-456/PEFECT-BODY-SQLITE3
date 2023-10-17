@@ -5,7 +5,6 @@ class FormMiembro(ModelForm):
     class Meta:
         model=Miembro
         fields = {
-            'nombre',
             'telefono',
             'direcccion',
             'fecha_nac',
@@ -13,7 +12,6 @@ class FormMiembro(ModelForm):
             'telefonoContact',
         }
         labels={
-            'nombre': 'Nombre',
             'telefono': 'Teléfono',
             'direccion': 'Dirección',
             'fecha_nac': 'Fecha de nacimiento',
@@ -22,15 +20,9 @@ class FormMiembro(ModelForm):
         }
         
         widgets={
-                'nombre': TextInput(
-                    attrs={
-                        'class': 'form-control',
-                        'placeholder': 'Ingrese nombre completo',
-                        
-                    }
-                ),
                 'telefono':  TextInput(
                     attrs={
+                
                         'class': 'form-control',
                         'placeholder': 'Ingrese nombre completo',
                         'pattern': '[0-9]{4}[-][0-9]{4}',
@@ -55,6 +47,7 @@ class FormMiembro(ModelForm):
                 ),
                 'nombreContact': TextInput(
                     attrs={
+                        
                         'class': 'form-control',
                         'placeholder': 'Ingrese nombre completo',
                        
@@ -72,7 +65,6 @@ class FormMiembro(ModelForm):
         }
 
 FormMiembro.field_order = [
-            'nombre',
             'telefono',
             'fecha_nac',
             'direcccion',
@@ -80,7 +72,7 @@ FormMiembro.field_order = [
             'telefonoContact'
             
         ]
-        
+      
 #----------------------------------------------Membresia---------------------------------------------------
 class FormMembresia(ModelForm):
     

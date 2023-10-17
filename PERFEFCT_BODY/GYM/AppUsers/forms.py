@@ -3,6 +3,12 @@ from django.contrib.auth.forms import UserCreationForm
 from django.forms import  DateField, DateInput, ModelForm, Select, TextInput,ClearableFileInput,NumberInput,Textarea
 
 class RegistroUsuarioForm(UserCreationForm):
+    def __init__(self, *args, **kwargs):
+        super(RegistroUsuarioForm, self).__init__(*args, **kwargs)
+        self.fields['username'].required = False
+        self.fields['password1'].required = False
+        self.fields['password2'].required = False
+        self.fields['empresa'].required = False
     class Meta:
         model = User
         fields=[
@@ -11,17 +17,15 @@ class RegistroUsuarioForm(UserCreationForm):
             'last_name',
             'email',
             'rol',
-            
+            'empresa',
         ]
         labels={
             'username': 'Usuario',
             'first_name': 'Nombres',
             'last_name': 'Apellidos',
-            'email': 'Correo electronico',
+            'email': 'Correo electrónico',
             'rol':'Rol',
-            'password1':'Ingrese la contraseña',
-            'password2':' Confirme su contraseña',
-
+            'empresa':'Empresa',
         }
         widgets={
                 'username': TextInput(
@@ -45,7 +49,7 @@ class RegistroUsuarioForm(UserCreationForm):
                 'email': TextInput(
                     attrs={
                         'type': 'email',
-                        'class': 'form-select',
+                        'class': 'form-control',
                         'placeholder': 'Correo...'
                     }
                 ),
@@ -55,19 +59,10 @@ class RegistroUsuarioForm(UserCreationForm):
                         'placeholder': 'Seleccione el rol...'
                     }
                 ),
-                'password1': Select(
-                    attrs={
-                        'class': 'form-select',
-                        'placeholder': 'Ingrese la contraseña...'
-                    }
-                ),
-                
-            
             }
         
 #------------------------------------------------------Empresa---------------------------------------------
 class FormEmpresa(ModelForm):
-   
     class Meta:
         model=Empresa
         fields = [
@@ -76,7 +71,6 @@ class FormEmpresa(ModelForm):
             'logo',
             'telefono',
             'direcccion',
-           
         ]
         labels={
             'nombre': 'Nombre',
