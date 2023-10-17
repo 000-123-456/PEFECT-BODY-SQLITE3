@@ -104,3 +104,82 @@ FormProducto.field_order = [
             'categoriaP',
             'img', 
         ]
+
+
+
+#---------------------------------------COMPRAS--------------------------------------------------
+#------------------------------------------------------------------------------------------------
+class FormCompra(ModelForm):   
+    class Meta:
+        model=Compra
+        fields = {
+            'cantidad',
+            'precio_unitario',
+            'total',
+            'fecha_vec',
+            'producto',
+            'proveedor',
+        
+        }
+        labels={
+            'cantidad': 'Cantidad',
+            'precio_unitario': 'Precio Unitario',
+            'total': 'Total',
+            'fecha_vec':'Fecha de Vencimiento',
+            'producto':'Producto',
+            'proveedor':'Proveedor',
+        }
+        
+        widgets={
+                'cantidad': TextInput(
+                    attrs={
+                        'class': 'form-control',
+                        'placeholder': 'Ingrese nombre completo',
+                        'autocomplete':"off",
+                        
+                    }
+                ),
+                'precio_unitario': TextInput(
+                    attrs={
+                        
+                        'class': 'form-control',
+                        'placeholder': 'Ingrese nombre completo',
+                        'autocomplete':"off",
+                        
+                    }
+                ),
+                'total': TextInput(
+                    attrs={
+                        
+                        'class': 'form-control',
+                        'placeholder': 'Ingrese nombre completo',
+                        'autocomplete':"off",
+                        
+                    }
+                ),
+                'fecha_vec': DateInput(
+                attrs={
+                    'class': 'form-control', 
+                    'type': 'date'
+                }
+                ),
+                'producto': Select(
+                    attrs={
+                        
+                        'class': 'form-control',
+                        'placeholder': 'Ingrese nombre completo',
+                        'id':'selectPro',
+                        
+                    }
+                ),             
+                'proveedor': Select(
+                    attrs={
+                        'class': 'form-control',
+                        'placeholder': 'Cantidad baja del producto',
+                        'id':'selectProve',
+                        
+                    }
+                ),
+
+        }
+        

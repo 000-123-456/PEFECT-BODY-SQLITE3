@@ -9,7 +9,7 @@ from django.views.generic import ListView, CreateView, UpdateView,TemplateView
 from AppInventario.models import *
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
-from AppInventario.forms import FormProducto,FormCategoria
+from AppInventario.forms import FormProducto,FormCategoria,FormCompra
 # Create your views here.
 
 
@@ -266,3 +266,159 @@ def AltaTodosProducto(request):
     return redirect(to='lista_productos')
 
 ##--------------- FIN VISTAS PRODUCTO ------------------------------------------
+
+##-------------------------------------------------------------------------------------------------
+##-----------------------------COMPRAS-------------------------------------------------------------
+
+class CreateCompra(CreateView):
+    model = Compra
+    form_class = FormCompra
+    success_url= reverse_lazy('crear_compra')
+    template_name = 'AppInventario/Compra/createCompra.html'
+    success_message = "¡Registro realizado con éxito!"
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        return super().dispatch(request, *args, **kwargs)  
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        try:
+             data['empresa'] = Empresa.objects.first()
+        except:
+             data['empresa'] = 'Error'
+        data['titulo'] = 'Crear compra'
+        data['modulo'] = 'Compra'   
+        data['producto'] = Producto.objects.filter(estado=0)
+        data['proveedor'] = Proveedor.objects.filter(estado=0)
+
+        return data
+    
+    def form_valid(self, form):
+        messages.success(self.request, "Compra añadida correctamente!")
+        #---------------aqui irian los datos que se ingreso
+        #---consulta obtener producto
+        #--cambio a la cantidad de producto 
+        #--sumando cuando compra restando cuando elimina, actualizando restando la cantidad vieja  y sumarle la nueva
+        
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, format(form.errors.as_text()))
+        return super().form_invalid(form)
+    
+def get_compra(request, name):
+    data={}
+    try:
+        comp = Compra.objects.get(nombre=name)
+        data = comp.toJSON()
+        data['producto'] = str(comp.producto)
+        data['proveedor'] = str(comp.proveedor)
+
+        data['img'] = str(comp.get_image())
+        data['message']= 'success'
+    except Exception as e :
+        data = {'message': 'Not Found'}
+        print(e)
+    return JsonResponse(data)
+
+
+class ListCompra(ListView):
+    model = Compra
+    template_name = 'AppInventario/Compra/listCompra.html'
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        return super().dispatch(request, *args, **kwargs)  
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        try:
+             data['empresa'] = Empresa.objects.first()
+        except:
+             data['empresa'] = 'Error'
+        data['titulo'] = 'Lista de Compra'
+        data['modulo'] = 'Compra'
+        data['icono']  = '<i class="bi bi-plus-lg"></i>'
+
+        return data
+    
+
+class ListCompraBajas(ListView):
+    model = Compra
+    template_name = 'AppInventario/Compra/listCompraBajas.html'
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        return super().dispatch(request, *args, **kwargs)  
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        try:
+             data['empresa'] = Empresa.objects.first()
+        except:
+             data['empresa'] = 'Error'
+        data['titulo'] = 'Compra eliminadas'
+        data['modulo'] = 'Compra'
+        data['icono']  = '<i class="bi bi-plus-lg"></i>'
+        return data
+#-------------------------------------------------------
+class UpdateCompra(UpdateView):
+    model = Compra
+    form_class = FormCompra
+    success_url= reverse_lazy('lista_compras')
+    template_name = 'AppInventario/Compra/updateCompra.html'
+    success_message = "¡Compra actualizado con éxito!"
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        return super().dispatch(request, *args, **kwargs)  
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        try:
+             data['empresa'] = Empresa.objects.first()
+        except:
+             data['empresa'] = 'Error'
+        data['titulo'] = 'Actualizar compra'
+        data['modulo'] = 'Compra'
+        return data
+    
+        return super().post(request, *args, **kwargs)
+    def form_valid(self, form):
+        messages.success(self.request, "Compra añadida correctamente!")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        # Obtiene la instancia del modelo que se está actualizando
+        instance = self.get_object()
+        
+        # Envía el objeto instance como contexto a la plantilla
+        context = self.get_context_data(object=instance)
+        
+        # Agrega mensajes de error al contexto
+        messages.error(self.request, format(form.errors.as_text()))
+        
+        # Retorna la respuesta con el contexto actualizado
+        return self.render_to_response(context)
+    
+#-------------------------------------------------------------------------
+    
+def DeleteCompra(request, pk):
+    try:
+        pro = Compra.objects.get(id=pk)
+        pro.estado = True
+        pro.save()
+        messages.success(request, "¡Producto eliminado correctamente!")
+    except:
+        messages.error(request, "¡Error, la accion no se pudo realizar!")
+    return redirect(to='lista_compras')
+
+def AltaCompra(request, pk):
+    try:
+        pro = Compra.objects.get(id=pk)
+        pro.estado = False
+        pro.save()
+        messages.success(request, "¡Producto restaurado correctamente!")
+    except:
+        messages.error(request, "¡Error, la accion no se pudo realizar!")
+    return redirect(to='lista_bajas_compras')
+
+def AltaTodosCompra(request):
+    try:
+        compras = Compra.objects.filter(estado=1)
+        for p in compras:
+            p.estado = False
+            p.save()
+            messages.success(request, "¡Todos los compras fueron restaurados correctamente!")
+    except:
+        messages.error(request, "¡Error, la accion no se pudo realizar!")
+    return redirect(to='lista_compras')

@@ -4,6 +4,7 @@ from django.forms import model_to_dict
 from GYM.settings import MEDIA_URL,STATIC_URL
 from AppUsers.models import User,Empresa
 
+
 # Create your models here.
 class Proveedor(models.Model):
     nombre = models.CharField(max_length=50, null=False, verbose_name='Nombre')

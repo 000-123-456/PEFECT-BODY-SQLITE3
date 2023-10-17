@@ -23,5 +23,24 @@ urlpatterns = [
     path('Producto/ActualizarProductos/<int:pk>/', login_required(views.UpdateProducto.as_view()), name='actualizar_producto'),
     path('Producto/EliminarProducto/<int:pk>/', login_required(views.DeleteProducto), name='eliminar_producto'),
     ##-----------------------FIN VISTAS DE PRODUCTO---------------------------------------
+
+
+    ##------------------------------INICIO DE VISTA DE COMPRAS-----------------------------------------------------------------
+    path('Producto/get_producto/<str:name>/',login_required(views.get_producto), name='get_producto'),
+    #path('Proveedor/get_proveedor/<str:name>/',login_required(views.get_proveedor), name='get_proveedor'),
+    path('Compra/CrearCompra/',login_required(views.CreateCompra.as_view()), name='crear_compra'),
+    path('Compra/',login_required(views.ListCompra.as_view()), name='lista_compras'),
+
+    path('Compra/ComprasEliminados/',login_required(views.ListCompraBajas.as_view()), name='lista_bajas_compras'),
+    path('Compra/ComprasEliminados/AltaCompra/<int:pk>/',login_required(views.AltaCompra), name='alta_compra'),
+    path('Compra/ComprasEliminados/AltaTodos/',login_required(views.AltaTodosCompra), name='alta_todos_compras'),
+    path('Compra/ActualizarCompras/<int:pk>/', login_required(views.UpdateCompra.as_view()), name='actualizar_compra'),
+    path('Compra/EliminarCompra/<int:pk>/', login_required(views.DeleteCompra), name='eliminar_compra'),
+    ##---------------------------------FIN DE VISTAS DE COMPRAS----------------------------------------------------------------
+
+
+
+
+
 ]
 urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
