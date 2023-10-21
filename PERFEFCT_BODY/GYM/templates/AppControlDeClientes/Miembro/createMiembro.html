@@ -40,14 +40,14 @@
               {% endfor %}
             {% endif %}
               <br>
-              
-            <div class="card">
+            <p class="mt-0">Los campo con (<span class="text-danger">*</span>) son campos obligatorios.</p>     
+            <div class="card mt-0">
               
               <div class="card-body">
                 <h5 class="card-title text-warning"><i class="bi bi-plus-lg"></i> {{titulo}}</h5>
                 
                 <!-- Floating Labels Form -->
-                <form class="row g-3" method="post">
+                <form class="row g-3" method="post" enctype="multipart/form-data">
                   
                            
                     {% csrf_token %}
@@ -55,11 +55,11 @@
                         {% for field in user_form.visible_fields %}
                         {% if field.name != 'password1' and field.name != 'password2' and field.name != 'username' and field.name != 'rol' and field.name != 'empresa' %}
                             
-                            <div class="col-md-{% if field.name != 'email'%}6{% else %}12{% endif %}">
-                                    <div class="form-floating">
-                                        {{ field }}
-                                        <label for="floatingName" autofocus>{{ field.label }}{% if field.name %}<span class="text-danger"> *</span>{% endif %}</label>
-                                    </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    {{ field }}
+                                    <label for="floatingName" autofocus>{{ field.label }}{% if field.name %}<span class="text-danger"> *</span>{% endif %}</label>
+                                </div>
                             </div>
                            
                         {% endif %}
@@ -69,13 +69,23 @@
 
                     {% for field in form.visible_fields %}
                         {% if field.name != 'rol' %}
-                            <div class="col-md-{% if field.label == 'Nombre' or field.label == 'Dirección'  %}12{% endif %}{% if field.label != 'Nombre' and field.label != 'Dirección' %}6{% endif %}">
-                                
+                            <div class="col-md-{% if field.label == 'Nombre' or field.label == 'Dirección' or field.name == 'foto'  %}12{% endif %}{% if field.label != 'Nombre' and field.label != 'Dirección' %}6{% endif %}">
+                              {% if  field.name == 'foto'%}
+                                 
+                                <div class="form-floating">
+                                  <input type="file" name="foto" accept="image/*" id="id_img" class='form-control'>
+                                  <label for="floatingName" autofocus>Foto</label>
+                                </div>
+                              
+                        
+                             {% else %}
                                 <div class="form-floating">
                                 {{ field }}
-                                <label for="floatingName" autofocus>{{field.label}}{% if field.name == 'fecha_nac' %}<span class="text-danger"> *</span>{% endif %}</label>
+                                <label for="floatingName" autofocus>{{field.label}}{% if field.name == 'fecha_nac' or field.name == 'genero' %}<span class="text-danger"> *</span>{% endif %}</label>
                                 </div>
+                                {% endif %}
                             </div>
+                            
                         {% endif %}
                     {% endfor %}
                   
@@ -124,58 +134,37 @@ IMask(
     ]
   }
 )
-const dropArea = document.querySelector(".drag-image"),
-dragText = dropArea.querySelector("h6"),
-button = dropArea.querySelector("button"),
-input = dropArea.querySelector("input");
-let file; 
 
-button.onclick = ()=>{
-  input.click(); 
+{% if form.errors %}
+// Crear una lista para almacenar los mensajes de error
+var errorMessages = [];
+
+{% for field in form %}
+{% for error in field.errors %}
+    // Agregar cada mensaje de error junto con el nombre del campo a la lista
+    errorMessages.push("{{ field.label|escapejs }}: " + "{{ error|escapejs }}".toLowerCase());
+{% endfor %}
+{% endfor %}
+
+// Comprobar si hay mensajes de error
+if (errorMessages.length > 0) {
+    // Utilizar SweetAlert para mostrar todos los mensajes de error en una sola alerta
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: 'btn btn-primary',
+        cancelButton: 'btn btn-danger'
+      },
+      buttonsStyling: false
+    })
+    swalWithBootstrapButtons.fire({
+        icon: 'error',
+        title: 'Datos incorrectos en los siguientes campos:',
+        html: errorMessages.join('<br>'),
+    });
 }
 
-input.addEventListener("change", function(){
- 
-  file = this.files[0];
-  dropArea.classList.add("active");
-  viewfile();
-});
-
-dropArea.addEventListener("dragover", (event)=>{
-  event.preventDefault();
-  dropArea.classList.add("active");
-  dragText.textContent = "Release to Upload File";
-});
+{% endif %}
 
 
-dropArea.addEventListener("dragleave", ()=>{
-  dropArea.classList.remove("active");
-  dragText.textContent = "Drag & Drop to Upload File";
-}); 
-
-dropArea.addEventListener("drop", (event)=>{
-  event.preventDefault(); 
-   
-  file = event.dataTransfer.files[0];
-  viewfile(); 
-});
-
-function viewfile(){
-  let fileType = file.type; 
-  let validExtensions = ["image/jpeg", "image/jpg", "image/png"];
-  if(validExtensions.includes(fileType)){ 
-    let fileReader = new FileReader(); 
-    fileReader.onload = ()=>{
-      let fileURL = fileReader.result; 
-       let imgTag = `<img src="${fileURL}" alt="image">`;
-      dropArea.innerHTML = imgTag; 
-    }
-    fileReader.readAsDataURL(file);
-  }else{
-    alert("This is not an Image File!");
-    dropArea.classList.remove("active");
-    dragText.textContent = "Drag & Drop to Upload File";
-  }
-}
 </script>
 {% endblock js %}

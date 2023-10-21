@@ -1,5 +1,6 @@
 from django.forms import  ModelForm, Select, TextInput,Textarea,DateInput
 from AppControlDeClientes.models import Miembro,Membresia
+from .op import opGenero
 class FormMiembro(ModelForm):
     
     class Meta:
@@ -10,6 +11,8 @@ class FormMiembro(ModelForm):
             'fecha_nac',
             'nombreContact',
             'telefonoContact',
+            'genero',
+            'foto'
         }
         labels={
             'telefono': 'Teléfono',
@@ -61,10 +64,20 @@ class FormMiembro(ModelForm):
                         'id':'telContact'
                         
                     }
+                ),
+                'genero':  Select(
+                    attrs={
+                        'aria-label':"Seleccione genero",
+                        'class': 'form-control',
+                        'placeholder': 'Genero',     
+                    }
                 )
         }
-
+    def __init__(self, *args, **kargs):
+            super().__init__(*args, **kargs)
+            self.fields['genero'].queryset = opGenero
 FormMiembro.field_order = [
+            'genero',
             'telefono',
             'fecha_nac',
             'direcccion',

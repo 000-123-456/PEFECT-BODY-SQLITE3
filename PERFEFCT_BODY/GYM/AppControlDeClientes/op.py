@@ -2,6 +2,10 @@ opTipo = (
     (1, 'REGULAR'),
     (2, 'MIEMBRO')
 )
+opGenero = (
+    (1, 'Masculino'),
+    (2, 'Femenino')
+)
 
 opDia = (
     (1, 'Lunes'),

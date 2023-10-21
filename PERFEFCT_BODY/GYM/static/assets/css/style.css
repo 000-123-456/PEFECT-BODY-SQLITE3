@@ -1424,3 +1424,24 @@ hr{
   object-fit: cover;
   border-radius: 5px;
 }
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  display: none;
+  z-index: 1000;
+}
+
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+.imgCard{
+  max-width: 100%;
+  max-height: 300px;
+  width: 100%;
+  
+}
+button.swal2-confirm.btn {
+  margin-right: 1.25rem;
+  margin-left: 1.25rem;
+}

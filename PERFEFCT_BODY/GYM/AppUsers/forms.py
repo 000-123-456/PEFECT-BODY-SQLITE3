@@ -9,6 +9,9 @@ class RegistroUsuarioForm(UserCreationForm):
         self.fields['password1'].required = False
         self.fields['password2'].required = False
         self.fields['empresa'].required = False
+        self.fields['first_name'].required = True
+        self.fields['last_name'].required = True
+        self.fields['email'].required = True
     class Meta:
         model = User
         fields=[
@@ -37,7 +40,8 @@ class RegistroUsuarioForm(UserCreationForm):
                 'first_name':  TextInput(
                     attrs={
                         'class': 'form-control',
-                        'placeholder': 'Nombres...'
+                        'placeholder': 'Nombres...',
+                        
                     }
                 ),
                 'last_name': TextInput(
