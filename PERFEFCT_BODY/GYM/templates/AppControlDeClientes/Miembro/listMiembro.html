@@ -17,7 +17,7 @@
         <div class="row">
           <div class="col-md-6 mb-4">
             <div class="bg-image hover-overlay ripple shadow-2-strong" data-mdb-ripple-color="light">
-              <img src="https://mdbcdn.b-cdn.net/img/new/standard/city/041.webp" class="img-fluid verP" alt="Hollywood Sign">
+              <img src="https://mdbcdn.b-cdn.net/img/new/standard/city/041.webp" class="img-fluid verP imgCard" alt="Hollywood Sign" style="border-radius: 20px;">
               <a href="#!">
                
               </a>
@@ -25,15 +25,19 @@
           </div>
 
           <div class="col-md-6 mb-4 text-white">
-            <strong><p id='nombreP' class='verP text-warning'>Doloremque vero ex debitis veritatis?</p></strong>
-            <p><strong>Precio: </strong><span id='precioP' class="verP text-white">20.00</span></p>
-            <p><strong>Cantidad: </strong> <span id='cantidadP' class="verP text-white">30</span></p>
-            <p><strong>Cantidad mínima: </strong> <span id='cantidadP' class="verP text-white">30</span></p>
-            <p><strong>Categoría: </strong> <span id='categoriaP' class="verP text-white">Pan dulce</span></p>
+            <strong><p id='nombreM' class='verP text-warning'>Doloremque vero ex debitis veritatis?</p></strong>
+            <p><strong>Edad: </strong><span id='edadM' class="verP text-white">20.00</span></p>
+            <p><strong>Género: </strong> <span id='generoM' class="verP text-white">30</span></p>
+            <p><strong>Correo: </strong> <span id='correoM' class="verP text-white">30</span></p>
+            <p><strong>Contácto de emergencia: </strong> <span id='contactoEM' class="verP text-white">Pan dulce</span></p>
+            <p><strong>Membresía: </strong> <span id='membresiaM' class="verP badge bg-success">Vencida</span> <span id='categoriaP' class="verP  text-white"></span></p>
             <p>
-              <strong>Descripción:</strong>
+              <strong>Dirección:</strong>
               <span id='descripcionP' class="verP text-white">Pan de miga</span>
-              
+            </p>
+            <p>
+              <strong>Teléfono:</strong>
+              <span id='descripcionP' class="verP text-white">Pan de miga</span>
             </p>
           </div>
         </div>
@@ -92,7 +96,7 @@
                         <th scope="col">#</th>
                         <th scope="col">Nombre</th>
                         <th scope="col">Correo</th>
-                        <th scope="col">Teléfono</th>
+                        <th scope="col">Membresía</th>
                         <th scope="col">Opciones</th>
                       </tr>
                     </thead>
@@ -102,23 +106,32 @@
                         <td style="vertical-align: middle;">{{forloop.counter}}</td>
                         <td style="vertical-align: middle;">{{ m.user.first_name }} {{ m.user.last_name }}</td>
                         <td style="vertical-align: middle;">{{ m.user.email }}</td>
-                        <td style="vertical-align: middle;">{{ m.telefono }}</td>
+                        <td style="vertical-align: middle;">
+                          {% if m.estado_membresia == 0 %}
+                            <span class="badge bg-danger">No asignada</span>
+                          {% elif m.estado_membresia == 1 %}
+                            <span class="badge bg-success">ACTIVA</span>
+                          {% else %}
+                            <span class="badge bg-danger">VENCIDA</span>
+                          {% endif %}
+                        </td>
                             
                         
                         
                         <td style="vertical-align: middle;">
                           
-                          <button type="button" class="btn btn-primary btnVP" data-bs-toggle="modal" data-bs-target="#verProducto">
+                          <button type="button" class="btn btn-primary btnVP" data-bs-toggle="modal" data-bs-target="#verProducto" title="Ver informacion">
                             <i class="bi bi-eye iVP"></i>
                           </button>
-                          <a type="button" class="btn btn-secondary" href="#">
-                            <i class="bi bi-pencil-square"></i>
-                          </a>
-                          <a class="btn btn-danger" href="#" onclick="eliminarProducto({{m.id}})">
-                            <i class="bi bi-trash btnUM"></i>
-                        </a>
                           
-                          
+                        <a class="btn btn-dark" href="#" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-card-checklist"></i>
+                          <i class="dropdown-toggle"></i></a>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" style="">
+                          <li><a class="dropdown-item" href="{% url "actualizar_miembro" m.id %}"><strong><i class="bi bi-pencil-square"></i> Actualizar datos</a></strong></li>
+                          <li><a class="dropdown-item" href="#" ><strong><i class="bi bi-person-lines-fill"></i> Asignar membresía</a></strong></li>
+                          <li><a class="dropdown-item text-danger" href="#" onclick="eliminarProducto({{m.id}})"><strong><i class="bi bi-trash btnUM"></i> Eliminar miembro</a></strong></li>
+                        </ul>
+                         
                          
                         </td>
                       </tr>
@@ -153,11 +166,11 @@
     lengthMenu: [5, 10, 15, 20, 100, 200, 500],
     columnDefs: [
         { className: "text-center", targets: [0, 1, 2, 3, 4] },
-        { orderable: false, targets: [3, 4] },
-        { searchable: false, targets: [0,3,4] },
+        { orderable: false, targets: [ 4] },
+        { searchable: false, targets: [4] },
         //{ width: "5%", targets: [0] }
     ],
-    pageLength: 3,
+    pageLength: 6,
     destroy: true,
     language: {
         lengthMenu: "Mostrar _MENU_ registros por página",
@@ -176,7 +189,7 @@
     }
 };
 
-  {% if productos %}
+  {% if miembros %}
   let table = new DataTable('#data', dataTableOptions);
   //remove the default 'Search' text for all DataTable search boxes
   $('[type=search]').each(function () {
@@ -185,6 +198,6 @@
   });
   {% endif %}
 </script>
-<Script type="application/javascript" src="{% static 'assets/js/AppInventario/Producto/listProducto.js' %}"></Script>
+<Script type="application/javascript" src="{% static 'assets/js/AppControlDeClientes/Miembro/listMiembro.js' %}"></Script>
 
 {% endblock js %}

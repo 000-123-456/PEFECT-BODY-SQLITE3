@@ -9,8 +9,11 @@ urlpatterns = [
 
 
     #------------------------------INICIO DE LAS VISTAS DE MIEMBRO-------------------------------------------------------
-    path('Miembro/CrearMiembro/',views.RegistroMiembroView.as_view(), name='crear_miembro'),
-    path('Miembro/',views.ListMiembro.as_view(), name='lista_miembros'),
+    path('Miembro/',login_required(views.ListMiembro.as_view()), name='lista_miembros'),
+    path('Miembro/CrearMiembro/',login_required(views.RegistroMiembroView.as_view()), name='crear_miembro'),
+    path('Miembro/ActualizarMiembro/<int:pk>/',login_required(views.ActualizarMiembroView.as_view()), name='actualizar_miembro'),
+    path('Miembro/get_miembro/<str:username>/',login_required(views.get_miembro), name='get_miembro'),
+    
 
 
     #----------------------------INICIO DE LAS VISTAS DE MEMBRESIA --------------------------------------------------------

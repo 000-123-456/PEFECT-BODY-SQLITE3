@@ -1,4 +1,6 @@
+from datetime import datetime
 from django.db import models
+from django.forms import model_to_dict
 from AppUsers.models import User
 from AppControlDeClientes.op import *
 from GYM.settings import MEDIA_URL,STATIC_URL
@@ -18,12 +20,14 @@ class Membresia(models.Model):
         ordering = ['id']
 
 class Miembro(models.Model):
-    fecha_nac =  models.DateField(verbose_name='Fecha de nacimiento')
-    telefono = models.CharField(max_length=9, null=True, verbose_name='Teléfono') 
-    direcccion = models.CharField(max_length=100, null=False, verbose_name='Dirección')
-    nombreContact = models.CharField(max_length=50, null=False, verbose_name='Nombre de contacto')
-    telefonoContact = models.CharField(max_length=9, null=True, verbose_name='Teléfono de contacto')
-    estado_membresia = models.BooleanField(default=False, verbose_name='Estado') # ACTIVO VENCIDO
+    fecha_nac =  models.DateField(verbose_name='Fecha de nacimiento', null=False)
+    telefono = models.CharField(max_length=9, null=True,blank=True, verbose_name='Teléfono') 
+    direcccion = models.CharField(max_length=100, null=True,blank=True, verbose_name='Dirección')
+    nombreContact = models.CharField(max_length=50, null=True,blank=True, verbose_name='Nombre de contacto')
+    telefonoContact = models.CharField(max_length=9, null=True,blank=True, verbose_name='Teléfono de contacto')
+    estado_membresia = models.PositiveIntegerField(default=0,verbose_name='Estado membresia')
+    foto = models.ImageField(upload_to='Miembro/%Y/%m/%d',null=True,blank=True)
+    genero = models.PositiveIntegerField(null=False, choices=opGenero, name='genero', verbose_name='Genero')
     estado = models.BooleanField(default=False, verbose_name='Estado')
     ## ---- EL MIEMBRO ES EL QUE SE DESACTIVA O SE ACTIVA DEPEDIENDO LA FECHA ----
     fecha_inicio = models.DateField(null=True,blank=True)
@@ -32,12 +36,31 @@ class Miembro(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name='user', null=True, blank=True)
     def __str__(self) -> str:
         return self.id
-    
+    def get_image(self):
+        if self.foto and not ("assets/img/avatares/" in str(self.foto)):
+            return '{}{}'.format(MEDIA_URL,self.foto)
+        elif "assets/img/avatares/" in str(self.foto):
+            return str(self.foto)
+        else:
+            return '{}{}'.format(STATIC_URL,'assets/img/no-photo.jpg')
     class Meta:
         db_table = 'miembro'
         verbose_name = 'Miembro'
         verbose_name_plural = 'Miembros'
-        ordering = ['id']  
+        ordering = ['id']
+    def toJSON(self):
+        item = model_to_dict(self, exclude=['foto'])
+        return item 
+    def calcular_edad(self):
+        # Obtén la fecha de nacimiento del miembro
+        fecha_nacimiento = self.fecha_nac
+        # Obtiene la fecha actual
+        fecha_actual = datetime.now().date()
+        # Calcula la diferencia entre la fecha actual y la fecha de nacimiento
+        edad = fecha_actual.year - fecha_nacimiento.year - ((fecha_actual.month, fecha_actual.day) < (fecha_nacimiento.month, fecha_nacimiento.day))
+
+        return edad
+ 
 
 
 class HistorialMiembro(models.Model):
