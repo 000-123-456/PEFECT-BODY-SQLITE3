@@ -10,6 +10,7 @@ from AppInventario.models import *
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from AppInventario.forms import FormProducto,FormCategoria,FormCompra
+from django.core.exceptions import ObjectDoesNotExist
 # Create your views here.
 
 
@@ -164,6 +165,7 @@ def get_producto(request, name):
         data = {'message': 'Not Found'}
         print(e)
     return JsonResponse(data)
+
 class ListProducto(ListView):
     model = Producto
     template_name = 'AppInventario/Producto/listProducto.html'
@@ -285,19 +287,21 @@ class CreateCompra(CreateView):
         except:
              data['empresa'] = 'Error'
         data['titulo'] = 'Crear compra'
-        data['modulo'] = 'Compra'   
+        data['modulo'] = 'Compra'
+        data['compras'] = Compra.objects.all()
         data['producto'] = Producto.objects.filter(estado=0)
         data['proveedor'] = Proveedor.objects.filter(estado=0)
 
         return data
     
-    def form_valid(self, form):
+    def form_valid(self, form): 
+     
+
         messages.success(self.request, "Compra añadida correctamente!")
         #---------------aqui irian los datos que se ingreso
         #---consulta obtener producto
         #--cambio a la cantidad de producto 
         #--sumando cuando compra restando cuando elimina, actualizando restando la cantidad vieja  y sumarle la nueva
-        
         return super().form_valid(form)
 
     def form_invalid(self, form):
@@ -305,18 +309,15 @@ class CreateCompra(CreateView):
         return super().form_invalid(form)
     
 def get_compra(request, name):
-    data={}
+    data = {}
     try:
         comp = Compra.objects.get(nombre=name)
         data = comp.toJSON()
-        data['producto'] = str(comp.producto)
-        data['proveedor'] = str(comp.proveedor)
-
-        data['img'] = str(comp.get_image())
-        data['message']= 'success'
-    except Exception as e :
-        data = {'message': 'Not Found'}
-        print(e)
+        data['producto'] = str(comp.productoP)
+        data['proveedor'] = str(comp.proveedorP)
+        data['message'] = 'success'
+    except ObjectDoesNotExist:
+        data = {'message': 'Compra no encontrada'}
     return JsonResponse(data)
 
 
@@ -334,7 +335,9 @@ class ListCompra(ListView):
         data['titulo'] = 'Lista de Compra'
         data['modulo'] = 'Compra'
         data['icono']  = '<i class="bi bi-plus-lg"></i>'
-
+        data['compras'] = Compra.objects.all()
+        data['producto'] = Producto.objects.filter(estado=0)
+        data['proveedor'] = Proveedor.objects.filter(estado=0)
         return data
     
 
@@ -352,6 +355,9 @@ class ListCompraBajas(ListView):
         data['titulo'] = 'Compra eliminadas'
         data['modulo'] = 'Compra'
         data['icono']  = '<i class="bi bi-plus-lg"></i>'
+        data['compras'] = Compra.objects.all()
+        data['proveedor'] = Proveedor.objects.filter(estado=1)
+        data['productos'] = Producto.objects.filter(estado=1)
         return data
 #-------------------------------------------------------
 class UpdateCompra(UpdateView):
@@ -370,6 +376,7 @@ class UpdateCompra(UpdateView):
              data['empresa'] = 'Error'
         data['titulo'] = 'Actualizar compra'
         data['modulo'] = 'Compra'
+        data['compras'] = Compra.objects.all()
         return data
     
         return super().post(request, *args, **kwargs)
@@ -393,32 +400,56 @@ class UpdateCompra(UpdateView):
 #-------------------------------------------------------------------------
     
 def DeleteCompra(request, pk):
-    try:
-        pro = Compra.objects.get(id=pk)
-        pro.estado = True
-        pro.save()
-        messages.success(request, "¡Producto eliminado correctamente!")
-    except:
-        messages.error(request, "¡Error, la accion no se pudo realizar!")
-    return redirect(to='lista_compras')
+        try:
+            compra = Compra.objects.get(id=pk)
+            compra.estado = True
+            compra.save()
+            messages.success(request, "¡Compra eliminada correctamente!")
+        except:
+            messages.error(request, "¡Error, la accion no se pudo realizar!")
+        return redirect(to='lista_compras')
+
+
+
 
 def AltaCompra(request, pk):
-    try:
-        pro = Compra.objects.get(id=pk)
-        pro.estado = False
-        pro.save()
-        messages.success(request, "¡Producto restaurado correctamente!")
-    except:
-        messages.error(request, "¡Error, la accion no se pudo realizar!")
-    return redirect(to='lista_bajas_compras')
+        try:
+            compra = Compra.objects.get(id=pk)
+            compra.estado = False
+            compra.save()
+            messages.success(request, "¡Compra restaurada correctamente!")
+        except:
+            messages.error(request, "¡Error, la accion no se pudo realizar!")
+        return redirect(to='lista_baja_compras')
 
-def AltaTodosCompra(request):
-    try:
-        compras = Compra.objects.filter(estado=1)
-        for p in compras:
-            p.estado = False
-            p.save()
-            messages.success(request, "¡Todos los compras fueron restaurados correctamente!")
-    except:
-        messages.error(request, "¡Error, la accion no se pudo realizar!")
-    return redirect(to='lista_compras')
+
+
+def AltaTodasCompra(request):
+        try:
+            compras = Compra.objects.filter(estado=1)
+            for c in compras:
+                c.estado = False
+                c.save()
+            messages.success(request, "¡Todas las compras fueron restauradas correctamente!")
+        except:
+            messages.error(request, "¡Error, la accion no se pudo realizar!")
+        return redirect(to='lista_compras')
+
+
+
+class ListCompraBajas(TemplateView):
+    model = Compra
+    template_name = 'AppInventario/Producto/listCompraBajas.html'
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        return super().dispatch(request, *args, **kwargs)
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        try:
+             data['empresa'] = Empresa.objects.first()
+        except:
+             data['empresa'] = 'Error'
+        data['titulo'] = 'Categorías eliminadas'
+        data['modulo'] = 'Producto'
+        data['modulo'] = 'Proveedor'
+        data['compras'] = Compra.objects.filter(estado=1)
+        return data

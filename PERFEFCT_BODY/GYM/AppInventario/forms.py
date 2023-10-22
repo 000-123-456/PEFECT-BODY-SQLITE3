@@ -182,4 +182,11 @@ class FormCompra(ModelForm):
                 ),
 
         }
-        
+FormCompra.field_order = [
+            'producto',
+            'proveedor',
+            'cantidad',
+            'precio_unitario',
+            'fecha_vec',
+            'total', 
+        ]

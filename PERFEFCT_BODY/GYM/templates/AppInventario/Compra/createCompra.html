@@ -14,9 +14,6 @@
       </a>  
   </div>
   <br>
-
-
-
   <!-- **************************************empieza proveedor ********************************** -->
   {% if proveedor and producto %}
     <div class="col-lg-3"></div>
@@ -77,7 +74,7 @@
   <section class="section error-404  mt-0 d-flex flex-column align-items-center justify-content-center">
     <h2>¡Error, no ha registrado ningun producto!</h2>
     <h2>Se debe registrar por lo menos un producto antes de registrar una compra</h2>
-    <a class="btn" href="{% url 'lista_productos' %}">Registrar producto</a> 
+    <a class="btn" href="#">Registrar producto</a> 
     <img src=" {% static 'assets/img/not-found.svg'%}" class="img-fluid" alt="Page Not Found">
   </section>
 
@@ -86,7 +83,7 @@
     <h2>¡Error, no ha registrado ningun proveedor ni producto!</h2>
     <h2>Se debe registrar por lo menos un proveedor y un producto antes de registrar una compra</h2>
     <a class="btn" href="#">Registrar proveedor</a>
-    <a  class="btn mt-3 mb-3" href="#">Registrar producto</a> 
+    <a  class="btn mt-3 mb-3" href="{% url 'lista_productos' %}">Registrar producto</a> 
     <img src=" {% static 'assets/img/not-found.svg'%}" class="img-fluid" alt="Page Not Found">
   </section>
 

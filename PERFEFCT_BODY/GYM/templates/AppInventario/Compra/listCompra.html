@@ -5,12 +5,13 @@
 {% block modulo %}   {{modulo}}   {% endblock modulo %}
 {% block tituloS %}  {{titulo}}   {% endblock tituloS %}
 {% block cuerpo %}
-{% comment %} ------------MODAL VER PRODUCTO----------------- {% endcomment %}
+{% comment %} ------------MODAL VER COMPRA----------------- {% endcomment %}
+
 <div class="modal fade" id="verCompra" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header bg-warning">
-        <h5 class="modal-title text-black" id="exampleSideModal2"><b>Información de la compra</b></h5>
+        <h5 class="modal-title text-black" id="exampleSideModal2"><b>Información producto</b></h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -25,21 +26,12 @@
           </div>
 
           <div class="col-md-6 mb-4 text-white">
-            <strong><p id='producto' class='verP text-warning'>Doloremque vero ex debitis veritatis?</p></strong>
-            <strong><p id='proveedor' class='verP text-warning'>Doloremque vero ex debitis veritatis?</p></strong>
-            <p><strong>Cantidad: </strong> <span id='cantidadP' class="verP text-white">30</span></p>
-            <p><strong>Precio Unitario: </strong><span id='preciounitarioP' class="verP text-white">20.00</span></p>
-            <p><strong>Total: </strong> <span id='totalP' class="verP text-white">30</span></p>
-            <p><strong>Fecha vencimiento: </strong><span id='fechavecP' class="verP text-white">20.00</span></p>
-            <p><strong>Fecha Compra: </strong> <span id='fechacomP' class="verP text-white">30</span></p>
+            <strong><p id='nombre' class='verC text-warning'>nombre</p></strong>
 
-            <p><strong>producto: </strong> <span id='productoP' class="verP text-white"></span></p>
-            <p><strong>proveedor: </strong> <span id='proveedorP' class="verP text-white"></span></p>
-            <p>
-              <strong>Descripción:</strong>
-              <span id='descripcionP' class="verP text-white">Pan de miga</span>
-              
-            </p>
+            <p><strong>P.Uni: </strong> <span id='precioPP' class="verC text-white">30</span></p>
+            <p><strong>Producto: </strong> <span id='productoP' class="verC text-white">agua</span></p>
+            <p><strong>Proveedor: </strong> <span id='proveedorP' class="verC text-white">persona</span></p>
+           
           </div>
         </div>
       </div>
@@ -53,101 +45,106 @@
 </div>
 
 
-{% comment %} ------------MODAL VER PRODUCTO----------------- {% endcomment %}
+
+
+
+{% comment %}****************************************************************************** {% endcomment %}
+
+{% comment %} ------------MODAL VER COMPRA----------------- {% endcomment %}
 
 <section class="section">
-        <div class="row">
-          {% comment %} <div class="col-lg-1"></div> {% endcomment %}
-          <div class="col-lg-12 d-flex flex-row-reverse">
-            <a href="{% url 'lista_bajas_compras' %}" class="btn btn-danger">
-              <b><i class="bi bi-trash"></i> Papelera</b>
-            </a>
-            <a href="{% url 'crear_compra' %}" class="btn btn-primary mx-1">
-              <b><i class="bi bi-plus-lg"></i> Nueva Compra</b>
-            </a>
-            
-            <br>
-        </div>
-          <br>
-          <br>
-          <div class="col-lg-12">
-                
-                <!-- Horizontal Form -->
+  <div class="row">
+    {% comment %} <div class="col-lg-1"></div> {% endcomment %}
+    <div class="col-lg-12 d-flex flex-row-reverse">
+      <a href="{% url 'lista_bajas_compras' %}" class="btn btn-danger">
+        <b><i class="bi bi-trash"></i> Papelera</b>
+      </a>
+      <a href="{% url 'crear_compra' %}" class="btn btn-primary mx-1">
+        <b><i class="bi bi-plus-lg"></i> Nuevo producto</b>
+      </a>
+      
+      <br>
+  </div>
+    <br>
+    <br>
+    <div class="col-lg-12">
+          
+          <!-- Horizontal Form -->
 
-                {% if form.errors %}
-                {% for field  in form  %}
-                        {% for error in field.errors %}
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <strong>Notificacion: </strong>{{error}}.
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" arial-label="Close"></button>
-                        </div>
-                        {% endfor %}
-                {% endfor %}
-              {% endif %}
-            <br>
-            <div class="card">
-              
-              <div class="card-body"> 
-                <h5 class="card-title text-warning"> <i class="bi bi-list-task"></i> {{titulo}}</h5>
-                <hr>
-                
-                <table class="table bg-black text-white strip rounded mb-4" style="text-align: center" id="data">
-                    <thead class="bg-warning text-black">
-                      <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Cantidad</th>
-                        <th scope="col">P.Uni</th>
-                        <th scope="col">Total</th>
-                        <th scope="col">F.Ven</th>
-                        <th scope="col">F.Comp</th>
-                        <th scope="col">Prod</th>
-                        <th scope="col">proveedor</th>
-                        <th scope="col">Opciones</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% if compras %} {% for p in compras %}
-                      <tr>
-                        <td style="vertical-align: middle;">{{forloop.counter}}</td>
-                        <td style="vertical-align: middle;">{{ p.cantidad }}</td>
-                        <td style="vertical-align: middle;">$ {{ p.precio_unitario }}</td>
-                        <td style="vertical-align: middle;">$ {{ p.total }}</td>
-                        <td style="vertical-align: middle;">$ {{ p.fecha_vec }}</td>
-                        <td style="vertical-align: middle;">$ {{ p.producto }}</td>
-                        <td style="vertical-align: middle;">$ {{ p.proveedor }}</td>
-                        <td style="vertical-align: middle;">
-                        
-                        <td style="vertical-align: middle;">
-                          
-                          <button type="button" class="btn btn-primary btnVP" data-bs-toggle="modal" data-bs-target="#verCompra">
-                            <i class="bi bi-eye iVP"></i>
-                          </button>
-                          <a type="button" class="btn btn-secondary" href="{%url 'actualizar_compra' p.id %}">
-                            <i class="bi bi-pencil-square"></i>
-                          </a>
-                          <a class="btn btn-danger" href="#" onclick="eliminarCompra({{p.id}})">
-                            <i class="bi bi-trash btnUM"></i>
-                        </a>
-                          
-                          
-                         
-                        </td>
-                      </tr>
-                  
-                      {% endfor %} {% else %}
-                      <td colspan="9" style="text-align: center">
-                        <b>No hay datos para mostrar</b>
-                      </td>
-                      {% endif %}
-                    </tbody>
-                  </table>
-              </div>
-            </div>
-          </div>
-          {% comment %} <div class="col-lg-1"></div> {% endcomment %}
-        </div>
+          {% if form.errors %}
+          {% for field  in form  %}
+                  {% for error in field.errors %}
+                  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                      <strong>Notificacion: </strong>{{error}}.
+                      <button type="button" class="btn-close" data-bs-dismiss="alert" arial-label="Close"></button>
+                  </div>
+                  {% endfor %}
+          {% endfor %}
+        {% endif %}
+      <br>
+      <div class="card">
         
-      </section>
+        <div class="card-body"> 
+          <h5 class="card-title text-warning"> <i class="bi bi-list-task"></i> {{titulo}}</h5>
+          <hr>
+          
+          <table class="table bg-black text-white strip rounded mb-4" style="text-align: center" id="data">
+            <thead class="bg-warning text-black">
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Cantidad</th>
+                <th scope="col">Producto</th>
+                <th scope="col">Proveedor</th>
+                <th scope="col">P.Uni</th>
+                <th scope="col">Fecha Venc</th>
+                <th scope="col">Opciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if compras %}
+              {% for c in compras %}
+              <tr>
+                <td style="vertical-align: middle;">{{forloop.counter}}</td>
+                <td style="vertical-align: middle;">{{ c.cantidad }}</td>
+                <td style="vertical-align: middle;">{{ c.producto }}</td>
+                <td style="vertical-align: middle;">{{ c.proveedor }}</td>
+                <td style="vertical-align: middle;">$ {{ c.precio_unitario }}</td>
+                <td style="vertical-align: middle;"> {{ c.fecha_vec }}</td>
+                <td style="vertical-align: middle;">
+
+                  <button type="button" class="btn btn-primary btnVP" data-bs-toggle="modal" data-bs-target="#verCompra">
+                    <i class="bi bi-eye iVP"></i>
+                  </button>
+
+                  <a type="button" class="btn btn-secondary" href="{% url 'actualizar_compra' c.id %}">
+                    <i class="bi bi-pencil-square"></i>
+                  </a>
+                 <a class="btn btn-danger" onclick="eliminarCompra({{c.id}})">
+                    <i class="bi bi-trash btnUM"></i>
+                 </a>
+
+
+                </td>
+              </tr>
+              {% endfor %}
+              {% else %}
+              <tr>
+                <td colspan="5" style="text-align: center">
+                  <b>No hay datos para mostrar</b>
+                </td>
+              </tr>
+              {% endif %}
+            </tbody>
+          </table>
+          
+        </div>
+      </div>
+    </div>
+    {% comment %} <div class="col-lg-1"></div> {% endcomment %}
+  </div>
+  
+</section>
+
 
 
 
