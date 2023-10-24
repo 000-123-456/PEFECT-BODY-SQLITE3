@@ -4,6 +4,7 @@ from django.forms import model_to_dict
 from AppUsers.models import User
 from AppControlDeClientes.op import *
 from GYM.settings import MEDIA_URL,STATIC_URL
+from datetime import datetime, timedelta,date
 
 class Membresia(models.Model):
     nombre = models.CharField(max_length=50, null=False, verbose_name='Nombre')
@@ -60,6 +61,27 @@ class Miembro(models.Model):
         edad = fecha_actual.year - fecha_nacimiento.year - ((fecha_actual.month, fecha_actual.day) < (fecha_nacimiento.month, fecha_nacimiento.day))
 
         return edad
+    def calcular_fecha_final(self):
+        # Convierte la fecha de inicio en un objeto date
+        fecha_inicio = datetime.strptime(self.fecha_inicio, '%Y-%m-%d')
+
+        # Obtiene el primer día del mes siguiente
+        primer_dia_del_mes_siguiente = date(
+            fecha_inicio.year + (fecha_inicio.month // 12),
+            (fecha_inicio.month % 12) + 1,
+            1
+        )
+
+        # Calcula el último día del mes siguiente
+        fecha_final = date(
+            primer_dia_del_mes_siguiente.year + (primer_dia_del_mes_siguiente.month // 12),
+            (primer_dia_del_mes_siguiente.month % 12) + 1,
+            1
+        ) - timedelta(days=1)
+        self.fecha_fin = fecha_final.strftime('%Y-%m-%d')
+        return fecha_final.strftime('%Y-%m-%d')
+
+
  
 
 

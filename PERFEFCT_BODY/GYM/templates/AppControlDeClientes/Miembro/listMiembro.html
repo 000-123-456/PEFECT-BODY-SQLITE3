@@ -1,5 +1,7 @@
 {% extends 'layout/index.html' %}
 {% load static %}
+{% load custom_filters %}
+
 {% block titulo %}   {{titulo}}   {% endblock titulo %}
 {% block tituloP %}  {{titulo}}   {% endblock tituloP %}
 {% block modulo %}   {{modulo}}   {% endblock modulo %}
@@ -53,6 +55,65 @@
 
 
 {% comment %} ------------MODAL VER PRODUCTO----------------- {% endcomment %}
+
+{% comment %} ------------MODAL ASIGNAR MEMBRESIA-----------------{% endcomment %}
+<div class="modal fade" id="asignarM" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      
+      <div class="modal-body">
+        <div class="pricing6 py-3 ">
+          <div class="container"> 
+            <div class="row justify-content-center">
+              <div class="col-md-8 text-center text-white">
+                <h3 class="mb-3 text-warning">Asigna una membresía</h3>
+                <h6 class="subtitle font-weight-normal">Estas son las membresías disponibles</h6>
+              </div>
+            </div>
+            <!-- row  -->
+            <div class="row mt-4">
+              <input type="text" value="" id="usernameId" hidden>
+              {% if membresias %} {% for m in membresias %}
+              <!-- column  -->
+              <div class="col-md-6">
+                <div class="card card-shadow bg-warning border-0 mb-4">
+                  <div class="card-body p-4">
+                    <div class="d-flex align-items-center">
+                      <h5 class="font-medium m-b-0"><strong>{{m.nombre}}</strong></h5>
+                    </div>
+                    <div class="row">
+                      <div class="col-lg-12 text-center">
+                        <div class="price-box my-3">
+                          <sup>$</sup><span class="text-dark display-5">{{m.precio|floatformat:"-2"|replace_comma }}</span>
+                          <h6 class="font-weight-light">{{m.duracion}} meses</h6>
+                          <a class="btn btn-dark-moon btnAsignar border-0 font-14 text-white p-3 btn-block mt-3" href="#">Seleccionar </a>
+                          <input type="text" class="idM" value="{{m.id}}" id="membresiaId{{forloop.counter}}" hidden>
+                        </div>
+                      </div>
+                      
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+              <!-- column  -->
+              {% endfor %}
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><b>Cerrar</b></button>
+      </div>
+  </form>
+  
+    </div>
+  </div>
+</div>
+
+
+{% comment %} ------------MODAL ASIGNAR MEMBRESIA----------------- {% endcomment %}
 
 <section class="section">
         <div class="row">
@@ -128,7 +189,7 @@
                           <i class="dropdown-toggle"></i></a>
                         <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" style="">
                           <li><a class="dropdown-item" href="{% url "actualizar_miembro" m.id %}"><strong><i class="bi bi-pencil-square"></i> Actualizar datos</a></strong></li>
-                          <li><a class="dropdown-item" href="#" ><strong><i class="bi bi-person-lines-fill"></i> Asignar membresía</a></strong></li>
+                          <li class="liAM"><a class="dropdown-item aAM" href="#" data-bs-toggle="modal" data-bs-target="#asignarM"><strong class="btnAM"><i class="bi bi-person-lines-fill iAM"></i> Asignar membresía</a></strong></li>
                           <li><a class="dropdown-item text-danger" href="#" onclick="eliminarProducto({{m.id}})"><strong><i class="bi bi-trash btnUM"></i> Eliminar miembro</a></strong></li>
                         </ul>
                          
@@ -170,13 +231,13 @@
         { searchable: false, targets: [4] },
         //{ width: "5%", targets: [0] }
     ],
-    pageLength: 6,
+    pageLength: 5,
     destroy: true,
     language: {
         lengthMenu: "Mostrar _MENU_ registros por página",
         zeroRecords: "Ningún producto encontrado",
         info: "Mostrando de _START_ a _END_ de un total de _TOTAL_ registros",
-        infoEmpty: "Ningún producto encontrado",
+        infoEmpty: "Ningún miembro encontrado",
         infoFiltered: "(filtrados desde _MAX_ registros totales)",
         search: "",
         loadingRecords: "Cargando...",

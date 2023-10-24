@@ -15,6 +15,8 @@ from pathlib import Path
 
 from django.urls import reverse_lazy
 import GYM.db as db
+from django.utils.translation import gettext_lazy as _
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -54,6 +56,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
+    
 ]
 
 ROOT_URLCONF = 'GYM.urls'
@@ -105,12 +109,20 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'es-sv'
+LANGUAGE_CODE = 'es'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/El_Salvador'
+
+LANGUAGES = [
+    ('es', _('Spanish')),
+]
+
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'locale'),
+]
 
 USE_I18N = True
-
+USE_L10N = True
 USE_TZ = True
 
 
@@ -130,7 +142,9 @@ EMAIL_USE_TLS=True
 EMAIL_PORT=587
 EMAIL_HOST_USER="perfectbody952@gmail.com"
 EMAIL_HOST_PASSWORD="tqiebdipuyysdeqo"
-
+#CONFIGURACION DE DECIMALES
+DECIMAL_SEPARATOR = '.'
+USE_THOUSAND_SEPARATOR = True
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 

@@ -30,7 +30,7 @@ function eliminarProducto(id){
       }
     })
   }
-  let obtenerProducto = async (usuario) => {
+  let obtenerMiembro = async (usuario) => {
     try {
       const response = await fetch(`./get_miembro/${usuario}/`)
       const data = await response.json()
@@ -81,23 +81,90 @@ function eliminarProducto(id){
   }
 const tabla = document.getElementById("data")
 const inputs = document.querySelectorAll(".verP")
+const usernameId = document.getElementById("usernameId")
+const membresiaId  = document.getElementById("membresiaId")
 tabla.addEventListener('click',(e) => {
     e.stopPropagation();
     //console.log(e.target.class)
     if(e.target.classList.contains('btnVP')){
         let data = e.target.parentElement.parentElement.children;
         console.log(data[1].innerText)
-        obtenerProducto(data[2].innerText)
+        obtenerMiembro(data[2].innerText)
         console.log(inputs)
         //fill(data)
     }
     if(e.target.classList.contains('iVP')){
         let data = e.target.parentElement.parentElement.parentElement.children;
         console.log(data[1].innerText)
-        obtenerProducto(data[2].innerText)
+        obtenerMiembro(data[2].innerText)
 
         //fill(data)
     }
+    if(e.target.classList.contains('btnAM')){
+      let data = e.target.parentElement.parentElement.parentElement.parentElement.parentElement.children;
+      console.log(data)
+      usernameId.value = data[2].innerText
+      console.log(usernameId.value)
+
+      //fill(data)
+  }
+  if(e.target.classList.contains('aAM')){
+    let data = e.target.parentElement.parentElement.parentElement.parentElement.children;
+    console.log(data)
+    usernameId.value = data[2].innerText
+    console.log(usernameId.value)
+
+    //fill(data)
+}
+if(e.target.classList.contains('liAM')){
+  let data = e.target.parentElement.parentElement.parentElement.children;
+  console.log(data)
+  usernameId.value = data[2].innerText
+  console.log(usernameId.value)
+
+  //fill(data)
+}
+  if(e.target.classList.contains('iAM')){
+    let data = e.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.children;
+    console.log(data[2].innerText)
+    usernameId.value = data[2].innerText
+    console.log(usernameId.value)
+
+
+    //fill(data)
+}
+
     
    
 })
+document.addEventListener("DOMContentLoaded", function () {
+  let buttons = document.querySelectorAll("a.btnAsignar");
+
+  buttons.forEach(function (button) {
+    button.addEventListener("click", function (event) {
+      event.preventDefault();
+      
+      // Obtiene el valor del input con id "usernameId"
+      var user = document.getElementById("usernameId");
+      var userText = user.value;
+      
+      // Encuentra el elemento .price-box más cercano al botón clicado
+      let priceBox = this.closest(".price-box");
+
+      if (priceBox) {
+        // Busca el input con la clase "idM" dentro del elemento priceBox
+        let input = priceBox.querySelector("input.idM");
+
+        if (input) {
+          let idMembresia = input.value;
+          
+          window.location.href = "CrearVentaMembresia/"+userText+"/"+idMembresia+"/"
+        } else {
+          alert("No se encontró el input con la clase 'idM' dentro del .price-box.");
+        }
+      } else {
+        alert("No se encontró un elemento .price-box cercano al botón clicado.");
+      }
+    });
+  });
+});

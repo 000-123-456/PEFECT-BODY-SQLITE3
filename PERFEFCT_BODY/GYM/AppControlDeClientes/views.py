@@ -1,10 +1,10 @@
+from decimal import Decimal
 from typing import Any
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
-
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView
-from AppControlDeClientes.models import Miembro,Membresia
+from AppControlDeClientes.models import Miembro,Membresia,VentaMembresia
 from AppControlDeClientes.forms import FormMiembro,FormMembresia
 from django.contrib import messages
 from AppUsers.models import Empresa,User
@@ -15,9 +15,9 @@ from GYM.settings import EMAIL_HOST_USER
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.utils import timezone
-from .funciones import calcular_edad, obtener_url_imagen
-from .op import opGenero
-from GYM.settings import MEDIA_URL,STATIC_URL
+from .funciones import calcular_edad, calcular_fecha_final, obtener_url_imagen
+import locale
+
 # Create your views here.
 def prueba(request):
     try:
@@ -33,7 +33,7 @@ def prueba(request):
     return render(request, "layout/index.html",data)
 
 
-
+#*************************Miembro****************************************
 class RegistroMiembroView(CreateView):
     template_name = 'AppControlDeClientes/Miembro/createMiembro.html'
     form_class = FormMiembro
@@ -55,7 +55,7 @@ class RegistroMiembroView(CreateView):
         
         # 2. Validación de usuario existente
         if not user_form.is_valid():
-            print(user_form.errors)
+          
             return render(self.request, self.template_name, {'form': form, 'user_form': user_form, 'empresa':Empresa.objects.first(), 'titulo':'Crear Miembro','modulo':'Miembro'})
 
         user = user_form.save(commit=False)
@@ -132,7 +132,7 @@ class ActualizarMiembroView(UpdateView):
             except Empresa.DoesNotExist:
                 empresa = 'Error'
             if user.email != str(Miembro.objects.get(user=self.object.user).user.email):
-                print(self.object.user.email)
+                
                 user.username = user.email
                 try:
             # 3. Validación de usuario guardado correctamente
@@ -191,6 +191,7 @@ class ListMiembro(ListView):
         data['modulo'] = 'Miembro'
         data['icono']  = '<i class="bi bi-plus-lg"></i>'
         data['miembros'] = Miembro.objects.select_related('user')
+        data['membresias'] = Membresia.objects.filter(estado=0)
         return data
 
 def get_miembro(request, username):
@@ -207,12 +208,60 @@ def get_miembro(request, username):
             data['genero'] = 'Femenino' 
         
         data['foto'] = str(miembro.get_image())
+        locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8') 
+        data['fecha_fin'] = miembro.fecha_fin.strftime('%d de %B de %Y')
         data['email']= str(miembro.user.email)
         data['message']= 'success'
     except Exception as e :
         data = {'message': 'Not Found'}
-        print(e)
+       
     return JsonResponse(data)
+
+
+#*************************Miembro****************************************
+
+
+
+#*************************VENTA DE MEMBRESIA****************************************
+def create_venta_membresia(request, username,idmember):
+    try:
+        user = User.objects.get(username=username)
+        miembro = Miembro.objects.get(user=user.id)
+        empleado = request.user
+        membresia = Membresia.objects.get(id=idmember)
+        monto_pagado = membresia.precio
+        locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
+        fecha_inicio = timezone.now().date()
+        venta_membresia = VentaMembresia(empleado=empleado,miembro=miembro,monto_pagado=monto_pagado,membresia=membresia)
+        miembro.estado_membresia = 1
+        miembro.fecha_inicio = venta_membresia.fecha
+        locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
+        fecha_fin = calcular_fecha_final(fecha_inicio, membresia.duracion)
+        miembro.fecha_fin = fecha_fin
+        fecha_fin_formateada = fecha_fin.strftime('%d de %B de %Y')
+
+        # Restaura el idioma local a su valor original
+        locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8') 
+        miembro.save()
+        venta_membresia.save()
+        print(fecha_fin)
+        messages.success(request, f"Venta realizada con éxito, el plan vence {fecha_fin_formateada}")
+        subject = 'Compra realizada con éxito'
+        message = f'\nEl plan comprado fue el {membresia.nombre}, con un costo de ${membresia.precio} y una duración de {membresia.duracion} meses. Finaliza el {fecha_fin_formateada}.\n\n¡GRACIAS POR FORMAR PARTE DE LA FAMILIA PERFECT BODY!\n\nCualquier consulta puedes acercate con nuestros encargados de turno, estamos para servite.'
+        from_email = EMAIL_HOST_USER
+        recipient_list = [user.username]
+        send_mail(subject, message, from_email, recipient_list)
+        return redirect(to='lista_miembros')
+
+    except Exception as e:
+        print(e)
+        return redirect(to='lista_miembros')
+    
+
+
+#*************************VENTA DE MEMBRESIA****************************************
+
+
 
 #---------------------------Membresia-------------------------------------------------------
 class CreateMembresia(CreateView):

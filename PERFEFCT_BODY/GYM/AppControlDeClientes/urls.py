@@ -13,8 +13,11 @@ urlpatterns = [
     path('Miembro/CrearMiembro/',login_required(views.RegistroMiembroView.as_view()), name='crear_miembro'),
     path('Miembro/ActualizarMiembro/<int:pk>/',login_required(views.ActualizarMiembroView.as_view()), name='actualizar_miembro'),
     path('Miembro/get_miembro/<str:username>/',login_required(views.get_miembro), name='get_miembro'),
-    
+    #------------------------------FIN DE LAS VISTAS DE MIEMBRO-------------------------------------------------------
 
+    #------------------------------INICIO DE LAS VISTAS DE VENTA MEMBRESIA-------------------------------------------------------
+    path('Miembro/CrearVentaMembresia/<str:username>/<int:idmember>/', login_required(views.create_venta_membresia), name='create_venta_membresia'),
+    #------------------------------INICIO DE LAS VISTAS DE VENTA MEMBRESIA-------------------------------------------------------
 
     #----------------------------INICIO DE LAS VISTAS DE MEMBRESIA --------------------------------------------------------
     path('Membresia/CrearMembresia/',login_required(views.CreateMembresia.as_view()), name='crear_membresia'),
