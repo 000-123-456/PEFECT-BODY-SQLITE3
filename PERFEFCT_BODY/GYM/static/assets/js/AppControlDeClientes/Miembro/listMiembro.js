@@ -30,6 +30,39 @@ function eliminarProducto(id){
       }
     })
   }
+
+  function asiganarMembresia(idusuario, idMembresia){
+    const swalWithBootstrapButtons2 = Swal.mixin({
+      customClass: {
+        confirmButton: 'btn btn-primary',
+        cancelButton: 'btn btn-danger'
+      },
+      buttonsStyling: false
+    })
+    
+    swalWithBootstrapButtons2.fire({
+      title: '¿Seguro que desea realizar esta acción?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Confirmar',
+      cancelButtonText: 'Cancelar',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        
+        window.location.href = "CrearVentaMembresia/"+idusuario+"/"+idMembresia+"/"
+      } else if (
+        /* Read more about handling dismissals below */
+        result.dismiss === Swal.DismissReason.cancel
+      ) {
+        swalWithBootstrapButtons2.fire(
+          'Operacion cancelada',
+          'La membresía no se ha asigando :)',
+          'error'
+        )
+      }
+    })
+  }
   let obtenerMiembro = async (usuario) => {
     try {
       const response = await fetch(`./get_miembro/${usuario}/`)
@@ -162,8 +195,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (input) {
           let idMembresia = input.value;
-          
-          window.location.href = "CrearVentaMembresia/"+userText+"/"+idMembresia+"/"
+          asiganarMembresia(userText,idMembresia);
         } else {
           alert("No se encontró el input con la clase 'idM' dentro del .price-box.");
         }

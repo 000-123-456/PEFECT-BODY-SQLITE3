@@ -256,7 +256,7 @@ def create_venta_membresia(request, username,idmember):
         print(fecha_fin)
         messages.success(request, f"Venta realizada con éxito, el plan vence {fecha_fin_formateada}")
         subject = 'Compra realizada con éxito'
-        message = f'\nEl plan comprado fue el {membresia.nombre}, con un costo de ${membresia.precio} y una duración de {membresia.duracion} meses. Finaliza el {fecha_fin_formateada}.\n\n¡GRACIAS POR FORMAR PARTE DE LA FAMILIA PERFECT BODY!\n\nCualquier consulta puedes acercate con nuestros encargados de turno, estamos para servite.'
+        message = f'\nEl plan comprado fue el {membresia.nombre}, con un costo de ${membresia.precio} y una duración de {membresia.duracion} meses. Finaliza el {fecha_fin_formateada}.\n\n¡GRACIAS POR FORMAR PARTE DE LA FAMILIA PERFECT BODY!\n\nCualquier consulta puedes acercate con nuestros encargados de turno, estamos para servirte.'
         from_email = EMAIL_HOST_USER
         recipient_list = [user.username]
         send_mail(subject, message, from_email, recipient_list)
