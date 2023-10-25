@@ -131,17 +131,23 @@ class ActualizarMiembroView(UpdateView):
                 user.empresa = Empresa.objects.first()
             except Empresa.DoesNotExist:
                 empresa = 'Error'
-            if user.email != str(Miembro.objects.get(user=self.object.user).user.email):
-                
-                user.username = user.email
-                try:
+            user.username = user.email
+            email = user.email
+            print(email)
+            email_viejo = Miembro.objects.get(user=self.object.user).user.email
+            respuesta = email_viejo==email
+            miembro.user = user
+            try:
             # 3. Validación de usuario guardado correctamente
                     user.save()
-                except IntegrityError:
+            except IntegrityError:
                     messages.error(self.request, "El nombre de usuario ya existe. Por favor, elija otro nombre de usuario.")
                     return render(self.request, self.template_name, {'form': form, 'user_form': user_form, 'empresa':Empresa.objects.first(), 'titulo':'Crear Miembro','modulo':'Miembro'})
-                miembro.user = user
-                miembro.save()
+            
+            
+            miembro.save()
+            print(email_viejo)
+            if not respuesta:
                 subject = 'Actualización exitosa'
                 message = f'Se ha actualizado exitosamente.\nUsuario nuevo: {user.username}\nIngrese al siguiente link: http://127.0.0.1:8000/'
                 from_email = EMAIL_HOST_USER
