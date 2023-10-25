@@ -208,11 +208,13 @@ def get_miembro(request, username):
             data['genero'] = 'Femenino' 
         
         data['foto'] = str(miembro.get_image())
-        locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8') 
-        data['fecha_fin'] = miembro.fecha_fin.strftime('%d de %B de %Y')
+        if miembro.fecha_fin:
+            locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8') 
+            data['fecha_fin'] = miembro.fecha_fin.strftime('%d de %B de %Y')
         data['email']= str(miembro.user.email)
         data['message']= 'success'
     except Exception as e :
+        print(e)
         data = {'message': 'Not Found'}
        
     return JsonResponse(data)

@@ -68,21 +68,19 @@ function eliminarProducto(id){
         }
         inputs[8].innerText = data.direcccion || "No ingresada"
         inputs[9].innerText = data.telefono || "No ingresado"
-
-        
-        
-        
-       
-        
+  
+      }else{
+        console.log(data)
       }
     } catch (error) {
-
+        console.log(error)
     }
   }
 const tabla = document.getElementById("data")
 const inputs = document.querySelectorAll(".verP")
 const usernameId = document.getElementById("usernameId")
 const membresiaId  = document.getElementById("membresiaId")
+document.addEventListener("DOMContentLoaded", function () {
 tabla.addEventListener('click',(e) => {
     e.stopPropagation();
     //console.log(e.target.class)
@@ -133,38 +131,35 @@ if(e.target.classList.contains('liAM')){
 
     //fill(data)
 }
+if(e.target.classList.contains('.btnAsignar')){
+  event.preventDefault();
+      
+  // Obtiene el valor del input con id "usernameId"
+  var user = document.getElementById("usernameId");
+  var userText = user.value;
+  
+  // Encuentra el elemento .price-box más cercano al botón clicado
+  let priceBox = this.closest(".price-box");
+
+  if (priceBox) {
+    // Busca el input con la clase "idM" dentro del elemento priceBox
+    let input = priceBox.querySelector("input.idM");
+
+    if (input) {
+      let idMembresia = input.value;
+      
+      window.location.href = "CrearVentaMembresia/"+userText+"/"+idMembresia+"/"
+    } else {
+      alert("No se encontró el input con la clase 'idM' dentro del .price-box.");
+    }
+  } else {
+    alert("No se encontró un elemento .price-box cercano al botón clicado.");
+  }
+}
 
     
    
 })
-document.addEventListener("DOMContentLoaded", function () {
-  let buttons = document.querySelectorAll("a.btnAsignar");
 
-  buttons.forEach(function (button) {
-    button.addEventListener("click", function (event) {
-      event.preventDefault();
-      
-      // Obtiene el valor del input con id "usernameId"
-      var user = document.getElementById("usernameId");
-      var userText = user.value;
-      
-      // Encuentra el elemento .price-box más cercano al botón clicado
-      let priceBox = this.closest(".price-box");
-
-      if (priceBox) {
-        // Busca el input con la clase "idM" dentro del elemento priceBox
-        let input = priceBox.querySelector("input.idM");
-
-        if (input) {
-          let idMembresia = input.value;
-          
-          window.location.href = "CrearVentaMembresia/"+userText+"/"+idMembresia+"/"
-        } else {
-          alert("No se encontró el input con la clase 'idM' dentro del .price-box.");
-        }
-      } else {
-        alert("No se encontró un elemento .price-box cercano al botón clicado.");
-      }
-    });
-  });
+  
 });
