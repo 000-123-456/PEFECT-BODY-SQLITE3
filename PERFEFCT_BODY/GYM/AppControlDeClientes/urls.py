@@ -17,6 +17,7 @@ urlpatterns = [
 
     #------------------------------INICIO DE LAS VISTAS DE VENTA MEMBRESIA-------------------------------------------------------
     path('Miembro/CrearVentaMembresia/<str:username>/<int:idmember>/', login_required(views.create_venta_membresia), name='create_venta_membresia'),
+    path('VentaMembresia/', login_required(views.ListVentaMembresia.as_view()), name='list_venta_membresia'),
     #------------------------------INICIO DE LAS VISTAS DE VENTA MEMBRESIA-------------------------------------------------------
 
     #----------------------------INICIO DE LAS VISTAS DE MEMBRESIA --------------------------------------------------------

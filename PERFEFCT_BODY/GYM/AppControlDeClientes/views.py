@@ -17,6 +17,7 @@ from django.db import IntegrityError
 from django.utils import timezone
 from .funciones import calcular_edad, calcular_fecha_final, obtener_url_imagen
 import locale
+from django.db.models import Sum, Count
 
 # Create your views here.
 def prueba(request):
@@ -267,6 +268,35 @@ def create_venta_membresia(request, username,idmember):
     
 
 
+class ListVentaMembresia(ListView):
+    model = VentaMembresia
+    template_name = 'AppControlDeClientes/VentaMembresia/listVentaMembresia.html'
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        return super().dispatch(request, *args, **kwargs)  
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        try:
+             data['empresa'] = Empresa.objects.first()
+        except:
+             data['empresa'] = 'Error'
+        data['titulo'] = 'Ventas realizadas'
+        data['modulo'] = 'Venta de membresías'
+        data['icono']  = '<i class="bi bi-plus-lg"></i>'
+        data['ventas_membresia'] = VentaMembresia.objects.select_related('miembro')
+        fecha_actual = timezone.localtime(timezone.now()).date()
+        ventas_hoy = VentaMembresia.objects.filter(fecha=fecha_actual)
+        data['ganancia_hoy'] = ventas_hoy.aggregate(total_ventas=Sum('monto_pagado'))['total_ventas']
+                # Realiza un recuento de todas las ventas por nombre
+        ventas_contadas = VentaMembresia.objects.values('membresia').annotate(total_ventas=Count('membresia'))
+
+        # Ordena las ventas contadas de mayor a menor
+        ventas_ordenadas = ventas_contadas.order_by('-total_ventas')
+
+        # La venta más común será la primera en la lista ordenada
+        data['mas_vendida'] = Membresia.objects.get(id=ventas_ordenadas[0]['membresia'])
+
+
+        return data
 #*************************VENTA DE MEMBRESIA****************************************
 
 
