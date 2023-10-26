@@ -285,15 +285,23 @@ class ListVentaMembresia(ListView):
         data['ventas_membresia'] = VentaMembresia.objects.select_related('miembro')
         fecha_actual = timezone.localtime(timezone.now()).date()
         ventas_hoy = VentaMembresia.objects.filter(fecha=fecha_actual)
-        data['ganancia_hoy'] = ventas_hoy.aggregate(total_ventas=Sum('monto_pagado'))['total_ventas']
+        ventas_hoy_dinero = ventas_hoy.aggregate(total_ventas=Sum('monto_pagado'))['total_ventas']
+        if ventas_hoy_dinero:
+
+            data['ganancia_hoy'] = ventas_hoy_dinero
+        else:
+             data['ganancia_hoy'] = "0.00"
                 # Realiza un recuento de todas las ventas por nombre
-        ventas_contadas = VentaMembresia.objects.values('membresia').annotate(total_ventas=Count('membresia'))
+        try:
+            ventas_contadas = VentaMembresia.objects.values('membresia').annotate(total_ventas=Count('membresia'))
 
-        # Ordena las ventas contadas de mayor a menor
-        ventas_ordenadas = ventas_contadas.order_by('-total_ventas')
+            # Ordena las ventas contadas de mayor a menor
+            ventas_ordenadas = ventas_contadas.order_by('-total_ventas')
 
-        # La venta más común será la primera en la lista ordenada
-        data['mas_vendida'] = Membresia.objects.get(id=ventas_ordenadas[0]['membresia'])
+            # La venta más común será la primera en la lista ordenada
+            data['mas_vendida'] = Membresia.objects.get(id=ventas_ordenadas[0]['membresia'])
+        except Exception as e:
+            data['mas_vendida'] = "Ninguna"
 
 
         return data

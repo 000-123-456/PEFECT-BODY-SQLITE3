@@ -66,14 +66,15 @@
                       <label for="yourUsername" class="form-label text-black" >Usuario</label>
                       <div class="input-group has-validation">
                         <span class="input-group-text" id="inputGroupPrepend">@</span>
-                        <input autofocus type="text" name="username" class="form-control" id="yourUsername" required>
+                        <input autofocus type="text" name="username" class="form-control" id="yourUsername" autocomplete="off"required>
                         <div class="invalid-feedback">Por favor ingrese su usuario.</div>
                       </div>
                     </div>
 
                     <div class="col-12">
                       <label for="yourPassword" class="form-label">Contraseña</label>
-                      <input type="password" name="password" class="form-control" id="yourPassword" required>
+                      <input type="password" name="password" class="form-control form-control-password" id="yourPassword" autocomplete="off" required>
+
                       <div class="invalid-feedback">Por favor ingrese su contraseña.</div>
                     </div>
                     <div class="col-12">

@@ -69,9 +69,9 @@
                 {% endfor %}
               {% endif %}
             <br>
-            <div class="card">
+            <div class="card table-responsive">
               
-              <div class="card-body"> 
+              <div class="card-body table-responsive"> 
                 <h5 class="card-title text-warning"> <i class="bi bi-list-task"></i> {{titulo}}</h5>
                 <hr>
                 
@@ -89,13 +89,13 @@
                     <tbody>
                       {% if ventas_membresia %} {% for vm in ventas_membresia %}
                       <tr>
-                        <td>{{forloop.counter}}</td>
-                        <td>{{ vm.fecha }}</td>
-                        <td>{{ vm.membresia.nombre }}</td>
-                        <td>$ {{ vm.monto_pagado }}</td>
-                        <td>{{ vm.miembro.user.first_name }}</td>
+                        <td class="text-nowrap">{{forloop.counter}}</td>
+                        <td class="text-nowrap">{{ vm.fecha }}</td>
+                        <td class="text-nowrap">{{ vm.membresia.nombre }}</td>
+                        <td class="text-nowrap">$ {{ vm.monto_pagado }}</td>
+                        <td class="text-nowrap">{{ vm.miembro.user.first_name }}</td>
                        
-                        <td>
+                        <td class="text-nowrap">
                        
                           <a type="button" class="btn btn-secondary" href="{%url 'actualizar_membresia' vm.id %}">
                             <i class="bi bi-pencil-square"></i>

@@ -80,9 +80,9 @@
                 {% endfor %}
               {% endif %}
             <br>
-            <div class="card">
+            <div class="card table-responsive">
               
-              <div class="card-body"> 
+              <div class="card-body table-responsive"> 
                 <h5 class="card-title text-warning"> <i class="bi bi-list-task"></i> {{titulo}}</h5>
                 <hr>
                 
@@ -99,14 +99,14 @@
                     <tbody>
                       {% if productos %} {% for p in productos %}
                       <tr>
-                        <td style="vertical-align: middle;">{{forloop.counter}}</td>
-                        <td style="vertical-align: middle;">{{ p.nombre }}</td>
-                        <td style="vertical-align: middle;">$ {{ p.precio_venta }}</td>
-                        <td style="vertical-align: middle;">
+                        <td class="text-nowrap"style="vertical-align: middle;">{{forloop.counter}}</td>
+                        <td class="text-nowrap"style="vertical-align: middle;">{{ p.nombre }}</td>
+                        <td class="text-nowrap"style="vertical-align: middle;">$ {{ p.precio_venta }}</td>
+                        <td class="text-nowrap"style="vertical-align: middle;">
                             <img src="{{p.get_image}}" class="img-fluid" style="width: 70px; height:70px; border-radius: 20px;">
                         </td>
                         
-                        <td style="vertical-align: middle;">
+                        <td class="text-nowrap" style="vertical-align: middle;">
                           
                           <button type="button" class="btn btn-primary btnVP" data-bs-toggle="modal" data-bs-target="#verProducto">
                             <i class="bi bi-eye iVP"></i>

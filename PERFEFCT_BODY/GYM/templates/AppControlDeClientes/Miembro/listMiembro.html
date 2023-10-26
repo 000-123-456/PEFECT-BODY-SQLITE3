@@ -145,9 +145,9 @@
                 {% endfor %}
               {% endif %}
             <br>
-            <div class="card">
+            <div class="card table-responsive">
               
-              <div class="card-body"> 
+              <div class="card-body table-responsive"> 
                 <h5 class="card-title text-warning"> <i class="bi bi-list-task"></i> {{titulo}}</h5>
                 <hr>
                 
@@ -156,7 +156,7 @@
                       <tr>
                         <th scope="col">#</th>
                         <th scope="col">Nombre</th>
-                        <th scope="col">Correo</th>
+                        <th scope="d-none d-md-table-cell">Correo</th>
                         <th scope="col">Membresía</th>
                         <th scope="col">Opciones</th>
                       </tr>
@@ -164,10 +164,10 @@
                     <tbody>
                       {% if miembros %} {% for m in miembros %}
                       <tr>
-                        <td style="vertical-align: middle;">{{forloop.counter}}</td>
-                        <td style="vertical-align: middle;">{{ m.user.first_name }} {{ m.user.last_name }}</td>
-                        <td style="vertical-align: middle;">{{ m.user.email }}</td>
-                        <td style="vertical-align: middle;">
+                        <td class="text-nowrap"style="vertical-align: middle;">{{forloop.counter}}</td>
+                        <td class="text-nowrap"style="vertical-align: middle;">{{ m.user.first_name }} {{ m.user.last_name }}</td>
+                        <td class="text-nowrap"style="vertical-align: middle;">{{ m.user.email }}</td>
+                        <td class="text-nowrap"style="vertical-align: middle;">
                           {% if m.estado_membresia == 0 %}
                             <span class="badge bg-danger">No asignada</span>
                           {% elif m.estado_membresia == 1 %}
@@ -179,7 +179,7 @@
                             
                         
                         
-                        <td style="vertical-align: middle;">
+                        <td class="text-nowrap" style="vertical-align: middle;">
                           
                           <button type="button" class="btn btn-primary btnVP" data-bs-toggle="modal" data-bs-target="#verProducto" title="Ver informacion">
                             <i class="bi bi-eye iVP"></i>
