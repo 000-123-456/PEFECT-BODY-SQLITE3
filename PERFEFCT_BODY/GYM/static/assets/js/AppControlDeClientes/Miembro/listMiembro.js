@@ -98,6 +98,7 @@ function eliminarProducto(id){
           inputs[6].classList.remove('bg-danger')
           inputs[6].innerText = "VENCIDA"
           inputs[6].classList.add('bg-danger')
+          inputs[7].innerText = "venció el "+data.fecha_fin
         }
         inputs[8].innerText = data.direcccion || "No ingresada"
         inputs[9].innerText = data.telefono || "No ingresado"

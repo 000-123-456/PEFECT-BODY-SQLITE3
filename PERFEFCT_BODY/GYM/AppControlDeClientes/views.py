@@ -1,4 +1,4 @@
-from decimal import Decimal
+
 from typing import Any
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
@@ -15,10 +15,10 @@ from GYM.settings import EMAIL_HOST_USER
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.utils import timezone
-from .funciones import calcular_edad, calcular_fecha_final, obtener_url_imagen
+from .funciones import calcular_edad, calcular_fecha_final, obtener_url_imagen,vencimientoMembresias
 import locale
 from django.db.models import Sum, Count
-
+from datetime import date
 # Create your views here.
 def prueba(request):
     try:
@@ -197,7 +197,8 @@ class ListMiembro(ListView):
         data['titulo'] = 'Lista de miembros'
         data['modulo'] = 'Miembro'
         data['icono']  = '<i class="bi bi-plus-lg"></i>'
-        data['miembros'] = Miembro.objects.select_related('user')
+        vencimientoMembresias()
+        data['miembros'] = Miembro.objects.filter(estado=0)
         data['membresias'] = Membresia.objects.filter(estado=0)
         return data
 
@@ -253,6 +254,9 @@ def create_venta_membresia(request, username,idmember):
         locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8') 
         miembro.save()
         venta_membresia.save()
+        miembro.venta_activa = venta_membresia.id
+        miembro.save()
+        print(venta_membresia.id)
         print(fecha_fin)
         messages.success(request, f"Venta realizada con éxito, el plan vence {fecha_fin_formateada}")
         subject = 'Compra realizada con éxito'
@@ -279,10 +283,13 @@ class ListVentaMembresia(ListView):
              data['empresa'] = Empresa.objects.first()
         except:
              data['empresa'] = 'Error'
+        vencimientoMembresias()
         data['titulo'] = 'Ventas realizadas'
         data['modulo'] = 'Venta de membresías'
         data['icono']  = '<i class="bi bi-plus-lg"></i>'
         data['ventas_membresia'] = VentaMembresia.objects.select_related('miembro')
+        vencimientoMembresias()
+        # GANANCIAS DIARIAS
         fecha_actual = timezone.localtime(timezone.now()).date()
         ventas_hoy = VentaMembresia.objects.filter(fecha=fecha_actual)
         ventas_hoy_dinero = ventas_hoy.aggregate(total_ventas=Sum('monto_pagado'))['total_ventas']
@@ -292,6 +299,8 @@ class ListVentaMembresia(ListView):
         else:
              data['ganancia_hoy'] = "0.00"
                 # Realiza un recuento de todas las ventas por nombre
+
+        # MEMBRESIA MAS VENDIDA
         try:
             ventas_contadas = VentaMembresia.objects.values('membresia').annotate(total_ventas=Count('membresia'))
 

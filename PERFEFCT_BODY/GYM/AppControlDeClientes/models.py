@@ -35,6 +35,7 @@ class Miembro(models.Model):
     fecha_fin = models.DateField(null=True,blank=True)
     ###----- CLAVES FORANEAS --------
     user = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name='user', null=True, blank=True)
+    venta_activa = models.PositiveBigIntegerField(  verbose_name='venta_activa', null=True, blank=True, unique=True)
     def __str__(self) -> str:
         return self.id
     def get_image(self):

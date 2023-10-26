@@ -1,6 +1,7 @@
 import random
 from GYM.settings import STATIC_URL,BASE_DIR
 from datetime import datetime, timedelta,date
+from AppControlDeClientes.models import Miembro
 from django.templatetags.static import static
 import os
 
@@ -113,6 +114,25 @@ fecha_inicio = date(2024, 10, 31)  # Reemplaza con tu fecha de inicio como objet
 duracion_meses = 4  # Reemplaza con la duración en meses que desees
 fecha_final = calcular_fecha_final(fecha_inicio, duracion_meses)
 print(fecha_final)  # Esto imprimirá la fecha final
+
+def vencimientoMembresias():
+        try:
+        # Obtén la fecha actual
+            fecha_actual = date.today()
+
+            # Filtra los miembros con fecha_fin menor a la fecha actual y estado igual a 0
+            miembros_por_actualizar = Miembro.objects.filter(fecha_fin__lt=fecha_actual, estado=0)
+
+            # Verifica si hay miembros para actualizar
+            if miembros_por_actualizar.exists():
+                # Actualiza el campo estado_membresia a 2 para estos miembros
+                miembros_por_actualizar.update(estado_membresia=2, venta_activa=None)
+                print("Los miembros han sido actualizados.")
+            else:
+                print("No se encontraron miembros que cumplan con los criterios de filtrado.")
+
+        except Exception as e:
+            print(f"Ocurrió un error: {e}")
 
 
 
