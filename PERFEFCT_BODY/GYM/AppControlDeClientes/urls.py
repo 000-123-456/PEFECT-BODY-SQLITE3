@@ -26,4 +26,13 @@ urlpatterns = [
     path('Membresia/EliminarMembresia/<int:pk>/', login_required(views.DeleteMembresia), name='eliminar_membresia'),
 
 
+
+    #--------------------------------------------HISTORIAL DE MIEMBRO-------------------------------------------------------
+    path('HistorialMiembro/CreateHistorialMiembro/',login_required(views.CreateHistorialMiembro.as_view()), name='crear_historialmiembro'),
+    path('HistorialMiembro/',login_required(views.ListHistorialMiembro.as_view()), name='lista_historialmiembros'),
+    path('HistorialMiembro/ActualizarHistorialMiembros/<int:pk>/', login_required(views.UpdateHistorialMiembro.as_view()), name='actualizar_historialmiembro'),
+    path('HistorialMiembro/EliminarHistorialMiembros/<int:pk>/', login_required(views.DeleteHistorialMiembro), name='eliminar_historialmiembros'),
+
+
+
 ]

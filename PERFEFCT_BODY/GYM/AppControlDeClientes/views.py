@@ -4,8 +4,8 @@ from django.shortcuts import redirect, render
 
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView
-from AppControlDeClientes.models import Miembro,Membresia
-from AppControlDeClientes.forms import FormMiembro,FormMembresia
+from AppControlDeClientes.models import Miembro,Membresia,HistorialMiembro
+from AppControlDeClientes.forms import FormMiembro,FormMembresia,FormHistorialMiembro
 from django.contrib import messages
 from AppUsers.models import Empresa,User
 from AppUsers.forms import RegistroUsuarioForm
@@ -338,3 +338,134 @@ def AltaTodosMembresia(request):
     return redirect(to='lista_membresias')
 
 ##--------------- FIN VISTAS MEMBRESIA ------------------------------------------
+
+
+##---------------------------------------------INICIO DE HISTORIAL DE MIEMBRO---------------------------------
+class CreateHistorialMiembro(CreateView):
+    model = HistorialMiembro
+    form_class = FormHistorialMiembro
+    success_url = reverse_lazy('crear_historialmiembro')
+    template_name = 'AppControlDeClientes/HistorialMiembro/createHistorialMiembro.html'
+    success_message = "¡Registro realizado con éxito!"
+
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        try:
+            data['empresa'] = Empresa.objects.first()
+        except:
+            data['empresa'] = 'Error'
+        data['titulo'] = 'Crear Bitacora'
+        data['modulo'] = 'Bitacora'
+      
+        return data
+
+    def form_valid(self, form):
+        # Calcula el IMC antes de guardar el registro
+        altura = form.cleaned_data['altura']
+        peso = form.cleaned_data['peso']
+        imc = peso / (altura * altura)  # Fórmula para calcular el IMC
+
+        form.instance.imc = imc  # Asigna el valor calculado al campo IMC en el modelo
+    
+
+        form.instance.miembro = Miembro.objects.get(pk=1)  # Aquí debes reemplazar con el miembro actual
+
+        # Guarda el registro en la base de datos
+        messages.success(self.request, "Bitacora añadida correctamente!")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, format(form.errors.as_text()))
+        return super().form_invalid(form)
+
+
+ #--------------------------------obteniendo el get del historial ----------------------------
+def get_historialmiembro(request, name):
+    data={}
+    try:
+        historial = HistorialMiembro.objects.get(miembro=name)
+        data = historial.toJSON()
+        data['miembros'] = str(historial.miembro)
+        data['img'] = str(historial.get_image())
+        data['message']= 'success'
+    except Exception as e :
+        data = {'message': 'Not Found'}
+        print(e)
+    return JsonResponse(data)
+#*************************************************************************************************
+
+class ListHistorialMiembro(ListView):
+    model = HistorialMiembro
+    template_name = 'AppControlDeClientes/HistorialMiembro/listHistorialMiembro.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        try:
+            data['empresa'] = Empresa.objects.first()
+        except:
+            data['empresa'] = 'Error'
+        data['titulo'] = 'Bitacora'
+        data['modulo'] = 'Bitacora'
+        data['icono'] = '<i class="bi bi-plus-lg"></i>'
+        # Aquí obtén los historiales de miembros y agrégalos al contexto
+        data['historialmiembros'] = HistorialMiembro.objects.all()  # O usa el filtro que necesites
+        return data
+
+
+    #**********************************************************************************************
+
+class UpdateHistorialMiembro(UpdateView):
+    model = HistorialMiembro
+    form_class = FormHistorialMiembro
+    success_url = reverse_lazy('lista_historialmiembros')
+    template_name = 'AppControlDeClientes/HistorialMiembro/updateHistorialMiembro.html'
+    success_message = "¡Historial Miembro actualizado con éxito!"
+
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)  
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        try:
+            data['empresa'] = Empresa.objects.first()
+        except:
+            data['empresa'] = 'Error'
+        data['titulo'] = 'Bitacora Miembro'
+        data['modulo'] = 'Bitacora'
+        return data
+
+    def form_valid(self, form):
+        altura = form.cleaned_data['altura']
+        peso = form.cleaned_data['peso']
+        imc = peso / (altura * altura)  # Fórmula para calcular el IMC
+        form.instance.imc = imc  # Asigna el valor calculado al campo IMC en el modelo
+    
+        messages.success(self.request, "Historial Miembro actualizado con éxito!")
+        return super().form_valid(form)
+
+    
+#*********************************************************************************************************
+def DeleteHistorialMiembro(request, pk):
+    try:
+        historial = HistorialMiembro.objects.get(id=pk)
+        historial.delete()  # Elimina el registro del historial
+        messages.success(request, "¡Historial eliminado correctamente!")
+    except HistorialMiembro.DoesNotExist:
+        messages.error(request, "¡Error, el historial no se pudo encontrar!")
+    except Exception as e:
+        messages.error(request, "¡Error, la acción no se pudo realizar!")
+
+    return redirect(to='lista_historialmiembros')
+
+
+
+
+
+
+

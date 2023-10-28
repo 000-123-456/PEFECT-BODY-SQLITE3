@@ -30,12 +30,12 @@ function eliminarCompra(id){
     }
   })
 }
-let obtenerCompra = async (nombre) => {
+let obtenerCompra = async (id) => {
   try {
-    const response = await fetch(`./get_compra/${nombre}/`)
+    const response = await fetch(`./get_compra/${id}/`)
     const data = await response.json()
     if(data.message === 'success'){
-      inputs[1].innerText = data.nombre.toUpperCase()
+      inputs[1].innerText = data.id.toUpperCase()
       inputs[2].innerText = data.producto
       inputs[3].innerText = data.proveedor
       inputs[4].innerText = data.precio_unitario
