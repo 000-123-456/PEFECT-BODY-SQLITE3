@@ -19,6 +19,7 @@ from .funciones import calcular_edad, calcular_fecha_final, obtener_url_imagen,v
 import locale
 from django.db.models import Sum, Count
 from datetime import date
+from datetime import timedelta
 # Create your views here.
 def prueba(request):
     try:
@@ -155,7 +156,7 @@ class ActualizarMiembroView(UpdateView):
                 recipient_list = [user.username]
                 send_mail(subject, message, from_email, recipient_list)
 
-            messages.success(self.request, "Miembro registrado actualizado")
+            messages.success(self.request, "Miembro actualizado")
             return super().form_valid(form)
         else:
             messages.error(self.request, "El formulario de usuario no es válido. Por favor, corrige los errores.")
@@ -197,11 +198,27 @@ class ListMiembro(ListView):
         data['titulo'] = 'Lista de miembros'
         data['modulo'] = 'Miembro'
         data['icono']  = '<i class="bi bi-plus-lg"></i>'
+        locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
+        data['fecha'] = timezone.localtime(timezone.now()).date()
         vencimientoMembresias()
-        data['miembros'] = Miembro.objects.filter(estado=0)
+        data['miembros'] = Miembro.objects.filter(estado=0).order_by('-id')
         data['membresias'] = Membresia.objects.filter(estado=0)
         return data
-
+class ListMiembroEliminados(ListView):
+    model = Miembro
+    template_name = 'AppControlDeClientes/Miembro/listMiembroBajas.html'
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        return super().dispatch(request, *args, **kwargs)  
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        try:
+             data['empresa'] = Empresa.objects.first()
+        except:
+             data['empresa'] = 'Error'
+        data['titulo'] = 'Miembros eliminados'
+        data['modulo'] = 'Miembros'
+        data['miembros'] = Miembro.objects.filter(estado=1).order_by('-id')
+        return data
 def get_miembro(request, username):
     data={}
     try:
@@ -227,7 +244,30 @@ def get_miembro(request, username):
        
     return JsonResponse(data)
 
+def baja_miembro(request, pk):
+    miembro = Miembro.objects.get(id=pk)
+    if miembro.estado_membresia == 1:
+        messages.warning(request, f'{miembro.user.first_name} tiene una membresía activa, no se puede eliminar.')
+        return redirect(to='lista_miembros')
+    else:
+        miembro.estado = 1
+        miembro.save()
+        messages.success(request,f'{miembro.user.first_name} fue eliminado correctamente.')
+        return redirect(to='lista_miembros')
 
+def alta_miembro(request, pk):
+    miembro = Miembro.objects.get(id=pk)
+    miembro.estado = 0
+    miembro.save()
+    messages.success(request,f'{miembro.user.first_name} fue restaurado correctamente.')
+    return redirect(to='bajas_miembros')
+def alta_todos_miembros(request):
+    miembros = Miembro.objects.filter(estado=1)
+    for m in miembros:
+        m.estado = 0
+        m.save()
+    messages.success(request,f'Todos los miembros fueron restaurados correctamente.')
+    return redirect(to='lista_miembros')
 #*************************Miembro****************************************
 
 
@@ -241,7 +281,7 @@ def create_venta_membresia(request, username,idmember):
         membresia = Membresia.objects.get(id=idmember)
         monto_pagado = membresia.precio
         locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
-        fecha_inicio = timezone.now().date()
+        fecha_inicio = timezone.localtime(timezone.now()).date()
         venta_membresia = VentaMembresia(empleado=empleado,miembro=miembro,monto_pagado=monto_pagado,membresia=membresia)
         miembro.estado_membresia = 1
         miembro.fecha_inicio = venta_membresia.fecha
@@ -287,8 +327,8 @@ class ListVentaMembresia(ListView):
         data['titulo'] = 'Ventas realizadas'
         data['modulo'] = 'Venta de membresías'
         data['icono']  = '<i class="bi bi-plus-lg"></i>'
-        data['ventas_membresia'] = VentaMembresia.objects.select_related('miembro')
-        vencimientoMembresias()
+        data['ventas_membresia'] = VentaMembresia.objects.select_related('miembro').order_by('-id')
+        
         # GANANCIAS DIARIAS
         fecha_actual = timezone.localtime(timezone.now()).date()
         ventas_hoy = VentaMembresia.objects.filter(fecha=fecha_actual)
@@ -312,8 +352,50 @@ class ListVentaMembresia(ListView):
         except Exception as e:
             data['mas_vendida'] = "Ninguna"
 
+        # Calcula la fecha de inicio de la semana actual (lunes)
+        dias_para_lunes = fecha_actual.weekday()
+        fecha_inicio_semana = fecha_actual - timedelta(days=dias_para_lunes)
 
+        # Calcula la fecha de finalización de la semana actual (domingo)
+        fecha_fin_semana = fecha_inicio_semana + timedelta(days=6)
+
+        # Filtra las ventas dentro del rango de fechas de la semana actual
+        ventas_semana = VentaMembresia.objects.filter(fecha__range=[fecha_inicio_semana, fecha_fin_semana])
+
+        # Suma el monto pagado de las ventas de la semana actual
+        ganancia_semana = ventas_semana.aggregate(total_ventas=Sum('monto_pagado'))['total_ventas']
+
+        # Si hay ganancias para la semana, guárdalas en 'data', de lo contrario, establece el valor en "0.00"
+        if ganancia_semana:
+            data['ganancia_semana'] = ganancia_semana
+        else:
+            data['ganancia_semana'] = "0.00"
+        # Filtra las ventas del mes actual
+        ventas_mes_actual = VentaMembresia.objects.filter(fecha__year=fecha_actual.year, fecha__month=fecha_actual.month)
+
+        # Calcula la suma de las ventas del mes
+        ventas_mes_actual_dinero = ventas_mes_actual.aggregate(total_ventas=Sum('monto_pagado'))['total_ventas']
+
+        if ventas_mes_actual_dinero:
+            data['ganancia_mes_actual'] = ventas_mes_actual_dinero
+        else:
+            data['ganancia_mes_actual'] = "0.00"
         return data
+def DeleteVentaMembresia(request, pk):
+    venta_membresia = VentaMembresia.objects.get(id=pk)
+    try:
+        miembro = Miembro.objects.get(venta_activa=venta_membresia.id)
+        miembro.estado_membresia = 0
+        miembro.fecha_inicio = None
+        miembro.fecha_fin = None
+        miembro.venta_activa = None
+        miembro.save()
+        venta_membresia.delete()
+        messages.success(request, 'Venta eliminada correctamente')
+    except Miembro.DoesNotExist:
+        venta_membresia.delete()
+        messages.success(request, 'Venta eliminada correctamente')
+    return redirect(to='list_venta_membresia')
 #*************************VENTA DE MEMBRESIA****************************************
 
 

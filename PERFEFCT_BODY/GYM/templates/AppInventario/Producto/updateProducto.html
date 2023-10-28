@@ -2,7 +2,11 @@
 {% load static %}
 {% block titulo %}   {{titulo}}   {% endblock titulo %}
 {% block tituloP %}  {{titulo}}   {% endblock tituloP %}
-{% block modulo %}   {{modulo}}   {% endblock modulo %}
+{% block modulo %}
+  <a href="{% url 'lista_productos' %}">   
+    {{modulo}}
+  </a>   
+{% endblock modulo %}
 {% block tituloS %}  {{titulo}}   {% endblock tituloS %}
 {% block cuerpo %}
 <section class="section">

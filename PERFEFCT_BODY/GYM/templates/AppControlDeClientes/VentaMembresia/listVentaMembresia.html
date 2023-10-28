@@ -7,15 +7,15 @@
 {% block tituloS %}  {{titulo}}   {% endblock tituloS %}
 {% block cuerpo %}
 <section class="section dashboard">
-        <div class="col-lg-8">
+        <div class="col-lg-12">
         <div class="row">
           {% comment %} <div class="col-lg-1"></div> {% endcomment %}
-          <div class="col-xxl-5 col-md-6">
+          <div class="col-xxl-3 col-md-6">
             <div class="card info-card sales-card">
 
             
               <div class="card-body">
-                <h5 class="card-title">Membresía más vendida<span></span></h5>
+                <h5 class="card-title">Más vendido<span></span></h5>
 
                 <div class="d-flex align-items-center">
                   <div class="card-icon rounded-circle d-flex align-items-center justify-content-center bg-warning">
@@ -30,10 +30,10 @@
             </div>
             </div>
             
-            <div class="col-xxl-4 col-md-6">
+            <div class="col-xxl-3 col-md-6">
                 <div class="card info-card revenue-card">
                   <div class="card-body">
-                    <h5 class="card-title">Venta diarias <span>| Hoy</span></h5>
+                    <h5 class="card-title">Ventas diarias <span>| Hoy</span></h5>
   
                     <div class="d-flex align-items-center">
                       <div class="card-icon rounded-circle d-flex align-items-center justify-content-center bg-warning">
@@ -41,12 +41,41 @@
                       </div>
                       <div class="ps-3">
                         <h6 class="text-warning">{{ganancia_hoy|replace_comma}}</h6>
-                        
-  
                       </div>
                     </div>
                   </div>
+                </div>
+              </div>
+              <div class="col-xxl-3 col-md-6">
+                <div class="card info-card revenue-card">
+                  <div class="card-body">
+                    <h5 class="card-title">Ventas semanales</h5>
   
+                    <div class="d-flex align-items-center">
+                      <div class="card-icon rounded-circle d-flex align-items-center justify-content-center bg-warning">
+                        <i class="bi bi-currency-dollar text-black"></i>
+                      </div>
+                      <div class="ps-3">
+                        <h6 class="text-warning">{{ganancia_semana|replace_comma}}</h6>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xxl-3 col-md-6">
+                <div class="card info-card revenue-card">
+                  <div class="card-body">
+                    <h5 class="card-title">Ventas mensuales</h5>
+  
+                    <div class="d-flex align-items-center">
+                      <div class="card-icon rounded-circle d-flex align-items-center justify-content-center bg-warning">
+                        <i class="bi bi-currency-dollar text-black"></i>
+                      </div>
+                      <div class="ps-3">
+                        <h6 class="text-warning">{{ganancia_mes_actual|replace_comma}}</h6>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
               
@@ -69,7 +98,7 @@
                 {% endfor %}
               {% endif %}
             <br>
-            <div class="card table-responsive">
+            <div class="card recent-sales overflow-auto">
               
               <div class="card-body table-responsive"> 
                 <h5 class="card-title text-warning"> <i class="bi bi-list-task"></i> {{titulo}}</h5>
@@ -80,7 +109,7 @@
                       <tr>
                         <th scope="col">#</th>
                         <th scope="col">Fecha</th>
-                        <th scope="col">Membresia</th>
+                        <th scope="col">Membresía</th>
                         <th scope="col">Precio</th>
                         <th scope="col">Miembro</th>               
                         <th scope="col">Opciones</th>
@@ -96,12 +125,7 @@
                         <td class="text-nowrap">{{ vm.miembro.user.first_name }}</td>
                        
                         <td class="text-nowrap">
-                       
-                          <a type="button" class="btn btn-secondary" href="{%url 'actualizar_membresia' vm.id %}">
-                            <i class="bi bi-pencil-square"></i>
-                          </a>
-                          
-                          <a class="btn btn-danger" href="#" onclick="EliminarMembresia({{m.id}})">
+                          <a class="btn btn-danger" href="#" onclick="EliminarVentaMembresia({{vm.id}})">
                             <i class="bi bi-trash btnUM"></i>
                         </a>
                           
@@ -131,42 +155,7 @@
 
 {% block js %}
 <script>
-  function EliminarMembresia(id){
-    const swalWithBootstrapButtons = Swal.mixin({
-      customClass: {
-        confirmButton: 'btn btn-primary',
-        cancelButton: 'btn btn-danger'
-      },
-      buttonsStyling: false
-    })
-    
-    swalWithBootstrapButtons.fire({
-      title: '¿Seguro que desea eliminar la Membresia de este Cliente?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Confirmar!',
-      cancelButtonText: 'Cancelar!',
-      reverseButtons: true
-    }).then((result) => {
-      if (result.isConfirmed) {
-        
-        window.location.href = "EliminarMembresia/"+id+"/"
-      } else if (
-        /* Read more about handling dismissals below */
-        result.dismiss === Swal.DismissReason.cancel
-      ) {
-        swalWithBootstrapButtons.fire(
-          'Operacion cancelada',
-          'la Membresia no se ha eliminado  :)',
-          'error'
-        )
-      }
-    })
-  }
-
-</script>
-
-<script>
+  document.addEventListener("DOMContentLoaded", function () {
   const dataTableOptions = {
     //scrollX: "400px",
     lengthChange: false,
@@ -207,12 +196,9 @@
     $(this).before('<span class="bi bi-search"></span>');
   });
   {% endif %}
+});
 </script>
-
-
-
-
-
+<Script type="application/javascript" src="{% static 'assets/js/AppControlDeClientes/VentaMembresia/listVentaMembresia.js' %}"></Script>
 {% endblock js %}
 
 

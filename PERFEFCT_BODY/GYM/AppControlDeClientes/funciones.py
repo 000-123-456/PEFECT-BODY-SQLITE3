@@ -110,8 +110,8 @@ def calcular_fecha_final(fecha_inicio, duracion):
     return fecha_final
 
 # Uso de la función:
-fecha_inicio = date(2024, 10, 31)  # Reemplaza con tu fecha de inicio como objeto date
-duracion_meses = 4  # Reemplaza con la duración en meses que desees
+fecha_inicio = date(2023, 10, 27)  # Reemplaza con tu fecha de inicio como objeto date
+duracion_meses = 1  # Reemplaza con la duración en meses que desees
 fecha_final = calcular_fecha_final(fecha_inicio, duracion_meses)
 print(fecha_final)  # Esto imprimirá la fecha final
 

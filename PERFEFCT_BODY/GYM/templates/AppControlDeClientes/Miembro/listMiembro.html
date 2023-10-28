@@ -4,7 +4,11 @@
 
 {% block titulo %}   {{titulo}}   {% endblock titulo %}
 {% block tituloP %}  {{titulo}}   {% endblock tituloP %}
-{% block modulo %}   {{modulo}}   {% endblock modulo %}
+{% block modulo %}
+  <a href="{% url 'lista_miembros' %}">   
+    {{modulo}}
+  </a>   
+{% endblock modulo %}
 {% block tituloS %}  {{titulo}}   {% endblock tituloS %}
 {% block cuerpo %}
 {% comment %} ------------MODAL VER PRODUCTO-----------------{% endcomment %}
@@ -144,9 +148,10 @@
 
 <section class="section">
         <div class="row">
+          
           {% comment %} <div class="col-lg-1"></div> {% endcomment %}
           <div class="col-lg-12 d-flex flex-row-reverse">
-            <a href="{% url 'lista_bajas_productos' %}" class="btn btn-danger">
+            <a href="{% url 'bajas_miembros' %}" class="btn btn-danger">
               <b><i class="bi bi-trash"></i> Papelera</b>
             </a>
             <a href="{% url 'crear_miembro' %}" class="btn btn-primary mx-1">
@@ -172,7 +177,7 @@
                 {% endfor %}
               {% endif %}
             <br>
-            <div class="card table-responsive">
+            <div class="card recent-sales overflow-auto">
               
               <div class="card-body table-responsive"> 
                 <h5 class="card-title text-warning"> <i class="bi bi-list-task"></i> {{titulo}}</h5>
@@ -217,7 +222,7 @@
                         <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" style="">
                           <li><a class="dropdown-item" href="{% url "actualizar_miembro" m.id %}"><strong><i class="bi bi-pencil-square"></i> Actualizar datos</a></strong></li>
                           <li class="liAM"><a class="dropdown-item aAM" href="#" data-bs-toggle="modal" data-bs-target="#asignarM"><strong class="btnAM"><i class="bi bi-person-lines-fill iAM"></i> Asignar membresía</a></strong></li>
-                          <li><a class="dropdown-item text-danger" href="#" onclick="eliminarProducto({{m.id}})"><strong><i class="bi bi-trash btnUM"></i> Eliminar miembro</a></strong></li>
+                          <li><a class="dropdown-item text-danger" href="#" onclick="eliminarMiembro({{m.id}},'{{m.user.first_name}}')"><strong><i class="bi bi-trash btnUM"></i> Eliminar miembro</a></strong></li>
                         </ul>
                          
                          
@@ -245,6 +250,7 @@
 {% block js %}
 
 <script>
+  document.addEventListener("DOMContentLoaded", function () {
   const dataTableOptions = {
     //scrollX: "400px",
     lengthChange: false,
@@ -285,6 +291,7 @@
     $(this).before('<span class="bi bi-search"></span>');
   });
   {% endif %}
+});
 </script>
 <Script type="application/javascript" src="{% static 'assets/js/AppControlDeClientes/Miembro/listMiembro.js' %}"></Script>
 
