@@ -15,7 +15,7 @@ from GYM.settings import EMAIL_HOST_USER
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.utils import timezone
-from .funciones import calcular_edad, calcular_fecha_final, obtener_url_imagen,vencimientoMembresias
+from .funciones import calcular_edad, calcular_fecha_final, getCantidadVentas, obtener_url_imagen,vencimientoMembresias,getVentasMensuales
 import locale
 from django.db.models import Sum, Count
 from datetime import date
@@ -380,6 +380,84 @@ class ListVentaMembresia(ListView):
             data['ganancia_mes_actual'] = ventas_mes_actual_dinero
         else:
             data['ganancia_mes_actual'] = "0.00"
+        return data
+class EstadisticasVentaMembresia(ListView):
+    model = VentaMembresia
+    template_name = 'AppControlDeClientes/VentaMembresia/estadisticas.html'
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        return super().dispatch(request, *args, **kwargs)  
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data = super().get_context_data(**kwargs)
+        try:
+             data['empresa'] = Empresa.objects.first()
+        except:
+             data['empresa'] = 'Error'
+        vencimientoMembresias()
+        data['titulo'] = 'Estadísticas'
+        data['modulo'] = 'Venta de membresías'
+         # GANANCIAS DIARIAS
+        fecha_actual = timezone.localtime(timezone.now()).date()
+        ventas_hoy = VentaMembresia.objects.filter(fecha=fecha_actual)
+        ventas_hoy_dinero = ventas_hoy.aggregate(total_ventas=Sum('monto_pagado'))['total_ventas']
+        if ventas_hoy_dinero:
+
+            data['ganancia_hoy'] = ventas_hoy_dinero
+        else:
+             data['ganancia_hoy'] = "0.00"
+                # Realiza un recuento de todas las ventas por nombre
+
+        # MEMBRESIA MAS VENDIDA
+        try:
+            ventas_contadas = VentaMembresia.objects.values('membresia').annotate(total_ventas=Count('membresia'))
+
+            # Ordena las ventas contadas de mayor a menor
+            ventas_ordenadas = ventas_contadas.order_by('-total_ventas')
+
+            # La venta más común será la primera en la lista ordenada
+            data['mas_vendida'] = Membresia.objects.get(id=ventas_ordenadas[0]['membresia'])
+        except Exception as e:
+            data['mas_vendida'] = "Ninguna"
+
+        # Calcula la fecha de inicio de la semana actual (lunes)
+        dias_para_lunes = fecha_actual.weekday()
+        fecha_inicio_semana = fecha_actual - timedelta(days=dias_para_lunes)
+
+        # Calcula la fecha de finalización de la semana actual (domingo)
+        fecha_fin_semana = fecha_inicio_semana + timedelta(days=6)
+
+        # Filtra las ventas dentro del rango de fechas de la semana actual
+        ventas_semana = VentaMembresia.objects.filter(fecha__range=[fecha_inicio_semana, fecha_fin_semana])
+
+        # Suma el monto pagado de las ventas de la semana actual
+        ganancia_semana = ventas_semana.aggregate(total_ventas=Sum('monto_pagado'))['total_ventas']
+
+        # Si hay ganancias para la semana, guárdalas en 'data', de lo contrario, establece el valor en "0.00"
+        if ganancia_semana:
+            data['ganancia_semana'] = ganancia_semana
+        else:
+            data['ganancia_semana'] = "0.00"
+        # Filtra las ventas del mes actual
+        ventas_mes_actual = VentaMembresia.objects.filter(fecha__year=fecha_actual.year, fecha__month=fecha_actual.month)
+
+        # Calcula la suma de las ventas del mes
+        ventas_mes_actual_dinero = ventas_mes_actual.aggregate(total_ventas=Sum('monto_pagado'))['total_ventas']
+
+        if ventas_mes_actual_dinero:
+            data['ganancia_mes_actual'] = ventas_mes_actual_dinero
+        else:
+            data['ganancia_mes_actual'] = "0.00"
+        from decimal import Decimal
+
+        # Supongamos que tienes una lista llamada `ventas_cada_mes` con la estructura actual
+
+        # Convierte los valores Decimal a float
+        ventas_cada_mes = getVentasMensuales()
+        for data_dict in ventas_cada_mes:
+            data_dict['data'] = [float(val) for val in data_dict['data']]
+        print(ventas_cada_mes)
+        data['ventas_cada_mes'] = ventas_cada_mes
+        data['cantidad_de_ventas'] =getCantidadVentas()
         return data
 def DeleteVentaMembresia(request, pk):
     venta_membresia = VentaMembresia.objects.get(id=pk)

@@ -1,0 +1,259 @@
+{% extends 'layout/index.html' %}
+{% load static %}
+{% load custom_filters %}
+{% block titulo %}   {{titulo}}   {% endblock titulo %}
+{% block tituloP %}  {{titulo}}   {% endblock tituloP %}
+{% block modulo %}   {{modulo}}   {% endblock modulo %}
+{% block tituloS %}  {{titulo}}   {% endblock tituloS %}
+{% block cuerpo %}
+<section class="section dashboard">
+    <div class="row">
+        <div class="col-lg-12">
+        <div class="row">
+          {% comment %} <div class="col-lg-1"></div> {% endcomment %}
+          <div class="col-xxl-3 col-md-6">
+            <div class="card info-card sales-card">
+
+            
+              <div class="card-body">
+                <h5 class="card-title">Más vendido<span></span></h5>
+
+                <div class="d-flex align-items-center">
+                  <div class="card-icon rounded-circle d-flex align-items-center justify-content-center bg-warning">
+                    <i class="bi bi-cart text-black"></i>
+                  </div>
+                  <div class="ps-3">
+                    <h6 class="text-warning">{{mas_vendida}}</h6>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            </div>
+            
+            <div class="col-xxl-3 col-md-6">
+                <div class="card info-card revenue-card">
+                  <div class="card-body">
+                    <h5 class="card-title">Ventas diarias <span>| Hoy</span></h5>
+  
+                    <div class="d-flex align-items-center">
+                      <div class="card-icon rounded-circle d-flex align-items-center justify-content-center bg-warning">
+                        <i class="bi bi-currency-dollar text-black"></i>
+                      </div>
+                      <div class="ps-3">
+                        <h6 class="text-warning">{{ganancia_hoy|replace_comma}}</h6>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xxl-3 col-md-6">
+                <div class="card info-card revenue-card">
+                  <div class="card-body">
+                    <h5 class="card-title">Ventas semanales</h5>
+  
+                    <div class="d-flex align-items-center">
+                      <div class="card-icon rounded-circle d-flex align-items-center justify-content-center bg-warning">
+                        <i class="bi bi-currency-dollar text-black"></i>
+                      </div>
+                      <div class="ps-3">
+                        <h6 class="text-warning">{{ganancia_semana|replace_comma}}</h6>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xxl-3 col-md-6">
+                <div class="card info-card revenue-card">
+                  <div class="card-body">
+                    <h5 class="card-title">Ventas mensuales</h5>
+  
+                    <div class="d-flex align-items-center">
+                      <div class="card-icon rounded-circle d-flex align-items-center justify-content-center bg-warning">
+                        <i class="bi bi-currency-dollar text-black"></i>
+                      </div>
+                      <div class="ps-3">
+                        <h6 class="text-warning">{{ganancia_mes_actual|replace_comma}}</h6>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              
+
+        </div>
+    
+    <div class="col-12">
+        <div class="card text-white ">
+          <div class="card-body">
+                <h5 class="card-title text-warning">Ventas mensuales</h5>
+                <!-- Line Chart -->
+                <div id="ventasMensuales" style="min-height: 365px;"></div>
+                <!-- End Line Chart -->
+            </div>
+        </div>
+    </div>
+        
+          
+
+    </div>
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body pb-0">
+            <h5 class="card-title text-warning">Cantidad de ventas <span>| Todo</span></h5>
+
+            <div id="contadorVentas" class='text-white' style="min-height: 400px; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); position: relative;" class="echart" _echarts_instance_="ec_1698514295430"><div style="position: relative; width: 314px; height: 400px; padding: 0px; margin: 0px; border-width: 0px; cursor: default;"><canvas data-zr-dom-id="zr_0" width="392" height="500" style="position: absolute; left: 0px; top: 0px; width: 314px; height: 400px; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0px; margin: 0px; border-width: 0px;"></canvas></div><div class=""></div></div>
+
+            </div>
+        </div>
+    </div>
+</div>
+         
+</section>
+
+
+
+{% endblock cuerpo %}
+
+
+{% block js %}
+<script>
+    function getRandomColor() {
+        const letters = '0123456789ABCDEF';
+        const colors = [];
+        let color = '#';
+        for (let i = 0; i < 14; i++) {
+            for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+            }
+        
+            colors.push(color);
+            color ="#"
+        }
+        return colors;
+      }
+      const vibrantColors = [
+      '#FFC300', // Amarillo fuerte
+      '#FF5733', // Rojo fuerte
+      '#337BFF', // Azul fuerte
+      '#9533FF', // Morado intenso
+      '#FF3373', // Rojo brillante
+        '#A933FF', // Morado brillante
+        '#FF33B4', // Rosa brillante
+        '#FF3373', // Rojo intenso
+        '#FFDA33', // Amarillo intenso
+        '#33FF5E', // Verde intenso
+        '#33FFD7', // Turquesa intenso
+        '#3379FF', // Azul intenso
+        '#9533FF', // Morado intenso
+        '#FF33A7', // Rosa intenso
+        '#FF336B', // Rojo oscuro
+        '#FFD933', // Amarillo oscuro
+        '#33FF4D', // Verde oscuro
+        '#33FFC3', // Turquesa oscuro
+      
+        
+        '#FF337D', // Rosa oscuro
+        '#FF3349', // Rojo profundo
+        '#FFD033', // Amarillo profundo
+        '#33FF6B', // Verde profundo
+        '#33FFB6', // Turquesa profundo
+];
+     
+      
+    document.addEventListener("DOMContentLoaded", () => {
+      new ApexCharts(document.querySelector("#ventasMensuales"), {
+        series: [
+        
+        {% for s in ventas_cada_mes %}
+        {
+            name: "{{s.name}}",
+            data: [{% for d in s.data %}"{{d}}",{% endfor %}],
+          },
+        {% endfor %}],
+        chart: {
+          height: 350,
+          type: 'area',
+          toolbar: {
+            show: false
+          },
+        },
+        markers: {
+          size: 4
+        },
+        colors: vibrantColors,
+        fill: {
+          type: "gradient",
+          gradient: {
+            shadeIntensity: 1,
+            opacityFrom: 0.3,
+            opacityTo: 0.4,
+            stops: [0, 90, 100]
+          }
+        },
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          curve: 'smooth',
+          width: 2
+        },
+        xaxis: {
+          type: 'int',
+          categories: ["Enero", "Febrero", "Marzo", "Abril", "Mayo","Junio", "Julio", "Agosto", "Septiembre","Octubre", "Noviembre", "Diciembre"],
+        },
+        tooltip: {
+          x: {
+            format: 'dd/MM/yy HH:mm'
+          },
+        }
+      }).render();
+    });
+    document.addEventListener("DOMContentLoaded", () => {
+        echarts.init(document.querySelector("#contadorVentas")).setOption({
+          tooltip: {
+            trigger: 'item'
+          },
+          legend: {
+            top: '5%',
+            left: 'center',
+            textStyle: {
+                color: 'white' // Cambia el color del texto de las leyendas a azul
+              }
+          },
+          series: [{
+            name: 'Membresía',
+            type: 'pie',
+            radius: ['40%', '70%'],
+            avoidLabelOverlap: false,
+            label: {
+              show: false,
+              position: 'center'
+            },
+            emphasis: {
+              label: {
+                show: true,
+                fontSize: '18',
+                fontWeight: 'bold'
+              }
+            },
+            labelLine: {
+              show: false
+            },
+            data: [
+            {% for cv in cantidad_de_ventas %}
+                {       
+                value: "{{cv.data}}",
+                name:"{{cv.name}}"
+              },
+            {% endfor %}
+            ]
+          }]
+        });
+      });
+  </script>
+
+{% endblock js %}
+
+

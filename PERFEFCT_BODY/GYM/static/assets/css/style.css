@@ -1449,3 +1449,15 @@ button.swal2-confirm.btn {
   color: #fff;
   border: 3px solid #eee;
 }
+.apexcharts-xaxis-label,
+.apexcharts-yaxis-label {
+  fill: white;
+}
+.apexcharts-legend-text {
+  position: relative;
+  font-size: 14px;
+  color: white !important;
+}
+#contadorVentas .apexcharts-legend-text {
+  fill: white;
+}

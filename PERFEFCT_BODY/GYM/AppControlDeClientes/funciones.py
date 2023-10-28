@@ -4,6 +4,9 @@ from datetime import datetime, timedelta,date
 from AppControlDeClientes.models import Miembro
 from django.templatetags.static import static
 import os
+from django.db.models import Sum, Count
+from django.db.models.functions import ExtractMonth, ExtractYear
+from .models import VentaMembresia
 
 
 # Directorio que contiene las imágenes
@@ -134,23 +137,54 @@ def vencimientoMembresias():
         except Exception as e:
             print(f"Ocurrió un error: {e}")
 
+def getVentasMensuales():
 
 
+    # Realiza una consulta para obtener la suma de monto_pagado agrupada por mes y membresía
+    ventas_por_mes = VentaMembresia.objects.values('membresia__nombre').annotate(
+        mes=ExtractMonth('fecha'),
+        anio=ExtractYear('fecha'),
+        total_venta=Sum('monto_pagado')
+    ).order_by('membresia__nombre', 'anio', 'mes')
 
+    # Estructura los datos como se muestra en el ejemplo
+    series = []
 
+    # Crear una lista de 12 meses con valores iniciales en 0
+    months = [0] * 12
 
+    current_membresia = None
+    current_year = None
+    data = []
 
+    for venta in ventas_por_mes:
+        if current_membresia != venta['membresia__nombre'] or current_year != venta['anio']:
+            if current_membresia:
+                series.append({
+                    'name': current_membresia,
+                    'data': data,
+                })
+            current_membresia = venta['membresia__nombre']
+            current_year = venta['anio']
+            data = [0] * 12
+        data[venta['mes'] - 1] = venta['total_venta']
 
+    # Agrega el último conjunto de datos
+    if current_membresia:
+        series.append({
+            'name': current_membresia,
+            'data': data,
+        })
+    return series
+def getCantidadVentas():
+    # Realiza la consulta y agrupa por el campo 'nombre' de la membresía y cuenta cuántas veces se ha vendido
+    data = VentaMembresia.objects.values('membresia__nombre').annotate(cantidad=Count('id'))
 
-
-
-
-
-
-
-
-
-
-
-
+    # Convierte el resultado en el formato deseado
+    series_data = []
+    for item in data:
+        series_data.append({'name': item['membresia__nombre'], 'data': item['cantidad']})
+    return series_data
+# Ahora, 'series_data' contiene la estructura que mencionaste
+print(getVentasMensuales())
 
