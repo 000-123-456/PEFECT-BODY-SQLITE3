@@ -1,0 +1,204 @@
+{% extends 'layout/index.html' %}
+{% load static %}
+{% load custom_filters %}
+{% block titulo %}   {{titulo}}   {% endblock titulo %}
+{% block tituloP %}  {{titulo}}   {% endblock tituloP %}
+{% block modulo %}   {{modulo}}   {% endblock modulo %}
+{% block tituloS %}  {{titulo}}   {% endblock tituloS %}
+{% block cuerpo %}
+<section class="section dashboard">
+        <div class="col-lg-12">
+        <div class="row">
+          {% comment %} <div class="col-lg-1"></div> {% endcomment %}
+          <div class="col-xxl-3 col-md-6">
+            <div class="card info-card sales-card">
+
+            
+              <div class="card-body">
+                <h5 class="card-title">Más vendido<span></span></h5>
+
+                <div class="d-flex align-items-center">
+                  <div class="card-icon rounded-circle d-flex align-items-center justify-content-center bg-warning">
+                    <i class="bi bi-cart text-black"></i>
+                  </div>
+                  <div class="ps-3">
+                    <h6 class="text-warning">{{mas_vendida}}</h6>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            </div>
+            
+            <div class="col-xxl-3 col-md-6">
+                <div class="card info-card revenue-card">
+                  <div class="card-body">
+                    <h5 class="card-title">Ventas diarias <span>| Hoy</span></h5>
+  
+                    <div class="d-flex align-items-center">
+                      <div class="card-icon rounded-circle d-flex align-items-center justify-content-center bg-warning">
+                        <i class="bi bi-currency-dollar text-black"></i>
+                      </div>
+                      <div class="ps-3">
+                        <h6 class="text-warning">{{ganancia_hoy|replace_comma}}</h6>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xxl-3 col-md-6">
+                <div class="card info-card revenue-card">
+                  <div class="card-body">
+                    <h5 class="card-title">Ventas semanales</h5>
+  
+                    <div class="d-flex align-items-center">
+                      <div class="card-icon rounded-circle d-flex align-items-center justify-content-center bg-warning">
+                        <i class="bi bi-currency-dollar text-black"></i>
+                      </div>
+                      <div class="ps-3">
+                        <h6 class="text-warning">{{ganancia_semana|replace_comma}}</h6>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xxl-3 col-md-6">
+                <div class="card info-card revenue-card">
+                  <div class="card-body">
+                    <h5 class="card-title">Ventas mensuales</h5>
+  
+                    <div class="d-flex align-items-center">
+                      <div class="card-icon rounded-circle d-flex align-items-center justify-content-center bg-warning">
+                        <i class="bi bi-currency-dollar text-black"></i>
+                      </div>
+                      <div class="ps-3">
+                        <h6 class="text-warning">{{ganancia_mes_actual|replace_comma}}</h6>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+
+        </div>
+    </div>
+        
+          <div class="col-lg-12">
+                
+                <!-- Horizontal Form -->
+
+                {% if form.errors %}
+                {% for field  in form  %}
+                        {% for error in field.errors %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>Notificacion: </strong>{{error}}.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" arial-label="Close"></button>
+                        </div>
+                        {% endfor %}
+                {% endfor %}
+              {% endif %}
+            <br>
+            <div class="card recent-sales overflow-auto">
+              
+              <div class="card-body table-responsive"> 
+                <h5 class="card-title text-warning"> <i class="bi bi-list-task"></i> {{titulo}}</h5>
+                <hr>
+                
+                <table class="table bg-black text-white strip rounded mb-4" style="text-align: center" id="data">
+                    <thead class="bg-warning text-black">
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Fecha</th>
+                        <th scope="col">Membresía</th>
+                        <th scope="col">Precio</th>
+                        <th scope="col">Miembro</th>               
+                        <th scope="col">Opciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% if ventas_membresia %} {% for vm in ventas_membresia %}
+                      <tr>
+                        <td class="text-nowrap">{{forloop.counter}}</td>
+                        <td class="text-nowrap">{{ vm.fecha }}</td>
+                        <td class="text-nowrap">{{ vm.membresia.nombre }}</td>
+                        <td class="text-nowrap">$ {{ vm.monto_pagado }}</td>
+                        <td class="text-nowrap">{{ vm.miembro.user.first_name }}</td>
+                       
+                        <td class="text-nowrap">
+                          <a class="btn btn-danger" href="#" onclick="EliminarVentaMembresia({{vm.id}})">
+                            <i class="bi bi-trash btnUM"></i>
+                        </a>
+                          
+                       
+                        </td>
+                      </tr>
+                  
+                      {% endfor %} {% else %}
+                      <td colspan="9" style="text-align: center">
+                        <b>No hay datos para mostrar</b>
+                      </td>
+                      {% endif %}
+                    </tbody>
+                  </table>
+              </div>
+            </div>
+          </div>
+          {% comment %} <div class="col-lg-1"></div> {% endcomment %}
+        </div>
+        
+      </section>
+
+
+
+{% endblock cuerpo %}
+
+
+{% block js %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+  const dataTableOptions = {
+    //scrollX: "400px",
+    lengthChange: false,
+    filter:[
+      { className: "form-control"},
+    ],
+    lengthMenu: [5, 10, 15, 20, 100, 200, 500],
+    columnDefs: [
+        { className: "text-center", targets: [0, 1, 2, 3, 4] },
+        { orderable: false, targets: [4] },
+        { searchable: false, targets: [0,4] },
+        //{ width: "5%", targets: [0] }
+    ],
+    pageLength: 5,
+    destroy: true,
+    language: {
+        lengthMenu: "Mostrar _MENU_ registros por página",
+        zeroRecords: "Ningúna membresía  encontrada",
+        info: "Mostrando de _START_ a _END_ de un total de _TOTAL_ registros",
+        infoEmpty: "Ningúna membresía encontrada",
+        infoFiltered: "(filtrados desde _MAX_ registros totales)",
+        search: "",
+        loadingRecords: "Cargando...",
+        paginate: {
+            first: "Primero",
+            last: "Último",
+            next: "Siguiente",
+            previous: "Anterior"
+        }
+    }
+};
+
+  {% if ventas_membresia %}
+  let table = new DataTable('#data', dataTableOptions);
+  //remove the default 'Search' text for all DataTable search boxes
+  $('[type=search]').each(function () {
+    $(this).attr("placeholder", "Buscar...");
+    $(this).before('<span class="bi bi-search"></span>');
+  });
+  {% endif %}
+});
+</script>
+<Script type="application/javascript" src="{% static 'assets/js/AppControlDeClientes/VentaMembresia/listVentaMembresia.js' %}"></Script>
+{% endblock js %}
+
+

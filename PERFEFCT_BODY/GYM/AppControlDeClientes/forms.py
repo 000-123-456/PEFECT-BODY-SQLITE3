@@ -29,7 +29,8 @@ class FormMiembro(ModelForm):
                         'class': 'form-control',
                         'placeholder': 'Ingrese nombre completo',
                         'pattern': '[0-9]{4}[-][0-9]{4}',
-                        'id':'tel'
+                        'id':'tel',
+                        'autocomplete':'off',
                        
                     }
                 ),
@@ -38,7 +39,7 @@ class FormMiembro(ModelForm):
                         'style':'height: 100px',
                         'class': 'form-control',
                         'placeholder': 'Ingrese nombre completo',
-                        
+                         'autocomplete':'off',
                     }
                 ),
                 'fecha_nac': DateInput(
@@ -46,6 +47,7 @@ class FormMiembro(ModelForm):
                         'type':'date',
                         'class': 'form-control',
                         'placeholder': 'Ingrese nombre completo',
+                        'autocomplete':'off',
                     }
                 ),
                 'nombreContact': TextInput(
@@ -53,6 +55,7 @@ class FormMiembro(ModelForm):
                         
                         'class': 'form-control',
                         'placeholder': 'Ingrese nombre completo',
+                         'autocomplete':'off',
                        
                     }
                 ),
@@ -61,7 +64,8 @@ class FormMiembro(ModelForm):
                         'class': 'form-control',
                         'placeholder': 'Ingrese nombre completo',
                         'pattern': '[0-9]{4}[-][0-9]{4}',
-                        'id':'telContact'
+                        'id':'telContact',
+                        'autocomplete':'off',
                         
                     }
                 ),
@@ -69,7 +73,8 @@ class FormMiembro(ModelForm):
                     attrs={
                         'aria-label':"Seleccione genero",
                         'class': 'form-control',
-                        'placeholder': 'Genero',     
+                        'placeholder': 'Genero',
+                        'autocomplete':'off',     
                     }
                 )
         }
@@ -78,8 +83,8 @@ class FormMiembro(ModelForm):
             self.fields['genero'].queryset = opGenero
 FormMiembro.field_order = [
             'genero',
-            'telefono',
             'fecha_nac',
+            'telefono',
             'direcccion',
             'nombreContact',
             'telefonoContact'

@@ -50,7 +50,7 @@
   <header id="header" class="header fixed-top d-flex align-items-center">
 
     <div class="d-flex align-items-center justify-content-between">
-      <a href="index.html" class="logo d-flex align-items-center">
+      <a href="{% url "prueba" %}" class="logo d-flex align-items-center">
         <img src="{{empresa.get_image}}" alt="">
         <span class="d-none d-lg-block">{{empresa.nombre}}</span>
       </a>
@@ -199,7 +199,7 @@
     <ul class="sidebar-nav" id="sidebar-nav">
      
       <li class="nav-item">
-        <a class="nav-link " href="index.html">
+        <a class="nav-link " href="{% url "prueba" %}">
           <i class="bi bi-grid"></i>
           <span>Tablero</span>
         </a>
@@ -285,20 +285,16 @@
         </a>
         <ul id="charts-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
-            <a href="charts-chartjs.html">
-              <i class="bi bi-circle"></i><span>Chart.js</span>
+            <a href="{% url "list_venta_membresia" %}">
+              <i class="bi bi-circle"></i><span>Ventas realizadas</span>
             </a>
           </li>
           <li>
-            <a href="charts-apexcharts.html">
-              <i class="bi bi-circle"></i><span>ApexCharts</span>
+            <a href="{% url "estadisticas_venta_membresia" %}">
+              <i class="bi bi-circle"></i><span>Estadísticas</span>
             </a>
           </li>
-          <li>
-            <a href="charts-echarts.html">
-              <i class="bi bi-circle"></i><span>ECharts</span>
-            </a>
-          </li>
+          
         </ul>
       </li><!-- End Charts Nav -->
       <li class="nav-item">

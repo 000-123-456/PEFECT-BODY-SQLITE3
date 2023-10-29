@@ -34,33 +34,38 @@ class RegistroUsuarioForm(UserCreationForm):
                 'username': TextInput(
                     attrs={
                         'class': 'form-control',
-                        'placeholder': 'Nombre de usuario...'
+                        'placeholder': 'Nombre de usuario...',
+                        'autocomplete':"off",
                     }
                 ),
                 'first_name':  TextInput(
                     attrs={
                         'class': 'form-control',
                         'placeholder': 'Nombres...',
+                        'autocomplete':"off",
                         
                     }
                 ),
                 'last_name': TextInput(
                     attrs={
                         'class': 'form-control',
-                        'placeholder': 'Apellidos...'
+                        'placeholder': 'Apellidos...',
+                        'autocomplete':"off",
                     }
                 ),
                 'email': TextInput(
                     attrs={
                         'type': 'email',
                         'class': 'form-control',
-                        'placeholder': 'Correo...'
+                        'placeholder': 'Correo...',
+                        'autocomplete':"off",
                     }
                 ),
                  'rol': Select(
                     attrs={
                         'class': 'form-control',
-                        'placeholder': 'Seleccione el rol...'
+                        'placeholder': 'Seleccione el rol...',
+                        'autocomplete':"off",
                     }
                 ),
             }
@@ -90,6 +95,7 @@ class FormEmpresa(ModelForm):
                     attrs={
                         'class': 'form-control',
                         'placeholder': 'Perfect Body',
+                        'autocomplete':"off",
                        
                     }
                 ),
@@ -98,6 +104,7 @@ class FormEmpresa(ModelForm):
                         'type': 'text',
                         'class': 'form-control',
                         'placeholder': '0.00',
+                        'autocomplete':"off",
                     }
                 ),
                'logo': ClearableFileInput(  
@@ -112,6 +119,7 @@ class FormEmpresa(ModelForm):
                     'placeholder': '0000-0000',
                     'id': 'telefono',
                     'pattern': '[0-9]{4}[-][0-9]{4}',
+                    'autocomplete':"off",
                      }
                 ),
                 'direcccion': Textarea(
@@ -119,6 +127,7 @@ class FormEmpresa(ModelForm):
                         'style':'height: 100px',
                         'class': 'form-control',
                         'placeholder': 'Casa #,Barrio,Municipio',
+                        'autocomplete':"off",
                        
                     }
                 ),
