@@ -186,5 +186,5 @@ def getCantidadVentas():
         series_data.append({'name': item['membresia__nombre'], 'data': item['cantidad']})
     return series_data
 # Ahora, 'series_data' contiene la estructura que mencionaste
-print(getVentasMensuales())
+
 
