@@ -2,7 +2,11 @@
 {% load static %}
 {% block titulo %}   {{titulo}}   {% endblock titulo %}
 {% block tituloP %}  {{titulo}}   {% endblock tituloP %}
-{% block modulo %}   {{modulo}}   {% endblock modulo %}
+{% block modulo %}
+  <a href="{% url 'lista_productos' %}">   
+    {{modulo}}
+  </a>   
+{% endblock modulo %}
 {% block tituloS %}  {{titulo}}   {% endblock tituloS %}
 {% block cuerpo %}
 <section class="section">
@@ -14,7 +18,7 @@
             <a href="{% url 'lista_productos' %}" class="btn btn-primary">
                 <b><i class="bi bi-arrow-left"></i> Regresar</b>
             </a> 
-            <a href="{% url 'alta_todos_productos' %}" class="btn btn-success">
+            <a href="{% url 'alta_todos_productos' %}" class="btn btn-success {% if not productos %}disabled{% endif %}">
                 <b><i class="bi bi-arrow-repeat"></i> Restaurar todo</b>
             </a> 
           </div>

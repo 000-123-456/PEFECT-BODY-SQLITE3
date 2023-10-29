@@ -2,60 +2,50 @@
 {% load static %}
 {% block titulo %}   {{titulo}}   {% endblock titulo %}
 {% block tituloP %}  {{titulo}}   {% endblock tituloP %}
-{% block modulo %}
-  <a href="{% url 'lista_productos' %}">   
-    {{modulo}}
-  </a>   
-{% endblock modulo %}
+{% block modulo %}   {{modulo}}   {% endblock modulo %}
 {% block tituloS %}  {{titulo}}   {% endblock tituloS %}
 {% block cuerpo %}
 <section class="section">
     
         <div class="row">
           <div class="col-lg-12 d-flex">
-            <a href="{% url 'lista_productos' %}" class="btn btn-primary">
+            <a href="{% url 'lista_historialmiembros' %}" class="btn btn-primary">
               <b><i class="bi bi-arrow-left"></i> Regresar</b>
             </a>  
-        </div>
-        <br>
-        {% if categorias %}
+          </div>
           <div class="col-lg-3"></div>
-          <div class="col-lg-6">             
-              
-              <br>
-          
+          <div class="col-lg-6">
+                
+                <!-- Horizontal Form -->
+
+               
+            <br>
             <div class="card">
               <div class="card-body">
-                <h5 class="card-title text-warning"><i class="bi bi-plus-lg"></i> {{titulo}}</h5>
+                <h5 class="card-title"><i class="bi bi-pencil-square"></i> {{titulo}}</h5>
                 
                 <!-- Floating Labels Form -->
                 <form class="row g-3" method="post" enctype="multipart/form-data" action='.'>
                   {% csrf_token %}
+                  
                   {% for field in form.visible_fields %}
-                  {% if  field.label == 'Foto'%}
-                    <div class="col-md-12">     
-                      <div class="form-floating">
-                        <input type="file" name="img" accept="image/*" id="id_img" class='form-control'>
-                        <label for="floatingName" autofocus>Foto</label>
-                      </div>
-                    </div>
-                    
-                  {% else %}
-                      <div class="col-md-{% if field.label == 'Precio de venta' or field.label == 'Cantidad mínima'  %}6{% else %}12{% endif %}">
+
+                      <div class="col-md-{% if field.label == 'Precio' or field.label == 'Duración'  %}6{% else %}12{% endif %}">
                           
                         <div class="form-floating">
                           {{ field }}
                           <label for="floatingName" autofocus>{{field.label}}</label>
                         </div>
                       </div>
-                  {% endif %}
+                 
                   {% endfor %}
+                  
                   
                   <div class="text-center">
                     <button type="submit" class="btn bg-warning text-black">Guardar</button>
-                    <a href="{% url 'lista_productos' %}" class="btn btn-secondary">
-                       Cancelar
-                    </a>
+                    <a href="{% url 'lista_historialmiembros' %}" class="btn btn-secondary">
+                      Cancelar
+                   </a>
                   </div>
                 </form><!-- End floating Labels Form -->
   
@@ -65,14 +55,6 @@
   
           </div>
           <div class="col-lg-3"></div>
-        {% else %}
-        <section class="section error-404  mt-0 d-flex flex-column align-items-center justify-content-center">
-          <h2>¡Error, no ha registrado ninguna categoría!</h2>
-          <h2>Se debe registrar por lo menos una categoría antes de registrar un producto</h2>
-          <a class="btn" href="{% url 'lista_categoria' %}">Registrar categoría</a>
-          <img src=" {% static 'assets/img/not-found.svg'%}" class="img-fluid" alt="Page Not Found">
-        </section>
-        {% endif %}
         </div>
         
       </section>
@@ -82,20 +64,57 @@
 {% endblock cuerpo %}
 {% block js %}
 <script>
-  $(document).ready(function() {
-    $('#selectPro').select2({
-      theme: "bootstrap-5",
-      placeholder:"Seleccione una categoria" 
+  function eliminarMembresia(id){
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: 'btn btn-primary',
+        cancelButton: 'btn btn-danger'
+      },
+      buttonsStyling: false
+    })
+    
+    swalWithBootstrapButtons.fire({
+      title: '¿Seguro que desea eliminar la membresia?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Confirmar!',
+      cancelButtonText: 'Cancelar!',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        
+        window.location.href = "eliminarMembresia/"+id+"/"
+      } else if (
+        /* Read more about handling dismissals below */
+        result.dismiss === Swal.DismissReason.cancel
+      ) {
+        swalWithBootstrapButtons.fire(
+          'Operacion cancelada',
+          'La Membresia no se ha eliminado  :)',
+          'error'
+        )
+      }
+    })
+  }
+  {% if membresias %}
+  let table = new DataTable('#data', {
+      "language": {
+          "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
+      },
+      responsive: true,
   });
-  });
+  {% endif %}
+
   {% if form.errors %}
       // Crear una lista para almacenar los mensajes de error
       var errorMessages = [];
 
       {% for field in form %}
       {% for error in field.errors %}
+      
           // Agregar cada mensaje de error junto con el nombre del campo a la lista
           errorMessages.push("{{ field.label|escapejs }}: " + "{{ error|escapejs }}".toLowerCase());
+        
       {% endfor %}
   {% endfor %}
 

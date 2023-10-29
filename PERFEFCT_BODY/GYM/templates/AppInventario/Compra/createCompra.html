@@ -29,14 +29,14 @@
           <form class="row g-3" method="post" enctype="multipart/form-data" action='.'>
             {% csrf_token %}
             {% for field in form.visible_fields %}
-            {% if  field.label == 'Foto'%}
+            {% if  field.label == 'id'%}
               <div class="col-md-12">     
                 <div class="form-floating">
-                  <input type="file" name="img" accept="image/*" id="id_img" class='form-control'>
+                  <input type="file" name="img" accept="image/*" id="id" class='form-control'>
                   <label for="floatingName" autofocus>Foto</label>
                 </div>
               </div>
-              
+
             {% else %}
                 <div class="col-md-{% if field.label == 'Precio de venta' or field.label == 'Cantidad mínima'  %}6{% else %}12{% endif %}">
                     
@@ -179,4 +179,8 @@
  
 {% endif %}
 </script>
+
+
+
+  
 {% endblock js %}

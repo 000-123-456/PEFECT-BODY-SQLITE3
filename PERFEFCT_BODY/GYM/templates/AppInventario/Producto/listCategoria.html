@@ -2,7 +2,11 @@
 {% load static %}
 {% block titulo %}   {{titulo}}   {% endblock titulo %}
 {% block tituloP %}  {{titulo}}   {% endblock tituloP %}
-{% block modulo %}   {{modulo}}   {% endblock modulo %}
+{% block modulo %}
+  <a href="{% url 'lista_productos' %}">   
+    {{modulo}}
+  </a>   
+{% endblock modulo %}
 {% block tituloS %}  {{titulo}}   {% endblock tituloS %}
 {% block cuerpo %}
 <section class="section">
@@ -104,11 +108,13 @@
           {% endfor %}
         {% endif %}
       <br>
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title text-warning"><i class="bi bi-list-task"></i> {{titulo}}</h5>
+      <div class="card table-responsive">
+              
+        <div class="card-body table-responsive"> 
+          <h5 class="card-title text-warning"> <i class="bi bi-list-task"></i> {{titulo}}</h5>
           <hr>
-          <table class="table bg-black text-white strip rounded align-middle" style="text-align: center" id="data">
+          
+          <table class="table bg-black text-white strip rounded mb-4" style="text-align: center" id="data">
               <thead class="bg-warning text-black">
                 <tr>
                   <th scope="col">#</th>
@@ -120,10 +126,10 @@
               <tbody >
                 {% if categorias %} {% for c in categorias %}
                 <tr >
-                  <td>{{forloop.counter}}</td>
-                  <td>{{ c.nombre }}</td>
-                  <td class="display-6">{% if c.perecedero %} <i class="bi bi-check-lg text-success"></i>{% else %}<i class="bi bi-x-lg text-danger"></i>{% endif %}</td>
-                  <td>
+                  <td class="text-nowrap">{{forloop.counter}}</td>
+                  <td class="text-nowrap">{{ c.nombre }}</td>
+                  <td class="text-nowrap"class="display-6">{% if c.perecedero %} <i class="bi bi-check-lg text-success"></i>{% else %}<i class="bi bi-x-lg text-danger"></i>{% endif %}</td>
+                  <td class="text-nowrap">
                     <button type="button" class="btn btn-secondary btnUC" data-bs-toggle="modal" data-bs-target="#modificarCategoria">
                       <i class="bi bi-pencil-square iUC"></i>
                     </button>

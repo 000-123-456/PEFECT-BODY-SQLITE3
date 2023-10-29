@@ -1,27 +1,29 @@
 {% extends 'layout/index.html' %}
 {% load static %}
+{% load custom_filters %}
+
 {% block titulo %}   {{titulo}}   {% endblock titulo %}
 {% block tituloP %}  {{titulo}}   {% endblock tituloP %}
 {% block modulo %}
-  <a href="{% url 'lista_productos' %}">   
+  <a href="{% url 'lista_miembros' %}">   
     {{modulo}}
   </a>   
 {% endblock modulo %}
 {% block tituloS %}  {{titulo}}   {% endblock tituloS %}
 {% block cuerpo %}
-{% comment %} ------------MODAL VER PRODUCTO----------------- {% endcomment %}
+{% comment %} ------------MODAL VER PRODUCTO-----------------{% endcomment %}
 <div class="modal fade" id="verProducto" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header bg-warning">
-        <h5 class="modal-title text-black" id="exampleSideModal2"><b>Información producto</b></h5>
+        <h5 class="modal-title text-black" id="exampleSideModal2"><b>Información del miembro</b></h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="row">
           <div class="col-md-6 mb-4">
             <div class="bg-image hover-overlay ripple shadow-2-strong" data-mdb-ripple-color="light">
-              <img src="https://mdbcdn.b-cdn.net/img/new/standard/city/041.webp" class="img-fluid verP" alt="Hollywood Sign">
+              <img src="https://mdbcdn.b-cdn.net/img/new/standard/city/041.webp" class="img-fluid verP imgCard" alt="Hollywood Sign" style="border-radius: 20px;">
               <a href="#!">
                
               </a>
@@ -29,15 +31,19 @@
           </div>
 
           <div class="col-md-6 mb-4 text-white">
-            <strong><p id='nombreP' class='verP text-warning'>Doloremque vero ex debitis veritatis?</p></strong>
-            <p><strong>Precio: </strong><span id='precioP' class="verP text-white">20.00</span></p>
-            <p><strong>Cantidad: </strong> <span id='cantidadP' class="verP text-white">30</span></p>
-            <p><strong>Cantidad mínima: </strong> <span id='cantidadP' class="verP text-white">30</span></p>
-            <p><strong>Categoría: </strong> <span id='categoriaP' class="verP text-white">Pan dulce</span></p>
+            <strong><p id='nombreM' class='verP text-warning'>Doloremque vero ex debitis veritatis?</p></strong>
+            <p><strong>Edad: </strong><span id='edadM' class="verP text-white">20.00</span></p>
+            <p><strong>Género: </strong> <span id='generoM' class="verP text-white">30</span></p>
+            <p><strong>Correo: </strong> <span id='correoM' class="verP text-white">30</span></p>
+            <p><strong>Contácto de emergencia: </strong> <span id='contactoEM' class="verP text-white">Pan dulce</span></p>
+            <p><strong>Membresía: </strong> <span id='membresiaM' class="verP badge bg-success">Vencida</span> <span id='categoriaP' class="verP  text-white"></span></p>
             <p>
-              <strong>Descripción:</strong>
+              <strong>Dirección:</strong>
               <span id='descripcionP' class="verP text-white">Pan de miga</span>
-              
+            </p>
+            <p>
+              <strong>Teléfono:</strong>
+              <span id='descripcionP' class="verP text-white">Pan de miga</span>
             </p>
           </div>
         </div>
@@ -56,17 +62,16 @@
 
 <section class="section">
         <div class="row">
-          {% comment %} <div class="col-lg-1"></div> {% endcomment %}
-          <div class="col-lg-12 d-flex flex-row-reverse">
-            <a href="{% url 'lista_bajas_productos' %}" class="btn btn-danger">
-              <b><i class="bi bi-trash"></i> Papelera</b>
-            </a>
-            <a href="{% url 'crear_producto' %}" class="btn btn-primary mx-1">
-              <b><i class="bi bi-plus-lg"></i> Nuevo producto</b>
-            </a>
-            
-            <br>
-        </div>
+          
+            <div class="d-flex justify-content-between bd-highlight mb-3">
+
+                <a href="{% url 'lista_miembros' %}" class="btn btn-primary">
+                    <b><i class="bi bi-arrow-left"></i> Regresar</b>
+                </a> 
+                <a href="#" onclick="altaTodosMiembro()" class="btn btn-success {% if not miembros %}disabled{% endif %}">
+                    <b><i class="bi bi-arrow-repeat"></i> Restaurar todo</b>
+                </a> 
+              </div>
           <br>
           <br>
           <div class="col-lg-12">
@@ -84,7 +89,7 @@
                 {% endfor %}
               {% endif %}
             <br>
-            <div class="card table-responsive">
+            <div class="card recent-sales overflow-auto">
               
               <div class="card-body table-responsive"> 
                 <h5 class="card-title text-warning"> <i class="bi bi-list-task"></i> {{titulo}}</h5>
@@ -95,34 +100,39 @@
                       <tr>
                         <th scope="col">#</th>
                         <th scope="col">Nombre</th>
-                        <th scope="col">P.V</th>
-                        <th scope="col">Foto</th>
+                        <th scope="d-none d-md-table-cell">Correo</th>
+                        <th scope="col">Membresía</th>
                         <th scope="col">Opciones</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {% if productos %} {% for p in productos %}
+                      {% if miembros %} {% for m in miembros %}
                       <tr>
                         <td class="text-nowrap"style="vertical-align: middle;">{{forloop.counter}}</td>
-                        <td class="text-nowrap"style="vertical-align: middle;">{{ p.nombre }}</td>
-                        <td class="text-nowrap"style="vertical-align: middle;">$ {{ p.precio_venta }}</td>
+                        <td class="text-nowrap"style="vertical-align: middle;">{{ m.user.first_name }} {{ m.user.last_name }}</td>
+                        <td class="text-nowrap"style="vertical-align: middle;">{{ m.user.email }}</td>
                         <td class="text-nowrap"style="vertical-align: middle;">
-                            <img src="{{p.get_image}}" class="img-fluid" style="width: 70px; height:70px; border-radius: 20px;">
+                          {% if m.estado_membresia == 0 %}
+                            <span class="badge bg-danger">No asignada</span>
+                          {% elif m.estado_membresia == 1 %}
+                            <span class="badge bg-success">ACTIVA</span>
+                          {% else %}
+                            <span class="badge bg-danger">VENCIDA</span>
+                          {% endif %}
                         </td>
+                            
+                        
                         
                         <td class="text-nowrap" style="vertical-align: middle;">
                           
-                          <button type="button" class="btn btn-primary btnVP" data-bs-toggle="modal" data-bs-target="#verProducto">
+                          <button type="button" class="btn btn-primary btnVP" data-bs-toggle="modal" data-bs-target="#verProducto" title="Ver informacion">
                             <i class="bi bi-eye iVP"></i>
                           </button>
-                          <a type="button" class="btn btn-secondary" href="{%url 'actualizar_producto' p.id %}">
-                            <i class="bi bi-pencil-square"></i>
+                          
+                          <a type="button" class="btn btn-success" href="#" onclick="altaMiembro({{m.id}},'{{m.user.first_name}}')">
+                            <i class="bi bi-arrow-repeat"></i>
                           </a>
-                          <a class="btn btn-danger" href="#" onclick="eliminarProducto({{p.id}})">
-                            <i class="bi bi-trash btnUM"></i>
-                        </a>
-                          
-                          
+                         
                          
                         </td>
                       </tr>
@@ -148,6 +158,7 @@
 {% block js %}
 
 <script>
+  document.addEventListener("DOMContentLoaded", function () {
   const dataTableOptions = {
     //scrollX: "400px",
     lengthChange: false,
@@ -157,17 +168,17 @@
     lengthMenu: [5, 10, 15, 20, 100, 200, 500],
     columnDefs: [
         { className: "text-center", targets: [0, 1, 2, 3, 4] },
-        { orderable: false, targets: [3, 4] },
-        { searchable: false, targets: [0,3,4] },
+        { orderable: false, targets: [ 4] },
+        { searchable: false, targets: [4] },
         //{ width: "5%", targets: [0] }
     ],
-    pageLength: 3,
+    pageLength: 5,
     destroy: true,
     language: {
         lengthMenu: "Mostrar _MENU_ registros por página",
         zeroRecords: "Ningún producto encontrado",
         info: "Mostrando de _START_ a _END_ de un total de _TOTAL_ registros",
-        infoEmpty: "Ningún producto encontrado",
+        infoEmpty: "Ningún miembro encontrado",
         infoFiltered: "(filtrados desde _MAX_ registros totales)",
         search: "",
         loadingRecords: "Cargando...",
@@ -180,7 +191,7 @@
     }
 };
 
-  {% if productos %}
+  {% if miembros %}
   let table = new DataTable('#data', dataTableOptions);
   //remove the default 'Search' text for all DataTable search boxes
   $('[type=search]').each(function () {
@@ -188,7 +199,8 @@
     $(this).before('<span class="bi bi-search"></span>');
   });
   {% endif %}
+});
 </script>
-<Script type="application/javascript" src="{% static 'assets/js/AppInventario/Producto/listProducto.js' %}"></Script>
+<Script type="application/javascript" src="{% static 'assets/js/AppControlDeClientes/Miembro/listMiembroBajas.js' %}"></Script>
 
 {% endblock js %}

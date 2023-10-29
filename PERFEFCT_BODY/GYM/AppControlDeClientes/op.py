@@ -45,4 +45,3 @@ def generar_clave_temporal_segura():
             any(c in clave_temporal for c in digitos) and
             len(clave_temporal) == 8):
             return clave_temporal
-print(generar_clave_temporal_segura())

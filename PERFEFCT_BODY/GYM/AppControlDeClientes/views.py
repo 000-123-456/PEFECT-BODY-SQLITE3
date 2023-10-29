@@ -1,11 +1,11 @@
+
 from typing import Any
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
-
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView
-from AppControlDeClientes.models import Miembro,Membresia
-from AppControlDeClientes.forms import FormMiembro,FormMembresia
+from AppControlDeClientes.models import HistorialMiembro, Miembro,Membresia,VentaMembresia
+from AppControlDeClientes.forms import FormMiembro,FormMembresia, FormHistorialMiembro
 from django.contrib import messages
 from AppUsers.models import Empresa,User
 from AppUsers.forms import RegistroUsuarioForm
@@ -15,9 +15,11 @@ from GYM.settings import EMAIL_HOST_USER
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.utils import timezone
-from .funciones import calcular_edad, obtener_url_imagen
-from .op import opGenero
-from GYM.settings import MEDIA_URL,STATIC_URL
+from .funciones import calcular_edad, calcular_fecha_final, getCantidadVentas, obtener_url_imagen,vencimientoMembresias,getVentasMensuales
+import locale
+from django.db.models import Sum, Count
+from datetime import date
+from datetime import timedelta
 # Create your views here.
 def prueba(request):
     try:
@@ -33,7 +35,7 @@ def prueba(request):
     return render(request, "layout/index.html",data)
 
 
-
+#*************************Miembro****************************************
 class RegistroMiembroView(CreateView):
     template_name = 'AppControlDeClientes/Miembro/createMiembro.html'
     form_class = FormMiembro
@@ -55,7 +57,7 @@ class RegistroMiembroView(CreateView):
         
         # 2. Validación de usuario existente
         if not user_form.is_valid():
-            print(user_form.errors)
+          
             return render(self.request, self.template_name, {'form': form, 'user_form': user_form, 'empresa':Empresa.objects.first(), 'titulo':'Crear Miembro','modulo':'Miembro'})
 
         user = user_form.save(commit=False)
@@ -131,24 +133,30 @@ class ActualizarMiembroView(UpdateView):
                 user.empresa = Empresa.objects.first()
             except Empresa.DoesNotExist:
                 empresa = 'Error'
-            if user.email != str(Miembro.objects.get(user=self.object.user).user.email):
-                print(self.object.user.email)
-                user.username = user.email
-                try:
+            user.username = user.email
+            email = user.email
+            print(email)
+            email_viejo = Miembro.objects.get(user=self.object.user).user.email
+            respuesta = email_viejo==email
+            miembro.user = user
+            try:
             # 3. Validación de usuario guardado correctamente
                     user.save()
-                except IntegrityError:
+            except IntegrityError:
                     messages.error(self.request, "El nombre de usuario ya existe. Por favor, elija otro nombre de usuario.")
                     return render(self.request, self.template_name, {'form': form, 'user_form': user_form, 'empresa':Empresa.objects.first(), 'titulo':'Crear Miembro','modulo':'Miembro'})
-                miembro.user = user
-                miembro.save()
+            
+            
+            miembro.save()
+            print(email_viejo)
+            if not respuesta:
                 subject = 'Actualización exitosa'
                 message = f'Se ha actualizado exitosamente.\nUsuario nuevo: {user.username}\nIngrese al siguiente link: http://127.0.0.1:8000/'
                 from_email = EMAIL_HOST_USER
                 recipient_list = [user.username]
                 send_mail(subject, message, from_email, recipient_list)
 
-            messages.success(self.request, "Miembro registrado actualizado")
+            messages.success(self.request, "Miembro actualizado")
             return super().form_valid(form)
         else:
             messages.error(self.request, "El formulario de usuario no es válido. Por favor, corrige los errores.")
@@ -190,9 +198,27 @@ class ListMiembro(ListView):
         data['titulo'] = 'Lista de miembros'
         data['modulo'] = 'Miembro'
         data['icono']  = '<i class="bi bi-plus-lg"></i>'
-        data['miembros'] = Miembro.objects.select_related('user')
+        locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
+        data['fecha'] = timezone.localtime(timezone.now()).date()
+        vencimientoMembresias()
+        data['miembros'] = Miembro.objects.filter(estado=0).order_by('-id')
+        data['membresias'] = Membresia.objects.filter(estado=0)
         return data
-
+class ListMiembroEliminados(ListView):
+    model = Miembro
+    template_name = 'AppControlDeClientes/Miembro/listMiembroBajas.html'
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        return super().dispatch(request, *args, **kwargs)  
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        try:
+             data['empresa'] = Empresa.objects.first()
+        except:
+             data['empresa'] = 'Error'
+        data['titulo'] = 'Miembros eliminados'
+        data['modulo'] = 'Miembros'
+        data['miembros'] = Miembro.objects.filter(estado=1).order_by('-id')
+        return data
 def get_miembro(request, username):
     data={}
     try:
@@ -207,12 +233,250 @@ def get_miembro(request, username):
             data['genero'] = 'Femenino' 
         
         data['foto'] = str(miembro.get_image())
+        if miembro.fecha_fin:
+            locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8') 
+            data['fecha_fin'] = miembro.fecha_fin.strftime('%d de %B de %Y')
         data['email']= str(miembro.user.email)
         data['message']= 'success'
     except Exception as e :
-        data = {'message': 'Not Found'}
         print(e)
+        data = {'message': 'Not Found'}
+       
     return JsonResponse(data)
+
+def baja_miembro(request, pk):
+    miembro = Miembro.objects.get(id=pk)
+    if miembro.estado_membresia == 1:
+        messages.warning(request, f'{miembro.user.first_name} tiene una membresía activa, no se puede eliminar.')
+        return redirect(to='lista_miembros')
+    else:
+        miembro.estado = 1
+        miembro.save()
+        messages.success(request,f'{miembro.user.first_name} fue eliminado correctamente.')
+        return redirect(to='lista_miembros')
+
+def alta_miembro(request, pk):
+    miembro = Miembro.objects.get(id=pk)
+    miembro.estado = 0
+    miembro.save()
+    messages.success(request,f'{miembro.user.first_name} fue restaurado correctamente.')
+    return redirect(to='bajas_miembros')
+def alta_todos_miembros(request):
+    miembros = Miembro.objects.filter(estado=1)
+    for m in miembros:
+        m.estado = 0
+        m.save()
+    messages.success(request,f'Todos los miembros fueron restaurados correctamente.')
+    return redirect(to='lista_miembros')
+#*************************Miembro****************************************
+
+
+
+#*************************VENTA DE MEMBRESIA****************************************
+def create_venta_membresia(request, username,idmember):
+    try:
+        user = User.objects.get(username=username)
+        miembro = Miembro.objects.get(user=user.id)
+        empleado = request.user
+        membresia = Membresia.objects.get(id=idmember)
+        monto_pagado = membresia.precio
+        locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
+        fecha_inicio = timezone.localtime(timezone.now()).date()
+        venta_membresia = VentaMembresia(empleado=empleado,miembro=miembro,monto_pagado=monto_pagado,membresia=membresia)
+        miembro.estado_membresia = 1
+        miembro.fecha_inicio = venta_membresia.fecha
+        locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
+        fecha_fin = calcular_fecha_final(fecha_inicio, membresia.duracion)
+        miembro.fecha_fin = fecha_fin
+        fecha_fin_formateada = fecha_fin.strftime('%d de %B de %Y')
+
+        # Restaura el idioma local a su valor original
+        locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8') 
+        miembro.save()
+        venta_membresia.save()
+        miembro.venta_activa = venta_membresia.id
+        miembro.save()
+        print(venta_membresia.id)
+        print(fecha_fin)
+        messages.success(request, f"Venta realizada con éxito, el plan vence {fecha_fin_formateada}")
+        subject = 'Compra realizada con éxito'
+        message = f'\nEl plan comprado fue el {membresia.nombre}, con un costo de ${membresia.precio} y una duración de {membresia.duracion} meses. Finaliza el {fecha_fin_formateada}.\n\n¡GRACIAS POR FORMAR PARTE DE LA FAMILIA PERFECT BODY!\n\nCualquier consulta puedes acercate con nuestros encargados de turno, estamos para servirte.'
+        from_email = EMAIL_HOST_USER
+        recipient_list = [user.username]
+        send_mail(subject, message, from_email, recipient_list)
+        return redirect(to='lista_miembros')
+
+    except Exception as e:
+        print(e)
+        return redirect(to='lista_miembros')
+    
+
+
+class ListVentaMembresia(ListView):
+    model = VentaMembresia
+    template_name = 'AppControlDeClientes/VentaMembresia/listVentaMembresia.html'
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        return super().dispatch(request, *args, **kwargs)  
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        try:
+             data['empresa'] = Empresa.objects.first()
+        except:
+             data['empresa'] = 'Error'
+        vencimientoMembresias()
+        data['titulo'] = 'Ventas realizadas'
+        data['modulo'] = 'Venta de membresías'
+        data['icono']  = '<i class="bi bi-plus-lg"></i>'
+        data['ventas_membresia'] = VentaMembresia.objects.select_related('miembro').order_by('-id')
+        
+        # GANANCIAS DIARIAS
+        fecha_actual = timezone.localtime(timezone.now()).date()
+        ventas_hoy = VentaMembresia.objects.filter(fecha=fecha_actual)
+        ventas_hoy_dinero = ventas_hoy.aggregate(total_ventas=Sum('monto_pagado'))['total_ventas']
+        if ventas_hoy_dinero:
+
+            data['ganancia_hoy'] = ventas_hoy_dinero
+        else:
+             data['ganancia_hoy'] = "0.00"
+                # Realiza un recuento de todas las ventas por nombre
+
+        # MEMBRESIA MAS VENDIDA
+        try:
+            ventas_contadas = VentaMembresia.objects.values('membresia').annotate(total_ventas=Count('membresia'))
+
+            # Ordena las ventas contadas de mayor a menor
+            ventas_ordenadas = ventas_contadas.order_by('-total_ventas')
+
+            # La venta más común será la primera en la lista ordenada
+            data['mas_vendida'] = Membresia.objects.get(id=ventas_ordenadas[0]['membresia'])
+        except Exception as e:
+            data['mas_vendida'] = "Ninguna"
+
+        # Calcula la fecha de inicio de la semana actual (lunes)
+        dias_para_lunes = fecha_actual.weekday()
+        fecha_inicio_semana = fecha_actual - timedelta(days=dias_para_lunes)
+
+        # Calcula la fecha de finalización de la semana actual (domingo)
+        fecha_fin_semana = fecha_inicio_semana + timedelta(days=6)
+
+        # Filtra las ventas dentro del rango de fechas de la semana actual
+        ventas_semana = VentaMembresia.objects.filter(fecha__range=[fecha_inicio_semana, fecha_fin_semana])
+
+        # Suma el monto pagado de las ventas de la semana actual
+        ganancia_semana = ventas_semana.aggregate(total_ventas=Sum('monto_pagado'))['total_ventas']
+
+        # Si hay ganancias para la semana, guárdalas en 'data', de lo contrario, establece el valor en "0.00"
+        if ganancia_semana:
+            data['ganancia_semana'] = ganancia_semana
+        else:
+            data['ganancia_semana'] = "0.00"
+        # Filtra las ventas del mes actual
+        ventas_mes_actual = VentaMembresia.objects.filter(fecha__year=fecha_actual.year, fecha__month=fecha_actual.month)
+
+        # Calcula la suma de las ventas del mes
+        ventas_mes_actual_dinero = ventas_mes_actual.aggregate(total_ventas=Sum('monto_pagado'))['total_ventas']
+
+        if ventas_mes_actual_dinero:
+            data['ganancia_mes_actual'] = ventas_mes_actual_dinero
+        else:
+            data['ganancia_mes_actual'] = "0.00"
+        return data
+class EstadisticasVentaMembresia(ListView):
+    model = VentaMembresia
+    template_name = 'AppControlDeClientes/VentaMembresia/estadisticas.html'
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        return super().dispatch(request, *args, **kwargs)  
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data = super().get_context_data(**kwargs)
+        try:
+             data['empresa'] = Empresa.objects.first()
+        except:
+             data['empresa'] = 'Error'
+        vencimientoMembresias()
+        data['titulo'] = 'Estadísticas'
+        data['modulo'] = 'Venta de membresías'
+         # GANANCIAS DIARIAS
+        fecha_actual = timezone.localtime(timezone.now()).date()
+        ventas_hoy = VentaMembresia.objects.filter(fecha=fecha_actual)
+        ventas_hoy_dinero = ventas_hoy.aggregate(total_ventas=Sum('monto_pagado'))['total_ventas']
+        if ventas_hoy_dinero:
+
+            data['ganancia_hoy'] = ventas_hoy_dinero
+        else:
+             data['ganancia_hoy'] = "0.00"
+                # Realiza un recuento de todas las ventas por nombre
+
+        # MEMBRESIA MAS VENDIDA
+        try:
+            ventas_contadas = VentaMembresia.objects.values('membresia').annotate(total_ventas=Count('membresia'))
+
+            # Ordena las ventas contadas de mayor a menor
+            ventas_ordenadas = ventas_contadas.order_by('-total_ventas')
+
+            # La venta más común será la primera en la lista ordenada
+            data['mas_vendida'] = Membresia.objects.get(id=ventas_ordenadas[0]['membresia'])
+        except Exception as e:
+            data['mas_vendida'] = "Ninguna"
+
+        # Calcula la fecha de inicio de la semana actual (lunes)
+        dias_para_lunes = fecha_actual.weekday()
+        fecha_inicio_semana = fecha_actual - timedelta(days=dias_para_lunes)
+
+        # Calcula la fecha de finalización de la semana actual (domingo)
+        fecha_fin_semana = fecha_inicio_semana + timedelta(days=6)
+
+        # Filtra las ventas dentro del rango de fechas de la semana actual
+        ventas_semana = VentaMembresia.objects.filter(fecha__range=[fecha_inicio_semana, fecha_fin_semana])
+
+        # Suma el monto pagado de las ventas de la semana actual
+        ganancia_semana = ventas_semana.aggregate(total_ventas=Sum('monto_pagado'))['total_ventas']
+
+        # Si hay ganancias para la semana, guárdalas en 'data', de lo contrario, establece el valor en "0.00"
+        if ganancia_semana:
+            data['ganancia_semana'] = ganancia_semana
+        else:
+            data['ganancia_semana'] = "0.00"
+        # Filtra las ventas del mes actual
+        ventas_mes_actual = VentaMembresia.objects.filter(fecha__year=fecha_actual.year, fecha__month=fecha_actual.month)
+
+        # Calcula la suma de las ventas del mes
+        ventas_mes_actual_dinero = ventas_mes_actual.aggregate(total_ventas=Sum('monto_pagado'))['total_ventas']
+
+        if ventas_mes_actual_dinero:
+            data['ganancia_mes_actual'] = ventas_mes_actual_dinero
+        else:
+            data['ganancia_mes_actual'] = "0.00"
+        from decimal import Decimal
+
+        # Supongamos que tienes una lista llamada `ventas_cada_mes` con la estructura actual
+
+        # Convierte los valores Decimal a float
+        ventas_cada_mes = getVentasMensuales()
+        for data_dict in ventas_cada_mes:
+            data_dict['data'] = [float(val) for val in data_dict['data']]
+        print(ventas_cada_mes)
+        data['ventas_cada_mes'] = ventas_cada_mes
+        data['cantidad_de_ventas'] =getCantidadVentas()
+        return data
+def DeleteVentaMembresia(request, pk):
+    venta_membresia = VentaMembresia.objects.get(id=pk)
+    try:
+        miembro = Miembro.objects.get(venta_activa=venta_membresia.id)
+        miembro.estado_membresia = 0
+        miembro.fecha_inicio = None
+        miembro.fecha_fin = None
+        miembro.venta_activa = None
+        miembro.save()
+        venta_membresia.delete()
+        messages.success(request, 'Venta eliminada correctamente')
+    except Miembro.DoesNotExist:
+        venta_membresia.delete()
+        messages.success(request, 'Venta eliminada correctamente')
+    return redirect(to='list_venta_membresia')
+#*************************VENTA DE MEMBRESIA****************************************
+
+
 
 #---------------------------Membresia-------------------------------------------------------
 class CreateMembresia(CreateView):
@@ -338,3 +602,126 @@ def AltaTodosMembresia(request):
     return redirect(to='lista_membresias')
 
 ##--------------- FIN VISTAS MEMBRESIA ------------------------------------------
+
+##---------------------------------------------INICIO DE HISTORIAL DE MIEMBRO---------------------------------
+class CreateHistorialMiembro(CreateView):
+    model = HistorialMiembro
+    form_class = FormHistorialMiembro
+    success_url = reverse_lazy('crear_historialmiembro')
+    template_name = 'AppControlDeClientes/HistorialMiembro/createHistorialMiembro.html'
+    success_message = "¡Registro realizado con éxito!"
+
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        try:
+            data['empresa'] = Empresa.objects.first()
+        except:
+            data['empresa'] = 'Error'
+        data['titulo'] = 'Crear Bitacora'
+        data['modulo'] = 'Bitacora'
+      
+        return data
+
+    def form_valid(self, form):
+        # Calcula el IMC antes de guardar el registro
+        altura = form.cleaned_data['altura']
+        peso = form.cleaned_data['peso']
+        imc = peso / (altura * altura)  # Fórmula para calcular el IMC
+
+        form.instance.imc = imc  # Asigna el valor calculado al campo IMC en el modelo
+    
+
+        form.instance.miembro = Miembro.objects.get(pk=1)  # Aquí debes reemplazar con el miembro actual
+
+        # Guarda el registro en la base de datos
+        messages.success(self.request, "Bitacora añadida correctamente!")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, format(form.errors.as_text()))
+        return super().form_invalid(form)
+
+
+ #--------------------------------obteniendo el get del historial ----------------------------
+def get_historialmiembro(request, name):
+    data={}
+    try:
+        historial = HistorialMiembro.objects.get(miembro=name)
+        data = historial.toJSON()
+        data['miembros'] = str(historial.miembro)
+        data['img'] = str(historial.get_image())
+        data['message']= 'success'
+    except Exception as e :
+        data = {'message': 'Not Found'}
+        print(e)
+    return JsonResponse(data)
+#*********************************
+
+class ListHistorialMiembro(ListView):
+    model = HistorialMiembro
+    template_name = 'AppControlDeClientes/HistorialMiembro/listHistorialMiembro.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        try:
+            data['empresa'] = Empresa.objects.first()
+        except:
+            data['empresa'] = 'Error'
+        data['titulo'] = 'Bitacora'
+        data['modulo'] = 'Bitacora'
+        data['icono'] = '<i class="bi bi-plus-lg"></i>'
+        # Aquí obtén los historiales de miembros y agrégalos al contexto
+        data['historialmiembros'] = HistorialMiembro.objects.all()  # O usa el filtro que necesites
+        return data
+
+
+    #********************************
+
+class UpdateHistorialMiembro(UpdateView):
+    model = HistorialMiembro
+    form_class = FormHistorialMiembro
+    success_url = reverse_lazy('lista_historialmiembros')
+    template_name = 'AppControlDeClientes/HistorialMiembro/updateHistorialMiembro.html'
+    success_message = "¡Historial Miembro actualizado con éxito!"
+
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)  
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        try:
+            data['empresa'] = Empresa.objects.first()
+        except:
+            data['empresa'] = 'Error'
+        data['titulo'] = 'Bitacora Miembro'
+        data['modulo'] = 'Bitacora'
+        return data
+
+    def form_valid(self, form):
+        altura = form.cleaned_data['altura']
+        peso = form.cleaned_data['peso']
+        imc = peso / (altura * altura)  # Fórmula para calcular el IMC
+        form.instance.imc = imc  # Asigna el valor calculado al campo IMC en el modelo
+    
+        messages.success(self.request, "Historial Miembro actualizado con éxito!")
+        return super().form_valid(form)
+
+    
+#***********************************
+def DeleteHistorialMiembro(request, pk):
+    try:
+        historial = HistorialMiembro.objects.get(id=pk)
+        historial.delete()  # Elimina el registro del historial
+        messages.success(request, "¡Historial eliminado correctamente!")
+    except HistorialMiembro.DoesNotExist:
+        messages.error(request, "¡Error, el historial no se pudo encontrar!")
+    except Exception as e:
+        messages.error(request, "¡Error, la acción no se pudo realizar!")
+
+    return redirect(to='lista_historialmiembros')

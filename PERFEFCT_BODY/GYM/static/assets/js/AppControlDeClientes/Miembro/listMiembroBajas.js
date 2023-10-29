@@ -1,4 +1,4 @@
-function eliminarMiembro(id, nombre){
+function altaMiembro(id, nombre){
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
         confirmButton: 'btn btn-primary',
@@ -8,7 +8,7 @@ function eliminarMiembro(id, nombre){
     })
     
     swalWithBootstrapButtons.fire({
-      title: `¿Seguro que desea eliminar a ${nombre}?`,
+      title: `¿Seguro que desea restaurar a ${nombre}?`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Confirmar',
@@ -17,22 +17,21 @@ function eliminarMiembro(id, nombre){
     }).then((result) => {
       if (result.isConfirmed) {
         
-        window.location.href = "eliminarMiembro/"+id+"/"
+        window.location.href = "restaurarMiembro/"+id+"/"
       } else if (
         /* Read more about handling dismissals below */
         result.dismiss === Swal.DismissReason.cancel
       ) {
         swalWithBootstrapButtons.fire(
           'Operacion cancelada',
-          `${nombre} no se ha eliminado  :)`,
+          `${nombre} no se ha restaurado  :)`,
           'error'
         )
       }
     })
   }
-
-  function asiganarMembresia(idusuario, idMembresia){
-    const swalWithBootstrapButtons2 = Swal.mixin({
+  function altaTodosMiembro(){
+    const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
         confirmButton: 'btn btn-primary',
         cancelButton: 'btn btn-danger'
@@ -40,8 +39,8 @@ function eliminarMiembro(id, nombre){
       buttonsStyling: false
     })
     
-    swalWithBootstrapButtons2.fire({
-      title: '¿Seguro que desea realizar esta acción?',
+    swalWithBootstrapButtons.fire({
+      title: `¿Seguro que desea restaurar todos los miembros?`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Confirmar',
@@ -50,19 +49,20 @@ function eliminarMiembro(id, nombre){
     }).then((result) => {
       if (result.isConfirmed) {
         
-        window.location.href = "CrearVentaMembresia/"+idusuario+"/"+idMembresia+"/"
+        window.location.href = "restaurarTodosMiembro/"
       } else if (
         /* Read more about handling dismissals below */
         result.dismiss === Swal.DismissReason.cancel
       ) {
-        swalWithBootstrapButtons2.fire(
+        swalWithBootstrapButtons.fire(
           'Operacion cancelada',
-          'La membresía no se ha asigando :)',
+          `No se han restaurado todos los miembros :)`,
           'error'
         )
       }
     })
   }
+
   let obtenerMiembro = async (usuario) => {
     try {
       const response = await fetch(`./get_miembro/${usuario}/`)
@@ -135,76 +135,6 @@ tabla.addEventListener('click',(e) => {
 
         //fill(data)
     }
-    if(e.target.classList.contains('btnAM')){
-      let data = e.target.parentElement.parentElement.parentElement.parentElement.parentElement.children;
-      console.log(data)
-      usernameId.value = data[2].innerText
-      console.log(usernameId.value)
 
-      //fill(data)
-  }
-  if(e.target.classList.contains('aAM')){
-    let data = e.target.parentElement.parentElement.parentElement.parentElement.children;
-    console.log(data)
-    usernameId.value = data[2].innerText
-    console.log(usernameId.value)
+})});
 
-    //fill(data)
-}
-if(e.target.classList.contains('liAM')){
-  let data = e.target.parentElement.parentElement.parentElement.children;
-  console.log(data)
-  usernameId.value = data[2].innerText
-  console.log(usernameId.value)
-
-  //fill(data)
-}
-  if(e.target.classList.contains('iAM')){
-    let data = e.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.children;
-    console.log(data[2].innerText)
-    usernameId.value = data[2].innerText
-    console.log(usernameId.value)
-
-}
-if(e.target.classList.contains('btnAsignar')){
-  let data = e.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.children;
-  console.log(data[2].innerText)
-  usernameId.value = data[2].innerText
-  console.log(usernameId.value)
-
-}
-
-    
-   
-})
-});
-document.addEventListener("DOMContentLoaded", function () {
-  let buttons = document.querySelectorAll("a.btnAsignar");
-
-  buttons.forEach(function (button) {
-    button.addEventListener("click", function (event) {
-      event.preventDefault();
-      
-      // Obtiene el valor del input con id "usernameId"
-      var user = document.getElementById("usernameId");
-      var userText = user.value;
-      
-      // Encuentra el elemento .price-box más cercano al botón clicado
-      let priceBox = this.closest(".price-box");
-
-      if (priceBox) {
-        // Busca el input con la clase "idM" dentro del elemento priceBox
-        let input = priceBox.querySelector("input.idM");
-
-        if (input) {
-          let idMembresia = input.value;
-          asiganarMembresia(userText,idMembresia);
-        } else {
-          alert("No se encontró el input con la clase 'idM' dentro del .price-box.");
-        }
-      } else {
-        alert("No se encontró un elemento .price-box cercano al botón clicado.");
-      }
-    });
-  });
-});
