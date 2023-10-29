@@ -56,7 +56,9 @@
   <div class="row">
     {% comment %} <div class="col-lg-1"></div> {% endcomment %}
     <div class="col-lg-12 d-flex flex-row-reverse">
-
+      <a href="{% url 'lista_bajas_compras' %}" class="btn btn-danger">
+        <b><i class="bi bi-trash"></i> Papelera</b>
+      </a>
       <a href="{% url 'crear_compra' %}" class="btn btn-primary mx-1">
         <b><i class="bi bi-plus-lg"></i> Nuevo producto</b>
       </a>
@@ -95,7 +97,6 @@
                 <th scope="col">Proveedor</th>
                 <th scope="col">P.Uni</th>
                 <th scope="col">Fecha Venc</th>
-                <th scope="col">Total</th>
                 <th scope="col">Opciones</th>
               </tr>
             </thead>
@@ -109,7 +110,6 @@
                 <td style="vertical-align: middle;">{{ c.proveedor }}</td>
                 <td style="vertical-align: middle;">$ {{ c.precio_unitario }}</td>
                 <td style="vertical-align: middle;"> {{ c.fecha_vec }}</td>
-                <td style="vertical-align: middle;"> {{ c.total }}</td>
                 <td style="vertical-align: middle;">
 
                   <button type="button" class="btn btn-primary btnVP" data-bs-toggle="modal" data-bs-target="#verCompra">

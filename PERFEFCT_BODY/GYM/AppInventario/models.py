@@ -66,7 +66,6 @@ class Producto(models.Model):
         item = model_to_dict(self, exclude=['img'])
         return item
 
-
 class Compra(models.Model):
     cantidad = models.PositiveIntegerField(verbose_name='Cantidad', null=False)
     precio_unitario = models.DecimalField(max_digits=15,decimal_places=2,null=False,verbose_name="Precio unitario")

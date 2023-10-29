@@ -1,4 +1,3 @@
-from django import forms
 from django.forms import  ModelForm, Select, TextInput,Textarea,DateInput,ImageField,Form
 from AppInventario.models import *
 class FormCategoria(ModelForm):   
@@ -110,18 +109,13 @@ FormProducto.field_order = [
 
 #---------------------------------------COMPRAS--------------------------------------------------
 #------------------------------------------------------------------------------------------------
-                 #forms agregue con el .
 class FormCompra(ModelForm):   
-    #*****************esto acabo de agregar***************
-
-
-
-    #************hasta aqui termina lo que acabo de agregar*********
     class Meta:
         model=Compra
         fields = {
             'cantidad',
             'precio_unitario',
+            'total',
             'fecha_vec',
             'producto',
             'proveedor',
@@ -130,6 +124,7 @@ class FormCompra(ModelForm):
         labels={
             'cantidad': 'Cantidad',
             'precio_unitario': 'Precio Unitario',
+            'total': 'Total',
             'fecha_vec':'Fecha de Vencimiento',
             'producto':'Producto',
             'proveedor':'Proveedor',
@@ -145,6 +140,15 @@ class FormCompra(ModelForm):
                     }
                 ),
                 'precio_unitario': TextInput(
+                    attrs={
+                        
+                        'class': 'form-control',
+                        'placeholder': 'Ingrese nombre completo',
+                        'autocomplete':"off",
+                        
+                    }
+                ),
+                'total': TextInput(
                     attrs={
                         
                         'class': 'form-control',
@@ -178,11 +182,11 @@ class FormCompra(ModelForm):
                 ),
 
         }
-        
 FormCompra.field_order = [
             'producto',
             'proveedor',
             'cantidad',
             'precio_unitario',
             'fecha_vec',
+            'total', 
         ]

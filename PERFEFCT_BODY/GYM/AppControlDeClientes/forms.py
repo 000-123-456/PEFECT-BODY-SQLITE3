@@ -1,5 +1,5 @@
-from django.forms import  ModelForm, Select, TextInput,Textarea,DateInput,NumberInput,CharField
-from AppControlDeClientes.models import Miembro,Membresia,HistorialMiembro
+from django.forms import  ModelForm, Select, TextInput,Textarea,DateInput
+from AppControlDeClientes.models import Miembro,Membresia
 from .op import opGenero
 class FormMiembro(ModelForm):
     
@@ -144,45 +144,3 @@ FormMembresia.field_order = [
         ]
         
 
-#**************************************Historial -------------------------------------------------
-class FormHistorialMiembro(ModelForm):   
-    class Meta:
-        model = HistorialMiembro
-        fields = {
-            'peso',
-            'altura',
-            'descripcion',
-        }
-        labels = {
-            'peso': 'Peso (kg) ',
-            'altura': 'Altura (M)',
-            'descripcion': 'Descripción'       
-        }
-
-        widgets = {
-            'peso': NumberInput(
-                attrs={
-                    'type': 'text',
-                    'class': 'form-control',
-                    'placeholder': '0.00',
-                }
-            ),
-            'altura': NumberInput(
-                attrs={
-                    'type': 'text',
-                    'class': 'form-control',
-                    'placeholder': '0.00',
-                }
-            ),
-            'descripcion': TextInput(
-                attrs={
-                    'class': 'form-control',
-                    'placeholder': 'Descripción',
-                }
-            ),
-        }
-FormMembresia.field_order = [
-            'peso',
-            'altura',
-            'descripcion',
-        ]

@@ -30,14 +30,12 @@ urlpatterns = [
     path('Compra/CrearCompra/',login_required(views.CreateCompra.as_view()), name='crear_compra'),
     path('Compra/',login_required(views.ListCompra.as_view()), name='lista_compras'),
     path('Compra/ComprasEliminados/',login_required(views.ListCompraBajas.as_view()), name='lista_bajas_compras'),
-
     path('Compra/ComprasEliminados/AltaCompra/<int:pk>/',login_required(views.AltaCompra), name='alta_compra'),
     path('Compra/ComprasEliminados/AltaTodos/',login_required(views.AltaTodasCompra), name='alta_todos_compras'),
-
-    
     path('Compra/ActualizarCompras/<int:pk>/', login_required(views.UpdateCompra.as_view()), name='actualizar_compra'),
     path('Compra/EliminarCompra/<int:pk>/', login_required(views.DeleteCompra), name='eliminar_compra'),
     ##---------------------------------FIN DE VISTAS DE COMPRAS----------------------------------------------------------------
+
 
 
 
