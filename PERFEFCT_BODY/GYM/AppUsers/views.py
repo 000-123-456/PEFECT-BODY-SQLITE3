@@ -56,7 +56,11 @@ class LoginFormView(LoginView):
     template_name='AppUsers/User/login.html'
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            return redirect('prueba')
+            if request.user.rol == 3:
+                return redirect('inicio_miembro')
+            else:
+                return redirect('prueba')
+        
         if User.objects.count()==0:
             return redirect('registrar')
         return super().dispatch(request, *args, **kwargs)
