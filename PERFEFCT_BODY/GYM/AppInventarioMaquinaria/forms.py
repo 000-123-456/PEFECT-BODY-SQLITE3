@@ -160,11 +160,13 @@ class FormInicioHistorialMaquinaria(ModelForm):
         fields = {
             'detalle',
             'fecha_ini',
+            'tipo',
             'maquinaria'
         }
         labels={
             'detalle': 'Detalle',
             'fecha_ini':'Fecha de inicio',
+            'tipo':'Tipo',
             'maquinaria':'Maquinaria'
         }
         widgets={
@@ -179,6 +181,11 @@ class FormInicioHistorialMaquinaria(ModelForm):
                 attrs={
                     'class': 'form-control', 
                     'type': 'date'
+                }
+            ),
+            'tipo': Select(choices=opTipoM,
+                attrs={
+                    'class': 'form-control',
                 }
             ),
             'maquinaria': Select(

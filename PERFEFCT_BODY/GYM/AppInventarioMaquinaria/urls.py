@@ -15,7 +15,10 @@ urlpatterns = [
 
     path('Maquinaria/Editar/<int:pk>/',login_required(views.UpdateMaquinaria.as_view()), name='editar_maquina'),
 
-    path('HistorialMaquinaria/Agregar/', views.agregar_historial_maquinaria, name='agregar_historial_maquinaria'),
+    path('HistorialMaquinaria/Agregar/', login_required(views.agregar_historial_maquinaria), name='agregar_historial_maquinaria'),
+    path('HistorialMaquinaria/Terminar/', login_required(views.terminar_historial_maquinaria), name='terminar_historial_maquinaria'),
+    path('HistorialMaquinaria/Ultimo/<int:id_maquina>/', login_required(views.obtener_ultimo_historial), name='obtener_ultimo_historial'),
+    path('Maquinaria/Historial/Lista/<int:maquina_id>/', login_required(views.ListHistorialMaquina.as_view()), name='lista_historial'),
 
 ]
 urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

@@ -10,35 +10,66 @@
 {% block tituloS %}  {{titulo2}}   {% endblock tituloS %}
 {% block cuerpo %}
 
-<div class="modal fade" id="modalMantenimiento" tabindex="-1">
+<div class="modal fade" id="agregarMantenimiento" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header bg-warning">
-        <h5 class="modal-title text-black"><b><i class="bi bi-plus-lg"></i> Enviar a mantenimiento</b></h5>
+        <h5 class="modal-title text-black"><b><i class="bi bi-plus-lg"></i> Agregar Mantenimiento</b></h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body mx-4">
-        <!--Formulario de Categoria-->
-        <form class="row g-3" method="post" autocomplete='off' id='formAdd'>
-          <input type="hidden" name="action" value="add">
-          <input type="hidden" name="id" value="add">
+        <!-- Formulario de Categoria -->
+        <form class="row g-3" method="post" autocomplete='off' action="{% url 'agregar_historial_maquinaria' %}">
+          <input type="text" name="maquinariaID" id="maquinariaID" value="" hidden>
           {% csrf_token %}
           <div class="form-floating mb-3 mt-4">
-            <input type="date" name="fecha_ini" class="form-control" placeholder="Ingrese la fecha" required="" id="add_fecha_ini">
-            <label for="floatingName" autofocus="">Fecha</label>
-        </div>
-        <div class="form-floating mb-3 mt-4">
-          <textarea name="detalle" class="form-control" placeholder="Ingrese los detalles" rows="4" id="descripcion"></textarea>
-          <label for="floatingName">Detalles</label>
-        </div>
-  
+            <select class="form-select" name="tipo" id="tipo" required>
+              <option value="Preventivo">Preventivo</option>
+              <option value="Correctivo">Correctivo</option>
+            </select>
+            <label for="tipo">Tipo</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="date" class="form-control" name="fecha_ini" id="fecha_ini" required>
+            <label for="fecha_ini">Fecha</label>
+          </div>
+          <div class="form-floating mb-3">
+            <textarea class="form-control" name="detalle" id="detalle" placeholder="Detalles"></textarea>
+            <label for="detalle">Detalles</label>
+          </div>
       </div>
       <div class="modal-footer justify-content-center">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><b>Cerrar</b></button>
         <button type="submit" class="btn btn-primary text-black"><b>Guardar</b></button>
       </div>
-  </form>
-  
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="terminarMantenimiento" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-warning">
+        <h5 class="modal-title text-black"><b><i class="bi bi-plus-lg"></i> Terminar</b></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body mx-4">
+        <!-- Formulario de Categoria -->
+        <form class="row g-3" method="post" autocomplete='off' action="{% url 'terminar_historial_maquinaria' %}">
+          <input type="text" name="maquinaID" id="maquinaID" value="" hidden>
+          <input type="text" name="historialID" id="historialID" value="" hidden>
+          {% csrf_token %}
+          <div class="form-floating mb-3">
+            <input type="date" class="form-control" name="fecha_fin" id="fecha_fin" required>
+            <label for="fecha_fin">Fecha</label>
+          </div>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><b>Cerrar</b></button>
+        <button type="submit" class="btn btn-primary text-black"><b>Guardar</b></button>
+      </div>
+      </form>
     </div>
   </div>
 </div>
@@ -95,29 +126,59 @@
                     </thead>
                     <tbody>
                       {% if maquinas %} {% for m in maquinas %}
-                      <tr id="maquina-{{ m.id }}">
+                      <tr data-id="{{ m.id }}">
                         <td style="vertical-align: middle;">{{forloop.counter}}</td>
                         <td style="vertical-align: middle;">{{ m.nombre }}</td>
                         <td style="vertical-align: middle;">{{ m.descripcion }}</td>
                         <td style="vertical-align: middle;">{{ m.categoriaM }}</td>
-                        <td style="vertical-align: middle;">{{ m.estado_maquina }}</td>
+                        <td style="vertical-align: middle;">
+                          {% if m.estado_maquina == 'Reparacion' %}
+                            <span class="badge bg-danger">Reparación</span>
+                          {% elif m.estado_maquina == 'Disponible' %}
+                            <span class="badge bg-success">Disponible</span>
+                          {% else %}
+                            <span class="badge bg-warning" style="color: black;">Mantenimiento</span>
+                          {% endif %}
                         <td>
                             <img src="{{m.get_image}}" class="img-fluid d-block mx-auto" style="width: 70px; height:70px; border-radius: 20px;">
                         </td>
                         
                         <td style="vertical-align: middle;">
                         
-                          
-                          <!--Boton que despliega el menu-->
-                         
-                          <a type="button" class="btn btn-secondary" href="{%url 'editar_maquina' m.id %}">
-                            <i class="bi bi-pencil-square"></i>
+                          <a class="btn btn-dark" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-card-checklist"></i>
+                            <i class="dropdown-toggle"></i>
                           </a>
-                          
-                          
-                          <a type="button" class="btn btn-danger" href="#" onclick="eliminarMaquina({{m.id}})">
-                              <i class="bi bi-trash btnUM"></i>
-                          </a>
+                          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" style="">
+                            <li>
+                              <a class="dropdown-item" href="{%url 'editar_maquina' m.id %}">
+                                <strong><i class="bi bi-pencil-square"></i> Actualizar datos</strong>
+                              </a>
+                            </li>
+                            {% if m.estado_maquina == 'Disponible' %}
+                              <li>
+                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#agregarMantenimiento" id="btnMantenimiento">
+                                  <strong><i class="bi bi-wrench"></i> Enviar a mantenimiento</strong>
+                                </a>
+                              </li>
+                            {% else %}
+                              <li>
+                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#terminarMantenimiento" id="btnFinMantenimiento">
+                                  <strong><i class="bi bi-check-circle"></i> Terminar {% if m.estado_maquina == 'Mantenimiento' %}mantenimiento{% else %}reparación{% endif %}</strong>
+                                </a>
+                              </li>
+                            {% endif %}
+                            <li>
+                              <a class="dropdown-item" href="#" id="btnVerHistorial">
+                                <strong><i class="bi bi-clock-history"></i> Ver historial</strong>
+                              </a>
+                            </li>
+                            <li>
+                              <a class="dropdown-item text-danger" href="#" onclick="eliminarMaquina({{ m.id }}">
+                                <strong><i class="bi bi-trash"></i> Eliminar máquina</strong>
+                              </a>
+                            </li>
+                          </ul>
                         </td>
                       </tr>
                   
