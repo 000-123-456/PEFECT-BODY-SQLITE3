@@ -11,13 +11,29 @@ from django.http import HttpRequest, HttpResponse, JsonResponse
 from AppUsers.models import Empresa
 from django.contrib import messages
 from django.contrib.auth import login, authenticate
-
-
 from django.shortcuts import redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.urls import reverse
+from AppControlDeClientes.models import Miembro
+from GYM.settings import STATIC_URL
+# Create your views here.
+def inicioMiembro(request):
+    try:
+        data = {
+            'empresa': Empresa.objects.first(),
+            'titulo':"Inicio",
+            'modulo':"Home",
+            'miembro_datos': Miembro.objects.get(user=request.user),
+            }
+    except Empresa.DoesNotExist:
+        data = {
+                    'empresa':{'nombre':'Perfect Body',
+                               'logo': '{}{}'.format(STATIC_URL,'assets/img/logo-dark.png')},
+                               
+        }
 
+    return render(request, "layout/userUI/index.html",data) 
 # Create your views here.
 class RegistroUsuario(CreateView):
     model = User
@@ -40,13 +56,28 @@ class LoginFormView(LoginView):
     template_name='AppUsers/User/login.html'
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            return redirect('prueba')
+            if request.user.rol == 3:
+                return redirect('inicio_miembro')
+            else:
+                return redirect('prueba')
+        
         if User.objects.count()==0:
             return redirect('registrar')
         return super().dispatch(request, *args, **kwargs)
     def form_invalid(self, form):
         messages.error(self.request, "Usuario no encontrado. Por favor, verifique sus credenciales e inténtelo de nuevo.")
         return super().form_invalid(form)
+    def form_valid(self, form):
+        # Realizar la autenticación del usuario
+        self.user = form.get_user()
+        login(self.request, self.user)
+
+        # Verificar el rol del usuario y redirigir en consecuencia
+        if self.user.rol == 3:  # Comprobar si el rol es igual a 3 (miembro)
+            return redirect('inicio_miembro')  # Reemplaza 'vista_miembro' con el nombre de la vista a la que deseas redirigir a los miembros
+        else:
+            return redirect('prueba')  # Reemplaza 'otra_vista' con el nombre de la vista a la que deseas redirigir a otros usuarios autenticados
+
     
     
 #-------------------------------------------------EMPRESA-----------------------------

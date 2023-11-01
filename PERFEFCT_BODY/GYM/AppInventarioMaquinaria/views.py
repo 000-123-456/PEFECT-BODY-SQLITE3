@@ -1,3 +1,4 @@
+import json
 from django import http
 from django.shortcuts import render
 from typing import Any
@@ -62,66 +63,33 @@ class CreateMaquinaria(CreateView):
         # Agregar el mensaje de error personalizado a la lista de mensajes de la sesión
         messages.error(self.request, error_message)
         return super().form_invalid(form)
+        
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
+from .forms import FormHistorialMaquinaria  # Asegúrate de importar el formulario adecuado
+from .models import HistorialMaquinaria, Maquinaria
+from django.contrib import messages
+from django.utils import timezone
 
-#class ListMaquinaria(ListView):
- #   model = Maquinaria
-  #  form_class = FormMaquinariaEdit
-   # template_name = 'AppInventarioMaquinaria/Maquinaria/listMaquinaria.html'
-    #def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-     #   return super().dispatch(request, *args, **kwargs)  
-  #  def get_context_data(self, **kwargs):
-   #     data = super().get_context_data(**kwargs)
-    #    data['empresa'] = Empresa.objects.first()
-     #   data['titulo'] = 'Maquinarias'
-      #  data['titulo2'] = 'Lista'
-       # data['modulo'] = 'Maquinaria'
-        #data['icono']  = '<i class="bi bi-plus-lg"></i>'
-        #data['maquinas'] = Maquinaria.objects.exclude(estado_maquina='No Disponible')
-        #return data
-class ListMaquinaria(TemplateView):
+
+class ListMaquinaria(ListView):
     model = Maquinaria
+    form_class = FormMaquinariaEdit
     template_name = 'AppInventarioMaquinaria/Maquinaria/listMaquinaria.html'
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        return super().dispatch(request, *args, **kwargs)
-    def post(self, request: HttpRequest, *args: str, **kwargs: Any):
-        data={}
-        try:
-            action=request.POST['action']
-            if action == 'add':
-
-                print(request.POST)
-                HistorialMaquinaria(opTipoM='Mantenimiento',detalle=request.POST['detalle'],fecha_ini=request.POST['fecha_ini'],fecha_fin=Any,maquinaria_id=request.POST['id']).save()
-                messages.success(request, "¡Historial de maquinaria agregado correctamente!")
-            else:
-                data['error']= 'Ha ocurrido un error'         
-        except Exception as e:
-            data['error']= str(e)
-            return redirect(to='listar_maquina')
-    
+        return super().dispatch(request, *args, **kwargs)  
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        try:
-             data['empresa'] = Empresa.objects.first()
-        except:
-             data['empresa'] = 'Error'
+        data['empresa'] = Empresa.objects.first()
         data['titulo'] = 'Maquinarias'
         data['titulo2'] = 'Lista'
         data['modulo'] = 'Maquinaria'
         data['icono']  = '<i class="bi bi-plus-lg"></i>'
+        data['fecha_hoy'] = timezone.now().date()
         data['maquinas'] = Maquinaria.objects.exclude(estado_maquina='No Disponible')
         return data
     
-    @csrf_exempt
-    def get_historial(request, name):
-        data={}
-        try:
-            data = HistorialMaquinaria.get_historial(name).tojson()
-            data['message']='success'
-        except:
-            data = {'message': 'Not Found'}
-        return JsonResponse(data)
-        
-    
+ 
 class ListBajaMaquinaria(ListView):
     model = Maquinaria
     form_class = FormMaquinariaEdit
@@ -198,38 +166,114 @@ class UpdateMaquinaria(UpdateView):
         messages.error(self.request, "Error al actualizar la máquina. Por favor, verifica los datos.")
         return super().form_invalid(form)
     
+def get_maquina(request, id):
+
+  try:
+    maquina = Maquinaria.objects.get(pk=id)
+  
+  except Maquinaria.DoesNotExist:
+    maquina = None
+  
+  return maquina
+
+
+#-----------------------------------------AGREGAR NUEVO HISTORIAL DE MÁQUINA---------------------------------------
+@csrf_exempt
 def agregar_historial_maquinaria(request):
-    if request.method == 'POST':
-        form = FormInicioHistorialMaquinaria(request.POST)
-        if form.is_valid():
-            # Obtén la instancia de Maquinaria y asígnala al formulario
-            maquinaria_id = request.POST.get('maquinaria')
-            maquinaria = Maquinaria.objects.get(pk=maquinaria_id)
-            form.instance.maquinaria = maquinaria
+  if request.method == 'POST':
 
-            # Asigna un valor específico al campo "tipo"
-            # En este ejemplo, asignaremos el valor "Mantenimiento" al campo "tipo"
-            form.instance.tipo = 'Mantenimiento'
+    tipo = request.POST['tipo']
+    fecha_ini = request.POST['fecha_ini']
+    detalle = request.POST['detalle']
 
-            # Imprime los valores del formulario
-            print("Valores del formulario:")
-            print("Detalle:", form.cleaned_data['detalle'])
-            print("Fecha de inicio:", form.cleaned_data['fecha_ini'])
-            print("Maquinaria ID:", maquinaria_id)  # Imprime el ID de la maquinaria
-
-            # Guarda los datos en la base de datos
-            historial = form.save()
-
-             # Agrega un mensaje de éxito
-            messages.success(request, "Historial de maquinaria agregado correctamente.")
-
-            return redirect('listar_maquina')  # Redirige a la página de lista de máquinas
-        else:
-            # El formulario no es válido
-            messages.error(request, "Error al agregar el historial de maquinaria. Por favor, verifica los datos.")
+    maquina_id = request.POST['maquinariaID']
+    maquina = Maquinaria.objects.get(id=maquina_id)
+    if tipo == 'Preventivo':
+        maquina.estado_maquina = 'Mantenimiento'
     else:
-        form = FormHistorialMaquinaria()
+        maquina.estado_maquina = 'Reparacion'
 
-    return render(request, '../templates/AppInventarioMaquinaria/Maquinaria/listMaquinaria.html', {'form': form})
+    print(maquina_id)
+    print(tipo)
+    print(fecha_ini)
+    print(detalle) 
+
+    if maquina:
+
+      historial = HistorialMaquinaria()
+      historial.tipo = tipo
+      historial.fecha_ini = fecha_ini 
+      historial.detalle = detalle
+      historial.maquinaria = maquina
+      
+      maquina.save()
+      historial.save() #Esto crea el registro
+      
+      messages.success(request, 'Historial agregado!')
+
+    else:
+      messages.error(request, 'Error al obtener máquina') 
+
+  return redirect('listar_maquina')
 
 
+#--------------------------------------------CERRAR EL HISTORIAL DE MÁQUINA------------------------------------------
+@csrf_exempt
+def terminar_historial_maquinaria(request):
+
+  if request.method == 'POST':
+
+    fecha_fin = request.POST['fecha_fin']
+    hisotial_id = request.POST['historialID']
+    maquina_id = request.POST['maquinaID']
+
+    historial = HistorialMaquinaria.objects.get(id=hisotial_id)
+    maquina = Maquinaria.objects.get(id=maquina_id)
+
+    if historial and maquina:
+        historial.fecha_fin = fecha_fin
+        maquina.estado_maquina = 'Disponible'
+        historial.save() #Esto crea el registro
+        maquina.save()
+        messages.success(request, 'Máquina Disponible!')
+    else:
+      messages.error(request, 'Error al obtener máquina') 
+
+  return redirect('listar_maquina')
+
+
+#----------------------------OBTENER EL ID DEL HISTORIAL ABIERTO DE UNA MÁQUINA ESPECÍFICA-------------------------
+@csrf_exempt 
+def obtener_ultimo_historial(request, id_maquina):
+  try:
+     # Intenta obtener el historial abierto para la máquina específica
+        historial = HistorialMaquinaria.objects.get(maquinaria=id_maquina, fecha_fin=None)
+        # Si encontraste un historial abierto, devuelve su ID
+        data = {
+            'id': historial.id
+        }
+        return JsonResponse(data)
+  except HistorialMaquinaria.DoesNotExist:
+    return JsonResponse({'error':'No hay historial abierto'}, status=400)
+
+#--------------------------------------------VER HISTORIAL DE LA MAQUINA--------------------------------------------
+class ListHistorialMaquina(ListView):
+    template_name = 'AppInventarioMaquinaria/Maquinaria/listHistorialMaquinaria.html'  # Ruta a tu plantilla HTML para mostrar el historial
+    context_object_name = 'historial'  # Nombre del objeto en el contexto que contiene el historial
+
+    def get_queryset(self):
+        # Obten el ID de la máquina desde los parámetros de la URL
+        maquina_id = self.kwargs.get('maquina_id')
+        # Filtra el historial por el ID de la máquina
+        queryset = HistorialMaquinaria.objects.filter(maquinaria=maquina_id)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Agrega otros datos que necesites en el contexto
+        context['empresa'] = Empresa.objects.first()
+        context['titulo'] = 'Maquinarias'
+        context['titulo2'] = 'Lista'
+        context['modulo'] = 'Historial'
+        context['icono']  = '<i class="bi bi-plus-lg"></i>'
+        return context
