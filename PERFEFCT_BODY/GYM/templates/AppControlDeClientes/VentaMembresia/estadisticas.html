@@ -7,84 +7,83 @@
 {% block tituloS %}  {{titulo}}   {% endblock tituloS %}
 {% block cuerpo %}
 <section class="section dashboard">
+  <div class="col-lg-12">
     <div class="row">
-        <div class="col-lg-12">
-        <div class="row">
-          {% comment %} <div class="col-lg-1"></div> {% endcomment %}
-          <div class="col-xxl-3 col-md-6">
-            <div class="card info-card sales-card">
+      {% comment %} <div class="col-lg-1"></div> {% endcomment %}
+      <div class="col-xxl-3 col-md-3">
+        <div class="card info-card sales-card">
 
-            
+        
+          <div class="card-body">
+            <h5 class="card-title">Más vendido<span></span></h5>
+
+            <div class="d-flex align-items-center">
+              <div class="card-icon rounded-circle d-flex align-items-center justify-content-center bg-warning">
+                <i class="bi bi-cart text-black"></i>
+              </div>
+              <div class="ps-3">
+                <h6 class="text-warning">{{mas_vendida}}</h6>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        </div>
+        
+        <div class="col-xxl-3 col-md-3">
+            <div class="card info-card revenue-card">
               <div class="card-body">
-                <h5 class="card-title">Más vendido<span></span></h5>
+                <h5 class="card-title">Ventas diarias <span>| Hoy</span></h5>
 
                 <div class="d-flex align-items-center">
                   <div class="card-icon rounded-circle d-flex align-items-center justify-content-center bg-warning">
-                    <i class="bi bi-cart text-black"></i>
+                    <i class="bi bi-currency-dollar text-black"></i>
                   </div>
                   <div class="ps-3">
-                    <h6 class="text-warning">{{mas_vendida}}</h6>
+                    <h6 class="text-warning">{{ganancia_hoy|replace_comma}}</h6>
                   </div>
                 </div>
               </div>
-
             </div>
-            </div>
-            
-            <div class="col-xxl-3 col-md-6">
-                <div class="card info-card revenue-card">
-                  <div class="card-body">
-                    <h5 class="card-title">Ventas diarias <span>| Hoy</span></h5>
-  
-                    <div class="d-flex align-items-center">
-                      <div class="card-icon rounded-circle d-flex align-items-center justify-content-center bg-warning">
-                        <i class="bi bi-currency-dollar text-black"></i>
-                      </div>
-                      <div class="ps-3">
-                        <h6 class="text-warning">{{ganancia_hoy|replace_comma}}</h6>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-xxl-3 col-md-6">
-                <div class="card info-card revenue-card">
-                  <div class="card-body">
-                    <h5 class="card-title">Ventas semanales</h5>
-  
-                    <div class="d-flex align-items-center">
-                      <div class="card-icon rounded-circle d-flex align-items-center justify-content-center bg-warning">
-                        <i class="bi bi-currency-dollar text-black"></i>
-                      </div>
-                      <div class="ps-3">
-                        <h6 class="text-warning">{{ganancia_semana|replace_comma}}</h6>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-xxl-3 col-md-6">
-                <div class="card info-card revenue-card">
-                  <div class="card-body">
-                    <h5 class="card-title">Ventas mensuales</h5>
-  
-                    <div class="d-flex align-items-center">
-                      <div class="card-icon rounded-circle d-flex align-items-center justify-content-center bg-warning">
-                        <i class="bi bi-currency-dollar text-black"></i>
-                      </div>
-                      <div class="ps-3">
-                        <h6 class="text-warning">{{ganancia_mes_actual|replace_comma}}</h6>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              
+          </div>
+          <div class="col-xxl-3 col-md-3">
+            <div class="card info-card revenue-card">
+              <div class="card-body">
+                <h5 class="card-title">Ventas semanales</h5>
 
-        </div>
+                <div class="d-flex align-items-center">
+                  <div class="card-icon rounded-circle d-flex align-items-center justify-content-center bg-warning">
+                    <i class="bi bi-currency-dollar text-black"></i>
+                  </div>
+                  <div class="ps-3">
+                    <h6 class="text-warning">{{ganancia_semana|replace_comma}}</h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-xxl-3 col-md-3">
+            <div class="card info-card revenue-card">
+              <div class="card-body">
+                <h5 class="card-title">Ventas mensuales</h5>
+
+                <div class="d-flex align-items-center">
+                  <div class="card-icon rounded-circle d-flex align-items-center justify-content-center bg-warning">
+                    <i class="bi bi-currency-dollar text-black"></i>
+                  </div>
+                  <div class="ps-3">
+                    <h6 class="text-warning">{{ganancia_mes_actual|replace_comma}}</h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+
+    </div>
+</div>
     
-    <div class="col-12">
+    <div class="col-md-12 col-xxl-12 col-sm-12 overflow-auto">
         <div class="card">
           <div class="card-body">
                 <h5 class="card-title text-warning">Ventas mensuales</h5>
@@ -98,7 +97,7 @@
           
 
     </div>
-    <div class="col-12">
+    <div class="col-md-12 col-xxl-12 col-sm-12 overflow-auto">
         <div class="card">
             <div class="card-body pb-0">
             <h5 class="card-title text-warning">Cantidad de ventas <span>| Todo</span></h5>
@@ -108,7 +107,7 @@
             </div>
         </div>
     </div>
-</div>
+
          
 </section>
 
