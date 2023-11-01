@@ -114,7 +114,10 @@ FormProducto.field_order = [
 class FormCompra(ModelForm):   
     #*****************esto acabo de agregar***************
 
-
+    producto = forms.ModelChoiceField(
+        queryset=Producto.objects.filter(estado=0),  # Asegúrate de que solo se seleccionen productos disponibles
+        widget=forms.Select(attrs={'class': 'form-control'}),
+    )
 
     #************hasta aqui termina lo que acabo de agregar*********
     class Meta:
