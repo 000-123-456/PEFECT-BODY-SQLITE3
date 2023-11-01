@@ -71,7 +71,7 @@ class Compra(models.Model):
     cantidad = models.PositiveIntegerField(verbose_name='Cantidad', null=False)
     precio_unitario = models.DecimalField(max_digits=15,decimal_places=2,null=False,verbose_name="Precio unitario")
     total = models.DecimalField(max_digits=15,decimal_places=2,null=False,verbose_name="Total de compra")
-    fecha_vec = models.DateField(verbose_name='Fecha de vencimiento')
+    fecha_vec = models.DateField(verbose_name='Fecha de vencimiento', null=True, blank=True)
     fecha_compra = models.DateField(auto_now=True)
     fecha_created = models.DateTimeField(auto_now_add=True)
     fecha_updated = models.DateTimeField(auto_now_add=True)

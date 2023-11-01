@@ -115,9 +115,11 @@ class FormCompra(ModelForm):
     #*****************esto acabo de agregar***************
 
     producto = forms.ModelChoiceField(
-        queryset=Producto.objects.filter(estado=0),  # Asegúrate de que solo se seleccionen productos disponibles
+        queryset=Producto.objects.filter(estado=0), 
         widget=forms.Select(attrs={'class': 'form-control'}),
     )
+
+  
 
     #************hasta aqui termina lo que acabo de agregar*********
     class Meta:
@@ -130,6 +132,8 @@ class FormCompra(ModelForm):
             'proveedor',
         
         }
+
+        
         labels={
             'cantidad': 'Cantidad',
             'precio_unitario': 'Precio Unitario',
@@ -137,7 +141,7 @@ class FormCompra(ModelForm):
             'producto':'Producto',
             'proveedor':'Proveedor',
         }
-        
+
         widgets={
                 'cantidad': TextInput(
                     attrs={
@@ -181,6 +185,15 @@ class FormCompra(ModelForm):
                 ),
 
         }
+    def __init__(self, *args, **kwargs):
+        super(FormCompra, self).__init__(*args, **kwargs)
+
+        # Hacer que el campo de fecha de vencimiento sea opcional
+        if 'producto' in self.data:
+            producto_id = int(self.data.get('producto'))
+            producto = Producto.objects.get(pk=producto_id)
+            if not producto.categoriaP.perecedero:
+                self.fields['fecha_vec'].required = False
         
 FormCompra.field_order = [
             'producto',

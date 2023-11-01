@@ -37,6 +37,9 @@ urlpatterns = [
     
     path('Compra/ActualizarCompras/<int:pk>/', login_required(views.UpdateCompra.as_view()), name='actualizar_compra'),
     path('Compra/EliminarCompra/<int:pk>/', login_required(views.DeleteCompra), name='eliminar_compra'),
+
+    path('Obtenerimagenpro/<int:producto_id>/', views.Obtenerimagenpro, name='Imagenproducto'),
+    path('Categoriaproducto/<int:producto_id>/', views.Categoriaproducto, name='Categoriaproducto'),
     ##---------------------------------FIN DE VISTAS DE COMPRAS----------------------------------------------------------------
 
 

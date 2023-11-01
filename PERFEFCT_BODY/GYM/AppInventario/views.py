@@ -297,42 +297,42 @@ class CreateCompra(CreateView):
         data['producto'] = Producto.objects.filter(estado=0)
         data['proveedor'] = Proveedor.objects.filter(estado=0)
         return data
+    
 
     def form_valid(self, form):
        # --------------Obtengo el producto seleccionado en la compra
         producto = form.cleaned_data['producto']
-
-        # ------------Cargo el objeto del producto relacionado con la compra
-        producto_con_imagen = Producto.objects.get(id=producto.id)
-
         #----------- Recupero la cantidad comprada en la compra
         cantidad_comprada = form.cleaned_data['cantidad']
-
         # --------------Actualizo la cantidad de productos en stock sumando la cantidad comprada
         Producto.objects.filter(id=producto.id).update(cantidad=F('cantidad') + cantidad_comprada)
-
-
-
         # -------------Obténgo la cantidad comprada y el precio unitario del formulario
         cantidad_comprada = form.cleaned_data['cantidad']
         precio_unitario = form.cleaned_data['precio_unitario']
+        total_compra = cantidad_comprada * precio_unitario   
 
-        total_compra = cantidad_comprada * precio_unitario
-
-       
+        #*********************************************************
+        # Verifica si el producto pertenece a una categoría perecedera
+        if producto.categoriaP.perecedero:
+            # Si es perecedero, asegúrate de que la fecha de vencimiento no esté vacía
+            fecha_vec = form.cleaned_data['fecha_vec']
+            if not fecha_vec:
+                messages.error(self.request, "Fecha de Vencimiento: este campo es obligatorio.")
+                return super().form_invalid(form) 
+         
+        
+        
+        # ********************************************************  
         form.instance.total = total_compra
-
         # ------------- Guardo el objeto de compra en la base de datos
         form.save()
 
-
         messages.success(self.request, "Compra añadida correctamente!")
         return super().form_valid(form)
-
+    
     def form_invalid(self, form):
         messages.error(self.request, format(form.errors.as_text()))
         return super().form_invalid(form)
-
 
 def get_compra(request, id):
     data = {}
@@ -455,17 +455,6 @@ class UpdateCompra(UpdateView):
     
 #-------------------------------------------------------------------------
 
-'''def DeleteCompra(request, pk):
-    try:
-        compra = Compra.objects.get(id=pk)
-        compra.delete()  # Elimina la compra
-        messages.success(request, "¡Compra eliminada correctamente!")
-    except Compra.DoesNotExist:
-        messages.error(request, "¡Error, la compra no se pudo encontrar!")
-    except Exception as e:
-        messages.error(request, "¡Error, la acción no se pudo realizar!")
-
-    return redirect(to='lista_compras')'''
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import Compra
@@ -524,3 +513,27 @@ def AltaTodasCompra(request):
 
 
 
+#------------------------------------------------------------OBTENER IMAGEN
+# views.py
+from django.http import JsonResponse
+
+def Obtenerimagenpro(request, producto_id):
+    try:
+        producto = Producto.objects.get(id=producto_id)
+        imagen_url = producto.get_image()  # Asume que existe un método get_image en tu modelo Producto
+        return JsonResponse({'imagen_url': imagen_url})
+    except Producto.DoesNotExist:
+        return JsonResponse({'imagen_url': None})
+
+#------------------------------------------------------------OBTENER SI EL PRODUCTO VENCE O NO
+
+from django.http import JsonResponse
+
+def Categoriaproducto(request, producto_id):
+    try:
+        producto = Producto.objects.get(id=producto_id)
+        data = {'perecedero': producto.categoriaP.perecedero}
+        return JsonResponse(data)
+    except Producto.DoesNotExist:
+        data = {'perecedero': False}
+        return JsonResponse(data)
