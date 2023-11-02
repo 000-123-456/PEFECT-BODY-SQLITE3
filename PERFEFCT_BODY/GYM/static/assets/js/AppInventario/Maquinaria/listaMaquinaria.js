@@ -22,41 +22,52 @@ function eliminarMaquina(id) {
   })
 }
 
-// Obtener botón para abrir modal
-const btnVerHistorial = document.getElementById('btnVerHistorial');
-const btnAbrirModal = document.getElementById('btnMantenimiento');
-const btnAbrirModalFinalizar = document.getElementById('btnFinMantenimiento');
-
-// Agregar listener al click  -----------------------------------------------------------------------
-if(btnAbrirModal){
-  btnAbrirModal.addEventListener('click', function() {
-    const filaSeleccionada = obtenerFilaSeleccionada();          // Obtener fila seleccionada
-    const idMaquina = filaSeleccionada.dataset.id;               // Obtener id de la fila
-    console.log('idMaquina:', idMaquina);
-    document.getElementById('maquinariaID').value = idMaquina;   // Asignar id al campo oculto del modal
-  });
-}
-
-// Agregar listener al click  -----------------------------------------------------------------------
-if(btnAbrirModalFinalizar){
-btnAbrirModalFinalizar.addEventListener('click', async function() {
-  const filaSeleccionada = obtenerFilaSeleccionada();          // Obtener fila seleccionada
-  const idMaquina = filaSeleccionada.dataset.id;               // Obtener id de la fila
-  console.log('idMaquina:', idMaquina);
-
-  //obtener el ultimo historial de la maquina
-  const idHistorial = await obtenerUltimoHistorial(idMaquina);
-  console.log('idHistorial:', idHistorial);
-  
-  document.getElementById('historialID').value = idHistorial;   // Asignar id al campo oculto del modal
-  document.getElementById('maquinaID').value = idMaquina;   // Asignar id al campo oculto del modal
-});}
-
 //---------------------------------------------------------------------------------------------------
-function obtenerFilaSeleccionada() {
-  const btn = event.target;                                     // Obtener botón presionado
+function obtenerFilaSeleccionada(evento) {
+  const btn = evento.currentTarget;                                     // Obtener botón presionado
   return btn.closest('tr');                                     // Buscar fila que lo contiene
 }
+
+//---------------------------------------------------------------------------------------------------
+document.addEventListener('DOMContentLoaded', () => {
+  // Obtén todos los botones en las filas de la tabla
+  const botonesMantenimiento = document.querySelectorAll('.btnMantenimiento');
+  const botonesFinMantenimiento = document.querySelectorAll('.btnFinMantenimiento');
+  const botonVerHistorial = document.querySelectorAll('.btnVerHistorial');
+
+  // Agrega eventos a los botones de mantenimiento
+  botonesMantenimiento.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      let filaSeleccionada = obtenerFilaSeleccionada(e);
+      let idMaquina = filaSeleccionada.dataset.id;
+      console.log('Mantenimiento - idMaquina:', idMaquina);
+      document.getElementById('maquinariaID').value = idMaquina;
+    });
+  });
+
+  // Agrega eventos a los botones de fin de mantenimiento
+  botonesFinMantenimiento.forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      let filaSeleccionada = obtenerFilaSeleccionada(e);
+      let idMaquina = filaSeleccionada.dataset.id;
+      console.log('Fin Mantenimiento - idMaquina:', idMaquina);
+      let idHistorial = await obtenerUltimoHistorial(idMaquina);
+      console.log('Fin Mantenimiento - idHistorial:', idHistorial);
+      document.getElementById('historialID').value = idHistorial;
+      document.getElementById('maquinaID').value = idMaquina;
+    });
+  });
+
+  // Agrega eventos a los botones de ver historial
+  botonVerHistorial.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      let filaSeleccionada = obtenerFilaSeleccionada(e);
+      let idMaquina = filaSeleccionada.dataset.id;
+      console.log('Ver Historial - idMaquina:', idMaquina);
+      window.location.href = "../Historial/Lista/" + idMaquina + "/";
+    });
+  });
+});
 
 //---------------------------------------------------------------------------------------------------
 const obtenerUltimoHistorial = async (idMaquina) => {
@@ -71,23 +82,13 @@ const obtenerUltimoHistorial = async (idMaquina) => {
 }
 
 //---------------------------------------------------------------------------------------------------
-if(btnVerHistorial){
-  btnVerHistorial.addEventListener('click', function() {
-    const filaSeleccionada = obtenerFilaSeleccionada();          // Obtener fila seleccionada
-    const idMaquina = filaSeleccionada.dataset.id;               // Obtener id de la fila
-    console.log('idMaquina:', idMaquina);
-    window.location.href = "../Historial/Lista/" + idMaquina + "/"
-  });
-}
-
-//---------------------------------------------------------------------------------------------------
 // Obten el campo de entrada por su id
 let campoFechaFin = document.getElementById('fecha_fin');
 let campoFechaInicio = document.getElementById('fecha_ini');
 // Obtiene la fecha actual en formato YYYY-MM-DD
 let fechaActual = new Date();
 // Resta un día a la fecha actual
-fechaActual.setDate(fechaActual.getDate() - 1);
+fechaActual.setDate(fechaActual.getDate());
 // Convierte la fecha a formato YYYY-MM-DD
 let fechaAnterior = fechaActual.toISOString().slice(0, 10);
 // Establece la fecha anterior en el campo de entrada

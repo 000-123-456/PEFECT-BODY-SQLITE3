@@ -106,9 +106,9 @@
                 {% endfor %}
               {% endif %}
             <br>
-            <div class="card">
+            <div class="card recent-sales overflow-auto">
               
-              <div class="card-body"> 
+              <div class="card-body table-responsive"> 
                 <h5 class="card-title text-warning"> <i class="bi bi-list-task"></i> {{titulo2}}</h5>
                 <hr>
                 
@@ -127,11 +127,11 @@
                     <tbody>
                       {% if maquinas %} {% for m in maquinas %}
                       <tr data-id="{{ m.id }}">
-                        <td style="vertical-align: middle;">{{forloop.counter}}</td>
-                        <td style="vertical-align: middle;">{{ m.nombre }}</td>
-                        <td style="vertical-align: middle;">{{ m.descripcion }}</td>
-                        <td style="vertical-align: middle;">{{ m.categoriaM }}</td>
-                        <td style="vertical-align: middle;">
+                        <td class="text-nowrap" style="vertical-align: middle;">{{forloop.counter}}</td>
+                        <td class="text-nowrap" style="vertical-align: middle;">{{ m.nombre }}</td>
+                        <td class="text-nowrap" style="vertical-align: middle;">{{ m.descripcion }}</td>
+                        <td class="text-nowrap" style="vertical-align: middle;">{{ m.categoriaM }}</td>
+                        <td class="text-nowrap" style="vertical-align: middle;">
                           {% if m.estado_maquina == 'Reparacion' %}
                             <span class="badge bg-danger">Reparación</span>
                           {% elif m.estado_maquina == 'Disponible' %}
@@ -139,11 +139,11 @@
                           {% else %}
                             <span class="badge bg-warning" style="color: black;">Mantenimiento</span>
                           {% endif %}
-                        <td>
+                        <td class="text-nowrap">
                             <img src="{{m.get_image}}" class="img-fluid d-block mx-auto" style="width: 70px; height:70px; border-radius: 20px;">
                         </td>
                         
-                        <td style="vertical-align: middle;">
+                        <td class="text-nowrap" style="vertical-align: middle;">
                         
                           <a class="btn btn-dark" href="#" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-card-checklist"></i>
@@ -157,24 +157,24 @@
                             </li>
                             {% if m.estado_maquina == 'Disponible' %}
                               <li>
-                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#agregarMantenimiento" id="btnMantenimiento">
+                                <a class="dropdown-item btnMantenimiento" href="#" data-bs-toggle="modal" data-bs-target="#agregarMantenimiento">
                                   <strong><i class="bi bi-wrench"></i> Enviar a mantenimiento</strong>
                                 </a>
                               </li>
                             {% else %}
                               <li>
-                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#terminarMantenimiento" id="btnFinMantenimiento">
+                                <a class="dropdown-item btnFinMantenimiento" href="#" data-bs-toggle="modal" data-bs-target="#terminarMantenimiento">
                                   <strong><i class="bi bi-check-circle"></i> Terminar {% if m.estado_maquina == 'Mantenimiento' %}mantenimiento{% else %}reparación{% endif %}</strong>
                                 </a>
                               </li>
                             {% endif %}
                             <li>
-                              <a class="dropdown-item" href="#" id="btnVerHistorial">
+                              <a class="dropdown-item btnVerHistorial" href="#">
                                 <strong><i class="bi bi-clock-history"></i> Ver historial</strong>
                               </a>
                             </li>
                             <li>
-                              <a class="dropdown-item text-danger" href="#" onclick="eliminarMaquina({{ m.id }}">
+                              <a class="dropdown-item text-danger" href="#" onclick="eliminarMaquina({{ m.id }})">
                                 <strong><i class="bi bi-trash"></i> Eliminar máquina</strong>
                               </a>
                             </li>

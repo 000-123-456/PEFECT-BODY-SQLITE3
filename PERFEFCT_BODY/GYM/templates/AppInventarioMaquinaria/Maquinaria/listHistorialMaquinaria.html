@@ -36,9 +36,9 @@
                 {% endfor %}
               {% endif %}
             <br>
-            <div class="card">
+            <div class="card recent-sales overflow-auto">
               
-              <div class="card-body"> 
+              <div class="card-body table-responsive"> 
                 <h5 class="card-title text-warning"> <i class="bi bi-list-task"></i> {{titulo2}}</h5>
                 <hr>
                 
@@ -55,15 +55,15 @@
                     <tbody>
                       {% if historial %} {% for h in historial %}
                       <tr data-id="{{ h.id }}">
-                        <td style="vertical-align: middle;">{{forloop.counter}}</td>
-                        <td style="vertical-align: middle;">{{ h.tipo }}</td>
-                        <td style="vertical-align: middle;">{{ h.fecha_ini }}</td>
-                        <td style="vertical-align: middle;">{% if not h.fecha_fin %}Sin Finalizar{% else %}{{h.fecha_fin}}{% endif %}</td>
-                        <td style="vertical-align: middle;">{{ h.detalle }}</td>
+                        <td class="text-nowrap" style="vertical-align: middle;">{{forloop.counter}}</td>
+                        <td class="text-nowrap" style="vertical-align: middle;">{{ h.tipo }}</td>
+                        <td class="text-nowrap" style="vertical-align: middle;">{{ h.fecha_ini }}</td>
+                        <td class="text-nowrap" style="vertical-align: middle;">{% if not h.fecha_fin %}Sin Finalizar{% else %}{{h.fecha_fin}}{% endif %}</td>
+                        <td class="text-nowrap" style="vertical-align: middle;">{{ h.detalle }}</td>
                       </tr>
                   
                       {% endfor %} {% else %}
-                      <td colspan="9" style="text-align: center">
+                      <td class="text-nowrap" colspan="9" style="text-align: center">
                         <b>No hay datos para mostrar</b>
                       </td>
                       {% endif %}
@@ -94,7 +94,7 @@
         { searchable: false, targets: [0] },
         //{ width: "5%", targets: [0] }
     ],
-    pageLength: 3,
+    pageLength: 5,
     destroy: true,
     language: {
         lengthMenu: "Mostrar _MENU_ registros por página",
