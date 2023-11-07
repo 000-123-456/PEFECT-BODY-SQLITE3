@@ -51,10 +51,13 @@ document.addEventListener('DOMContentLoaded', () => {
       let filaSeleccionada = obtenerFilaSeleccionada(e);
       let idMaquina = filaSeleccionada.dataset.id;
       console.log('Fin Mantenimiento - idMaquina:', idMaquina);
-      let idHistorial = await obtenerUltimoHistorial(idMaquina);
-      console.log('Fin Mantenimiento - idHistorial:', idHistorial);
-      document.getElementById('historialID').value = idHistorial;
+      let historial = await obtenerUltimoHistorial(idMaquina);
+      console.log('Fin Mantenimiento - idHistorial:', historial.id);
+      document.getElementById('historialID').value = historial.id;
       document.getElementById('maquinaID').value = idMaquina;
+      let fechaMin = document.getElementById('fecha_fin');
+      console.log('Fin Mantenimiento - fechaMin:', historial.fecha_ini);
+      fechaMin.setAttribute('min', historial.fecha_ini);
     });
   });
 
@@ -74,7 +77,7 @@ const obtenerUltimoHistorial = async (idMaquina) => {
   try {
       const response = await fetch(`/HistorialMaquinaria/Ultimo/${idMaquina}`);
       const data = await response.json();
-      return data.id;                           // Devuelve el campo 'id' de la respuesta JSON
+      return data;                           // Devuelve el campo 'id' de la respuesta JSON
   } catch (error) {
       console.error(error);                       // Maneja errores de red o errores JSON aquí
       return null;         // o maneja el error devolviendo un valor específico según tu lógica

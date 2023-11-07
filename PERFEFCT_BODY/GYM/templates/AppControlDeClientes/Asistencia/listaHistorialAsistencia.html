@@ -14,11 +14,6 @@
     
         <div class="row">
          
-          <div class="col-lg-12 d-flex">
-            <a href="{% url 'listar_maquina' %}" class="btn btn-primary">
-              <b><i class="bi bi-arrow-left"></i> Regresar</b>
-            </a>  
-        </div>
           <br>
           <br>
           <div class="col-lg-12">
@@ -46,23 +41,25 @@
                   <thead class="bg-warning text-black">
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Tipo</th>
-                        <th scope="col">Inicio</th>
-                        <th scope="col">Finalización</th>
-                        <th scope="col">Detalle</th>
+                        <th scope="col">Imagen</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Fecha</th>
+                        <th scope="col">Hora</th>
                         <th scope="col">Opciones</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {% if historial %} {% for h in historial %}
+                      {% if asistencias %} {% for a in asistencias %}
                       <tr data-id="{{ h.id }}">
                         <td class="text-nowrap" style="vertical-align: middle;">{{forloop.counter}}</td>
-                        <td class="text-nowrap" style="vertical-align: middle;">{{ h.tipo }}</td>
-                        <td class="text-nowrap" style="vertical-align: middle;">{{ h.fecha_ini }}</td>
-                        <td class="text-nowrap" style="vertical-align: middle;">{% if not h.fecha_fin %}Sin Finalizar{% else %}{{h.fecha_fin}}{% endif %}</td>
-                        <td class="text-nowrap" style="vertical-align: middle;">{{ h.detalle }}</td>
+                        <td class="text-nowrap">
+                          <img src="{% if a.miembro %}{{a.miembro.get_image}}{% else %}/static/assets/img/no-photo.jpg{% endif %}" class="img-fluid d-block mx-auto" style="width: 70px; height:70px; border-radius: 20px;">
+                      </td>
+                        <td class="text-nowrap" style="vertical-align: middle;">{% if not a.miembro %}{{a.nombre}}{% else %}{{a.miembro.user.first_name}} {{a.miembro.user.last_name}}{% endif %}</td>
+                        <td class="text-nowrap" style="vertical-align: middle;">{{ a.fecha_created.date }}</td>
+                        <td class="text-nowrap" style="vertical-align: middle;">{{ a.fecha_created|time:'H:i' }}</td>
                         <td class="text-nowrap" style="vertical-align: middle;">
-                          <a href="#" onclick="eliminarHistorial({{h.id}})" class="btn btn-danger btn-sm">
+                          <a href="#" onclick="eliminarHistorial({{a.id}})" class="btn btn-danger btn-sm">
                             <i class="bi bi-trash"></i>
                           </a>
                       </tr>
@@ -86,7 +83,7 @@
 
 {% endblock cuerpo %}
 {% block js %}
-<script type="application/javascript" src="{% static 'assets/js/AppInventario/Maquinaria/historialMaquinaria.js' %}"></script>
+<script type="application/javascript" src="{% static 'assets/js/AppControlDeClientes/Asistencia/historialAsistencia.js' %}"></script>
 <script>
   const dataTableOptions = {
     //scrollX: "400px",
@@ -97,8 +94,8 @@
     lengthMenu: [5, 10, 15, 20, 100, 200, 500],
     columnDefs: [
         { className: "text-center", targets: [0, 1, 2, 3, 4, 5] },
-        { orderable: false, targets: [5] },
-        { searchable: false, targets: [0, 5] },
+        { orderable: false, targets: [1, 5] },
+        { searchable: false, targets: [0, 1, 5] },
         //{ width: "5%", targets: [0] }
     ],
     pageLength: 5,
@@ -120,7 +117,7 @@
     }
 };
 
-  {% if historial %}
+  {% if asistencias %}
   let table = new DataTable('#data', dataTableOptions);
   //remove the default 'Search' text for all DataTable search boxes
   $('[type=search]').each(function () {

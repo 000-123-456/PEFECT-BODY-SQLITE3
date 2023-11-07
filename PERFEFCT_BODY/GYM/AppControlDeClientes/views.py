@@ -1,11 +1,12 @@
 
+import json
 from typing import Any
 from django.http import HttpRequest, HttpResponse, JsonResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView
-from AppControlDeClientes.models import HistorialMiembro, Miembro,Membresia,VentaMembresia
-from AppControlDeClientes.forms import FormMiembro,FormMembresia, FormHistorialMiembro
+from django.views.generic import ListView, CreateView, UpdateView, TemplateView
+from AppControlDeClientes.models import HistorialMiembro, Miembro,Membresia,VentaMembresia, Asistencia
+from AppControlDeClientes.forms import FormMiembro,FormMembresia, FormHistorialMiembro, FormAsistenciaMiembro
 from django.contrib import messages
 from AppUsers.models import Empresa,User
 from AppUsers.forms import RegistroUsuarioForm
@@ -20,6 +21,10 @@ import locale
 from django.db.models import Sum, Count
 from datetime import date
 from datetime import timedelta
+from django.db.models import Q
+from fuzzywuzzy import process
+from django.views.decorators.csrf import csrf_exempt
+
 # Create your views here.
 def prueba(request):
     try:
@@ -725,3 +730,159 @@ def DeleteHistorialMiembro(request, pk):
         messages.error(request, "¡Error, la acción no se pudo realizar!")
 
     return redirect(to='lista_historialmiembros')
+
+
+#***********************************ASISTENCIA**************************************************************
+class CreateAsistenciaMiembro(TemplateView):
+    template_name = 'AppControlDeClientes/Asistencia/registroAsistencia.html'
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        return super().dispatch(request, *args, **kwargs)  
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        try:
+            data['empresa'] = Empresa.objects.first()
+        except:
+            data['empresa'] = 'Error'
+        data['titulo'] = 'Asistencia'
+        data['titulo2'] = 'Miembro'
+        data['modulo'] = 'Asistencia'
+        return data
+    
+def lista_miembros(request):
+    q = request.GET.get('q') # obtener término de búsqueda
+    try:
+        if q is not None:
+            # Filtrar por nombre o apellido que contenga q
+            miembros = Miembro.objects.filter(
+                Q(user__first_name__icontains=q) | 
+                Q(user__last_name__icontains=q),
+                estado=False
+            )
+            if not miembros:
+                miembros = Miembro.objects.filter(estado=False)
+                nombres = [m.user.first_name for m in miembros]
+                apellidos = [m.user.last_name for m in miembros]
+
+                # Buscar coincidencias aproximadas
+                nombre_match = process.extractOne(q, nombres)
+                apellido_match = process.extractOne(q, apellidos)
+
+                query = Q()
+
+                if nombre_match[1] > 40:
+                    query |= Q(user__first_name=nombre_match[0])
+
+                if apellido_match[1] > 40:
+                    query |= Q(user__last_name=apellido_match[0])
+
+                miembros = miembros.filter(query)
+        else:
+            miembros = Miembro.objects.filter(estado=False)
+            # Serializa los objetos Miembro a una lista de diccionarios
+        miembros_list = [
+            {
+                'id': miembro.id,
+                'nombre': miembro.user.first_name,
+                'apellido': miembro.user.last_name,
+                'fotoURL': miembro.foto.url,
+                'edad' : calcular_edad(miembro.fecha_nac),
+            }
+            for miembro in miembros
+        ]
+        # Devuelve la lista de miembros como JSON
+        return JsonResponse(miembros_list, safe=False)
+    except Miembro.DoesNotExist:
+        return JsonResponse({'error': 'No hay miembros'}, status=400)
+    
+def calcular_edad(fecha_nac):
+    fecha_actual = timezone.now().date()
+    edad = fecha_actual.year - fecha_nac.year
+    if fecha_actual.month < fecha_nac.month:
+        edad -= 1
+    elif fecha_actual.month == fecha_nac.month and fecha_actual.day < fecha_nac.day:
+        edad -= 1
+    return edad
+
+@csrf_exempt
+def registrar_asistencia(request):
+    if request.method == 'POST':
+        # Obtener el ID del miembro seleccionado del cuerpo de la solicitud POST
+        member_id = request.POST.get('member_id')
+        if member_id:
+            print("SE RECIBE EL ID: " +member_id)
+            # Obtener el miembro de la base de datos
+            try:
+                miembro = Miembro.objects.get(id=member_id)
+            except Miembro.DoesNotExist:
+                return JsonResponse({'error': 'Miembro no encontrado'}, status=400)
+
+            if miembro.estado_membresia == 1:
+                # Crear un nuevo registro de asistencia
+                asistencia = Asistencia(miembro=miembro, empleado=request.user)
+                asistencia.save()
+                messages.success(request, 'Asistencia Registrada')
+            else:
+                print("MEMBRESIA VENCIDA")
+                messages.error(request, 'La membresía de este miembro está vencida')
+        else:
+            nombre = request.POST.get('nombre').upper()
+            monto = Empresa.objects.first().tarifa
+            if nombre:
+                asistencia = Asistencia(nombre=nombre, empleado=request.user, monto_pagado=monto)
+                asistencia.save()
+                messages.success(request, 'Asistencia Registrada')
+        return redirect(to='registro_asistencia')
+    
+class ListHistorialAsistencias(ListView):
+    model = Asistencia
+    template_name = 'AppControlDeClientes/Asistencia/listaHistorialAsistencia.html'
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        try:
+            data['empresa'] = Empresa.objects.first()
+        except:
+            data['empresa'] = 'Error'
+        data['titulo'] = 'Historial de Asistencias'
+        data['modulo'] = 'Asistencia'
+        data['icono'] = '<i class="bi bi-plus-lg"></i>'
+        data['asistencias'] = Asistencia.objects.all()
+        return data
+    
+@csrf_exempt
+def eliminarHistorial(request, pk):
+    try:
+        historial = get_object_or_404(Asistencia, id=pk)
+        historial.delete()
+        messages.success(request, "¡Historial Eliminado!")
+    except Asistencia.DoesNotExist:
+        messages.error(request, "¡La asistencia que intentas eliminar no existe!")
+    except Exception as e:
+        messages.error(request, f"¡Error: {str(e)}")
+    return redirect(to='lista_asistencia')
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

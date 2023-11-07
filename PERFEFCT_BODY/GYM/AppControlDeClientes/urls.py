@@ -45,5 +45,10 @@ urlpatterns = [
     path('HistorialMiembro/EliminarHistorialMiembros/<int:pk>/', login_required(views.DeleteHistorialMiembro), name='eliminar_historialmiembros'),
 
 
-
+    #--------------------------------------------ASISTENCIA DE MIEMBRO-------------------------------------------------------
+    path('Asistencia/Registro/',login_required(views.CreateAsistenciaMiembro.as_view()), name='registro_asistencia'),
+    path('Asistencia/listaMiembros/',login_required(views.lista_miembros), name='lista_miembros_asistencia'),
+    path('Asistencia/marcar_asistencia/',login_required(views.registrar_asistencia), name='registrar_asistencia'),
+    path('Asistencia/Listado/',login_required(views.ListHistorialAsistencias.as_view()), name='lista_asistencia'),
+    path('Asistencia/eliminarAsistencia/<int:pk>/',login_required(views.eliminarHistorial), name='eliminar_asistencia'),
 ]

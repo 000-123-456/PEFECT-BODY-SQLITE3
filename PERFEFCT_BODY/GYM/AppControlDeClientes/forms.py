@@ -1,5 +1,5 @@
 from django.forms import  ModelForm, Select, TextInput,Textarea,DateInput,NumberInput,CharField
-from AppControlDeClientes.models import Miembro,Membresia,HistorialMiembro
+from AppControlDeClientes.models import Miembro,Membresia,HistorialMiembro,Asistencia
 from .op import opGenero
 class FormMiembro(ModelForm):
     
@@ -191,3 +191,27 @@ FormMembresia.field_order = [
             'altura',
             'descripcion',
         ]
+
+from django.forms import ModelForm, Select
+from .models import Asistencia, Miembro
+
+class FormAsistenciaMiembro(ModelForm):
+    class Meta:
+        model = Asistencia
+        fields = ['miembro']
+        labels = {
+            'miembro': 'Miembro',
+        }
+        widgets = {
+            'miembro': Select(
+                attrs={
+                    'class': 'form-control',
+                    'placeholder': 'Miembro',
+                    'id': 'SelectMiembro'
+                }
+            ),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['miembro'].queryset = Miembro.objects.filter(estado=True).filter(estado_membresia=1)

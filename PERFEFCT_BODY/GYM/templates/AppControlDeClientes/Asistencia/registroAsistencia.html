@@ -1,0 +1,91 @@
+{% extends 'layout/index.html' %}
+{% load static %}
+{% block titulo %}   {{titulo}}   {% endblock titulo %}
+{% block tituloP %}  {{titulo}}   {% endblock tituloP %}
+{% block modulo %}
+  <a href="{% url 'listar_maquina' %}">   
+    {{modulo}}
+  </a>   
+{% endblock modulo %}
+{% block tituloS %}  {{titulo2}}   {% endblock tituloS %}
+{% block cuerpo %}
+<section class="section">
+
+  <div class="row">
+    <div class="col-lg-3"></div>
+    <div class="col-lg-6">             
+      <!-- Horizontal Form -->
+      {% if form.errors %}
+        {% for field  in form  %}
+          {% for error in field.errors %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <strong>Notificacion: </strong>{{error}}.
+              <button type="button" class="btn-close" data-bs-dismiss="alert" arial-label="Close"></button>
+            </div>
+          {% endfor %}
+        {% endfor %}
+      {% endif %}
+
+                    <div class="card">
+                      <div class="card-body">
+                        <h5 class="card-title text-warning"><i class="bi bi-plus-lg"></i> {{titulo2}}</h5>
+                        
+                        <!-- Floating Labels Form -->
+                        <form class="row g-2" enctype="multipart/form-data">
+                          {% csrf_token %}
+                          <!-- combo que muestra los miembros -->
+                          <div class="col-md-12 mb-3 mt-4">
+                            <div class="form-floating">
+                                
+                              <!-- Campo de entrada para filtrar miembros -->
+                                <select class="form-control select2" id="miembros-select" style="width: 100%;"></select>
+                            
+                            </div>
+                          </div>
+
+                            <div class="text-center">
+                              <button class="btn bg-warning text-black" id="btnMarcarAsistenciaMiembro">Marcar Asistencia</button>
+                            </div>
+
+                        </form><!-- End floating Labels Form -->
+                      </div>
+                    </div>
+
+
+                    <div class="card">
+                      <div class="card-body">
+                        <h5 class="card-title text-warning"><i class="bi bi-plus-lg"></i> Cliente</h5>
+                        
+                        <!-- Floating Labels Form -->
+                        <form class="row g-2" enctype="multipart/form-data">
+                          {% csrf_token %}
+                          <!-- combo que muestra los miembros -->
+                          <div class="col-md-12 mt-4">
+                                
+                              <div class="form-floating mb-3">
+                                <input type="text" class="form-control" name="nombre" id="nombreCliente" required>
+                                <label for="nombre">Nombre</label>
+                              </div>
+
+                          </div>
+
+                            <div class="text-center">
+                              <button class="btn bg-warning text-black" id="btnMarcarAsistenciaCliente">Marcar Asistencia</button>
+                            </div>
+
+                        </form><!-- End floating Labels Form -->
+                      </div>
+                    </div>
+                  
+    </div>
+    <div class="col-lg-3"></div>
+  </div>
+        
+</section>
+
+
+
+{% endblock cuerpo %}
+{% block js %}
+  <Script type="application/javascript" src="{% static 'assets/js/AppControlDeClientes/Asistencia/asistencia.js' %}"></Script>
+{% endblock js %}

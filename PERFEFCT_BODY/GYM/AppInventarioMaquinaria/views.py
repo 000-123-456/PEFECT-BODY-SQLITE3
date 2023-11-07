@@ -1,6 +1,6 @@
 import json
 from django import http
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from typing import Any
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
@@ -250,7 +250,8 @@ def obtener_ultimo_historial(request, id_maquina):
         historial = HistorialMaquinaria.objects.get(maquinaria=id_maquina, fecha_fin=None)
         # Si encontraste un historial abierto, devuelve su ID
         data = {
-            'id': historial.id
+            'id': historial.id,
+            'fecha_ini': historial.fecha_ini.strftime('%Y-%m-%d')  # Convierte el objeto de fecha a formato de cadena
         }
         return JsonResponse(data)
   except HistorialMaquinaria.DoesNotExist:
@@ -277,3 +278,16 @@ class ListHistorialMaquina(ListView):
         context['modulo'] = 'Historial'
         context['icono']  = '<i class="bi bi-plus-lg"></i>'
         return context
+
+@csrf_exempt
+def eliminarHistorial(request, pk):
+    try:
+        historial = get_object_or_404(HistorialMaquinaria, id=pk)
+        historial.delete()
+        messages.success(request, "¡Historial Eliminado!")
+    except HistorialMaquinaria.DoesNotExist:
+        messages.error(request, "¡El historial que intentas eliminar no existe!")
+    except Exception as e:
+        messages.error(request, f"¡Error: {str(e)}")
+    return redirect('lista_historial', maquina_id=historial.maquinaria.id)
+    
