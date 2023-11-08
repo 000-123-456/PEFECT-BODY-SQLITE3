@@ -1,81 +1,81 @@
-  {% extends 'layout/index.html' %}
+  {% extends 'layout/userUI/index.html' %}
   {% load static %}
   {% block titulo %}   {{titulo}}   {% endblock titulo %}
-  {% block tituloP %}  {{titulo}}   {% endblock tituloP %}
-  {% block modulo %}   {{modulo}}   {% endblock modulo %}
-  {% block tituloS %}  {{titulo}}   {% endblock tituloS %}
-  {% block cuerpo %}
-  <section class="section">
-    
-    <div class="row">
-      <div class="col-lg-12 d-flex">
-        <a href="{% url 'lista_historialmiembros' %}" class="btn btn-primary">
-          <b><i class="bi bi-arrow-left"></i> Regresar</b>
-        </a>  
-    </div>
-    <br>
-      <div class="col-lg-3"></div>
-      <div class="col-lg-6">             
-            <!-- Horizontal Form -->
-            
-          <br>
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title text-warning"><i class="bi bi-plus-lg"></i> {{titulo}}</h5>
-            
-            <!-- Floating Labels Form -->
-            <form class="row g-3" method="post" enctype="multipart/form-data" action='.'>
-              {% csrf_token %}
-              {% for field in form.visible_fields %}
-              {% if  field.label == 'Foto'%}
-                <div class="col-md-12">     
-                  <div class="form-floating">
-                    <input type="file" name="img" accept="image/*" id="id_img" class='form-control'>
-                    <label for="floatingName" autofocus>Foto</label>
-                  </div>
-                </div>
-              {% else %}
-                   <div class="col-md-{% if field.label == 'Precio' or field.label == 'Duración'  %}6{% else %}12{% endif %}">   
-                      
-                    <div class="form-floating">
-                      {{ field }}
-                      <label for="floatingName" autofocus>{{field.label}}</label>
-                    </div>
-                  </div>
-              {% endif %}
-              {% endfor %}
-              
-              <div class="text-center">
-                <button type="submit" class="btn bg-warning text-black">Guardar</button>
-                <a href="{% url 'lista_historialmiembros' %}" class="btn btn-secondary">
-                   Cancelar
-                </a>
-              </div>
-            </form><!-- End floating Labels Form -->
+  {% block linkModulo %}
+          <li><a href="{% url 'crear_historialmiembro' %}">{{modulo}}</a></li>
+  {% endblock linkModulo %}
+  {% block contenido %}
 
+  <!-- ======= Contact Section ======= -->
+  <section id="contact" class="contact">
+    <div class="container" data-aos="fade-up">
+      <div class="row">
+        <div class="col-lg-12 mt-lg-0">
+          <div class="row">
+            <div class="col-lg-12 d-flex">
+              <a href="{% url 'lista_historialmiembros' %}" class="btn btn-warning">
+                <b> Registro de avances</b>
+              </a>  
           </div>
-          
+          <br>
+            <div class="col-lg-3"></div>
+            <div class="col-lg-6">             
+                  <!-- Horizontal Form -->
+                  
+                <br>
+              <div class="card bg-warning">
+                <div class="card-body">
+                  <h5 class="card-title text-black"><i class="bi bi-plus-lg"></i> {{titulo}}</h5>
+                  
+                  <!-- Floating Labels Form -->
+                  <form class="row g-3" method="post" enctype="multipart/form-data" action='.'>
+                    {% csrf_token %}
+                    {% for field in form.visible_fields %}
+                    {% if  field.label == 'Foto'%}
+                      <div class="col-md-12">     
+                        <div class="form-floating">
+                          <input type="file" name="img" accept="image/*" id="id_img" class='form-control'>
+                          <label for="floatingName" autofocus>Foto</label>
+                        </div>
+                      </div>
+                    {% else %}
+                         <div class="col-md-{% if field.label == 'Precio' or field.label == 'Duración'  %}6{% else %}12{% endif %}">   
+                            
+                          <div class="form-floating">
+                            {{ field }}
+                            <label for="floatingName" autofocus>{{field.label}}</label>
+                          </div>
+                        </div>
+                    {% endif %}
+                    {% endfor %}
+                    
+                    <div class="text-center">
+                      <button type="submit" class="btn btn-dark-moon">Guardar</button>
+                      <a href="{% url 'lista_historialmiembros' %}" class="btn btn-secondary">
+                         Cancelar
+                      </a>
+                    </div>
+                  </form><!-- End floating Labels Form -->
+      
+                </div>
+                
+              </div>
+      
+            </div>
+            <div class="col-lg-3"></div>
+          </div>
         </div>
 
       </div>
-      <div class="col-lg-3"></div>
+
     </div>
-    
-  </section>
+  </section><!-- End Contact Section -->s
 
 
 
-
-  {% endblock cuerpo %}
+  {% endblock contenido %}
   {% block js %}
 <script>
-  $(document).ready(function() {
-
-    $('#selectMiem').select2({
-      theme: "bootstrap-5",
-      placeholder:"Seleccione una categoria" 
-  });
-  });
   {% if form.errors %}
       // Crear una lista para almacenar los mensajes de error
       var errorMessages = [];
@@ -92,7 +92,7 @@
           // Utilizar SweetAlert para mostrar todos los mensajes de error en una sola alerta
           const swalWithBootstrapButtons = Swal.mixin({
             customClass: {
-              confirmButton: 'btn btn-primary',
+              confirmButton: 'btn btn-warning',
               cancelButton: 'btn btn-danger'
             },
             buttonsStyling: false

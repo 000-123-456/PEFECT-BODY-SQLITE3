@@ -955,6 +955,9 @@ section {
   font-weight: 600;
   margin: 10px 0 15px 0;
   font-size: 22px;
+  color: #000;
+  transition: ease-in-out 0.3s;
+  
 }
 
 .services .icon-box h4 a {
@@ -1957,4 +1960,110 @@ section {
   margin-left: 0;
   margin-top: 0;
   padding: 0%;
+}
+.swal2-modal,.swal2-popup{
+  background-color: #000;
+  color: #fff;
+}
+.swal2-title{
+  color: #fff;
+  
+}
+button.swal2-confirm.btn {
+  margin-right: 1.25rem;
+  margin-left: 1.25rem;
+}
+.btn-dark-moon {
+  background: #141E30;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #243B55, #141E30);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #243B55, #141E30); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  color: #fff;
+  border: 3px solid #ffd200;
+  
+}
+.btn-dark-moon:hover{
+  background: #141E30;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #243B55, #141E30);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #243B55, #141E30); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  color: #e9e2e2;
+  border: 3px solid #eee;
+}
+
+section {
+  padding: 5px 0;
+  overflow: hidden;
+}
+tfoot, th, thead, tr {
+  border-color: inherit;
+  border-style: solid;
+  border-width: 0;
+  background-color: #fdd200!important;
+}
+tbody, td{
+  border-color: inherit;
+  border-style: solid;
+  border-width: 0;
+  background-color: #000!important;
+  color: #fff !important;
+}
+.dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_processing {
+  color: #FFF;
+  margin-bottom: 10px;
+  margin-top: 5px;
+}
+.dataTables_wrapper .dataTables_length select {
+ background-color: #000;
+
+}
+.dataTables_wrapper .dataTables_paginate{
+  background: transparent !important;
+
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button{
+  color: #FED201 !important;
+  background: transparent;
+  font-weight: bold;
+  
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover{
+  color: #6d7045 !important;
+  background: transparent;
+  font-weight: bold;
+  border: none;
+
+  
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current{
+  color: #000;
+  background: #FED201;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover{
+  color: #000;
+  background: #e9fe01;
+}
+.img-table{
+  width: 70px; 
+  height:70px; 
+  border-radius: 20px;
+}
+.dataTables_filter {
+  position: relative;
+}
+
+.dataTables_filter input {
+  width: 250px;
+  height: 32px;
+  background: #fcfcfc;
+  border: 1px solid #aaa;
+  border-radius: 5px;
+  
+  text-indent: 10px;
+}
+
+.dataTables_filter .bi-search {
+  position: absolute;
+  top: 4px;
+  left: auto;
+  right: 10px;
 }

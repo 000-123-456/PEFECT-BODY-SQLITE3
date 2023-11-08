@@ -1,38 +1,36 @@
-{% extends 'layout/index.html' %}
+{% extends 'layout/userUI/index.html' %}
 {% load static %}
-{% block titulo %}   {{titulo}}   {% endblock titulo %}
-{% block tituloP %}  {{titulo}}   {% endblock tituloP %}
-{% block modulo %}   {{modulo}}   {% endblock modulo %}
-{% block tituloS %}  {{titulo}}   {% endblock tituloS %}
-{% block cuerpo %}
-<section class="section">
-  <div class="row">
-      <div class="col-lg-12">
-          <!-- Horizontal Form -->
+{% load custom_filters %}
+{% block linkModulo %}
+          <li><a href="{% url 'crear_historialmiembro' %}">{{modulo}}</a></li>
+          {% endblock linkModulo %}
+{% block contenido %}
 
-          {% if form.errors %}
-          {% for field in form %}
-          {% for error in field.errors %}
-          <div class="alert alert-danger alert-dismissible fade show" role="alert">
-              <strong>Notificación:</strong> {{ error }}.
-              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
-          {% endfor %}
-          {% endfor %}
-          {% endif %}
-          <br>
-          <div class="card">
-              <div class="card-body">
+    <!-- ======= Contact Section ======= -->
+    <section id="contact" class="contact">
+      <div class="container" data-aos="fade-up">
+
+       
+
+        <div class="row mt-5">
+
+
+          
+
+          <div class="col-lg-12 mt-5 mt-lg-0">
+
+            <div class="card recent-sales overflow-auto bg-black">
+              <div class="card-body table-responsive">
                   <h5 class="card-title text-warning"> <i class="bi bi-list-task"></i> {{ titulo }} de {{user.first_name}}</h5>
                   <hr>
-                  <table class="table bg-black text-white strip rounded mb-4" style="text-align: center" id="data">
-                      <thead class="bg-warning text-black">
+                  <table class="table bg-warning text-white rounded mb-4 custom-table" style="text-align: center" id='data'>
+                      <thead class="">
                           <tr>
                               <th scope="col">#</th>
-                              <th scope="col">Peso (KG)</th>
-                              <th scope="col">Altura (M)</th>
+                              <th scope="col">Peso (kg)</th>
+                              <th scope="col">Altura (m)</th>
                               <th scope="col">IMC</th>
-                              <th scope="col">Fecha de Registro</th>
+                              <th scope="col">Fecha de registro</th>
                               <th scope="col">Descripción</th>
                               <th scope="col">Opciones</th>
                           </tr>
@@ -42,13 +40,13 @@
                           {% if historialmiembros %}
                           {% for m in historialmiembros %}
                           <tr>
-                              <td>{{ forloop.counter }}</td>
-                              <td>{{ m.peso }}</td>
-                              <td>{{ m.altura }}</td>
-                              <td>{{ m.imc|floatformat:2 }}</td>
-                              <td>{{ m.fecha_registro }}</td>
-                              <td>{{ m.descripcion }}</td>
-                              <td>
+                              <td text-nowrap>{{ forloop.counter }}</td>
+                              <td class="text-nowrap"style="vertical-align: middle;">{{ m.peso |floatformat:"-2"|replace_comma}}</td>
+                              <td class="text-nowrap"style="vertical-align: middle;">{{ m.altura |floatformat:"-2"|replace_comma}}</td>
+                              <td class="text-nowrap"style="vertical-align: middle;">{{ m.imc|floatformat:"-2"|replace_comma}}</td>
+                              <td class="text-nowrap"style="vertical-align: middle;">{{ m.fecha_registro }}</td>
+                              <td class="text-nowrap"style="vertical-align: middle;">{{ m.descripcion }}</td>
+                              <td class="text-nowrap"style="vertical-align: middle;">
                                   <a type="button" class="btn btn-secondary" href="{% url 'actualizar_historialmiembro' m.id %}">
                                       <i class="bi bi-pencil-square"></i>
                                   </a>
@@ -73,29 +71,32 @@
                   </table>
               </div>
           </div>
+          </div>
+
+        </div>
+
       </div>
-  </div>
-</section>
+    </section><!-- End Contact Section -->
 
 
 
-
-{% endblock cuerpo %}
+{% endblock contenido %}
 
 
 {% block js %}
+
 <script>
   function EliminarHistorialMiembros(id){
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
-        confirmButton: 'btn btn-primary',
+        confirmButton: 'btn btn-warning',
         cancelButton: 'btn btn-danger'
       },
       buttonsStyling: false
     })
     
     swalWithBootstrapButtons.fire({
-      title: '¿Seguro que desea eliminar el Historial de Miembros de este Cliente?',
+      title: '¿Seguro que desea eliminar esta bitacora?',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Confirmar!',
@@ -111,7 +112,7 @@
       ) {
         swalWithBootstrapButtons.fire(
           'Operacion cancelada',
-          'el Historial de Miembros no se ha eliminado  :)',
+          'La bitacora no se ha eliminado  :)',
           'error'
         )
       }
@@ -124,14 +125,15 @@
   const dataTableOptions = {
     //scrollX: "400px",
     lengthChange: false,
+    searching: false, // Deshabilita la búsqueda en todas las columnas
     filter:[
       { className: "form-control"},
     ],
     lengthMenu: [5, 10, 15, 20, 100, 200, 500],
     columnDefs: [
-        { className: "text-center", targets: [0, 1, 2, 3, 4] },
-        { orderable: false, targets: [4] },
-        { searchable: false, targets: [0,4] },
+        { className: "text-center", targets: [0, 1, 2, 3, 4,5,6] },
+        { orderable: false, targets: [6] },
+        { searchable: false, targets: [6] },
         //{ width: "5%", targets: [0] }
     ],
     pageLength: 5,
@@ -153,14 +155,14 @@
     }
 };
 
-  {% if membresias %}
+  {% if historialmiembros %}
   let table = new DataTable('#data', dataTableOptions);
   //remove the default 'Search' text for all DataTable search boxes
   $('[type=search]').each(function () {
     $(this).attr("placeholder", "Buscar...");
     $(this).before('<span class="bi bi-search"></span>');
   });
-  {% endif %}
+  {% endif %} 
 </script>
 
 
