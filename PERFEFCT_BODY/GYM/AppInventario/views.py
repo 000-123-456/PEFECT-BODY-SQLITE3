@@ -274,6 +274,7 @@ def AltaTodosProducto(request):
 ##-----------------------------COMPRAS-------------------------------------------------------------
 from django.db.models import F
 from django.shortcuts import get_object_or_404
+from datetime import date
 
 class CreateCompra(CreateView):
     model = Compra
@@ -314,11 +315,18 @@ class CreateCompra(CreateView):
         #*********************************************************
         # Verifica si el producto pertenece a una categoría perecedera
         if producto.categoriaP.perecedero:
+
+
             # Si es perecedero, asegúrate de que la fecha de vencimiento no esté vacía
             fecha_vec = form.cleaned_data['fecha_vec']
             if not fecha_vec:
                 messages.error(self.request, "Fecha de Vencimiento: este campo es obligatorio.")
                 return super().form_invalid(form) 
+            
+                # Verifica si la fecha de vencimiento es anterior a la fecha actual
+            if fecha_vec < date.today():
+                messages.error(self.request, "Fecha de Vencimiento: debe ser una fecha futura.")
+                return super().form_invalid(form)
          
         
         
@@ -402,6 +410,8 @@ class ListCompraBajas(ListView):
 
 #*************************************************************************************************
 class UpdateCompra(UpdateView):
+   
+
     model = Compra
     form_class = FormCompra
     success_url = reverse_lazy('lista_compras')
@@ -438,8 +448,24 @@ class UpdateCompra(UpdateView):
         producto.cantidad += diferencia_cantidad
         producto.save()
 
+          # Verifica si el producto pertenece a una categoría perecedera
+        if producto.categoriaP.perecedero:
+            # Asegúrate de que la fecha de vencimiento no esté vacía
+            fecha_vec = form.cleaned_data['fecha_vec']
+            if not fecha_vec:
+                messages.error(self.request, "Fecha de Vencimiento: este campo es obligatorio.")
+                return super().form_invalid(form)
+
+            # Verifica si la fecha de vencimiento es anterior a la fecha actual
+            if fecha_vec < date.today():
+                messages.error(self.request, "Fecha de Vencimiento: debe ser una fecha futura.")
+                return super().form_invalid(form)
+
         #***************************************** Calcula el nuevo total******************************************
         form.instance.total = form.cleaned_data['cantidad'] * form.cleaned_data['precio_unitario']
+
+       
+         
 
         messages.success(self.request, "Compra actualizada correctamente!")
         return super().form_valid(form)
