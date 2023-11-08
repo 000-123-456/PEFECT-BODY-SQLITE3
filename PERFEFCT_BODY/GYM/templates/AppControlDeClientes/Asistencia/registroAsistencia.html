@@ -9,10 +9,12 @@
 {% endblock modulo %}
 {% block tituloS %}  {{titulo2}}   {% endblock tituloS %}
 {% block cuerpo %}
+
+
 <section class="section">
 
   <div class="row">
-    <div class="col-lg-3"></div>
+   
     <div class="col-lg-6">             
       <!-- Horizontal Form -->
       {% if form.errors %}
@@ -38,7 +40,7 @@
                             <div class="form-floating">
                                 
                               <!-- Campo de entrada para filtrar miembros -->
-                                <select class="form-control select2" id="miembros-select" style="width: 100%;"></select>
+                                <select class="form-control select2" id="miembros-select" style="width: 100%;" ></select>
                             
                             </div>
                           </div>
@@ -51,10 +53,13 @@
                       </div>
                     </div>
 
-
-                    <div class="card">
+                    </div>
+                    <!--FIN DE CARTA-->
+                    
+                    <div class="col-lg-6">
+                    <div class="card bg-warning">
                       <div class="card-body">
-                        <h5 class="card-title text-warning"><i class="bi bi-plus-lg"></i> Cliente</h5>
+                        <h5 class="card-title text-black"><i class="bi bi-plus-lg"></i> Asistencia ordinaria</h5>
                         
                         <!-- Floating Labels Form -->
                         <form class="row g-2" enctype="multipart/form-data">
@@ -70,15 +75,17 @@
                           </div>
 
                             <div class="text-center">
-                              <button class="btn bg-warning text-black" id="btnMarcarAsistenciaCliente">Marcar Asistencia</button>
+                              <button class="btn bg-black text-warning" id="btnMarcarAsistenciaCliente">Marcar Asistencia</button>
                             </div>
 
                         </form><!-- End floating Labels Form -->
                       </div>
                     </div>
                   
-    </div>
-    <div class="col-lg-3"></div>
+                  </div>
+                  <!--FIN DE CARTA-->
+    
+
   </div>
         
 </section>
@@ -87,5 +94,9 @@
 
 {% endblock cuerpo %}
 {% block js %}
+
   <Script type="application/javascript" src="{% static 'assets/js/AppControlDeClientes/Asistencia/asistencia.js' %}"></Script>
+
+
+
 {% endblock js %}
