@@ -74,9 +74,15 @@ function eliminarMiembro(id, nombre){
         inputs[2].innerText = data.edad
         inputs[3].innerText = data.genero
         inputs[4].innerText = data.email
-        if(data.nombreContact || data.telefonoContact){
+        if(data.nombreContact && data.telefonoContact){
           inputs[5].innerText = data.nombreContact.toString() + " "+data.telefonoContact.toString() 
-        }else{
+        }else if(data.nombreContact){
+          inputs[5].innerText = data.nombreContact.toString()
+        }
+        else if(data.telefonoContact){
+          inputs[5].innerText = data.telefonoContact.toString()
+        }
+        else{
           inputs[5].innerText ="No ingresado"
         }
        
