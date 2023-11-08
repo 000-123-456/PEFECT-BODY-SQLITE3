@@ -1,5 +1,6 @@
 
 import json
+import time
 from typing import Any
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -735,8 +736,8 @@ def DeleteHistorialMiembro(request, pk):
 #***********************************ASISTENCIA**************************************************************
 class CreateAsistenciaMiembro(TemplateView):
     template_name = 'AppControlDeClientes/Asistencia/registroAsistencia.html'
-    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        return super().dispatch(request, *args, **kwargs)  
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
         try:
@@ -746,7 +747,40 @@ class CreateAsistenciaMiembro(TemplateView):
         data['titulo'] = 'Asistencia'
         data['titulo2'] = 'Miembro'
         data['modulo'] = 'Asistencia'
+        # Agregar los mensajes al contexto
+        #data['messages'] = messages.get_messages(self.request)
         return data
+
+@csrf_exempt
+def registrar_asistencia(request):
+    if request.method == 'POST':
+        # Obtener el ID del miembro seleccionado del cuerpo de la solicitud POST
+        member_id = request.POST.get('member_id')
+        if member_id:
+            print("SE RECIBE EL ID: " +member_id)
+            # Obtener el miembro de la base de datos
+            try:
+                miembro = Miembro.objects.get(id=member_id)
+            except Miembro.DoesNotExist:
+                return JsonResponse({'error': 'Miembro no encontrado'}, status=400)
+
+            if miembro.estado_membresia == 1:
+                # Crear un nuevo registro de asistencia
+                asistencia = Asistencia(miembro=miembro, empleado=request.user)
+                asistencia.save()
+                messages.success(request, 'Asistencia Registrada')
+            else:
+                print("MEMBRESIA VENCIDA")
+                messages.warning(request, 'Este miembro no tiene una membresía activa, Por favor, asigne una membresía para poder registrar su asistencia.')
+        else:
+            nombre = request.POST.get('nombre').upper()
+            monto = Empresa.objects.first().tarifa
+            if nombre:
+                asistencia = Asistencia(nombre=nombre, empleado=request.user, monto_pagado=monto)
+                asistencia.save()
+                messages.success(request, 'Asistencia Registrada')
+        #return render(request, 'AppControlDeClientes/Asistencia/registroAsistencia.html', {'empresa': Empresa.objects.first(), 'titulo': 'Asistencia', 'modulo': 'Asistencia', 'messages': messages.get_messages(request)})
+    return JsonResponse({'message': 'success'})
     
 def lista_miembros(request):
     q = request.GET.get('q') # obtener término de búsqueda
@@ -784,7 +818,7 @@ def lista_miembros(request):
                 'id': miembro.id,
                 'nombre': miembro.user.first_name,
                 'apellido': miembro.user.last_name,
-                'fotoURL': miembro.foto.url,
+                'foto': miembro.get_image(),
                 'edad' : calcular_edad(miembro.fecha_nac),
             }
             for miembro in miembros
@@ -803,36 +837,6 @@ def calcular_edad(fecha_nac):
         edad -= 1
     return edad
 
-@csrf_exempt
-def registrar_asistencia(request):
-    if request.method == 'POST':
-        # Obtener el ID del miembro seleccionado del cuerpo de la solicitud POST
-        member_id = request.POST.get('member_id')
-        if member_id:
-            print("SE RECIBE EL ID: " +member_id)
-            # Obtener el miembro de la base de datos
-            try:
-                miembro = Miembro.objects.get(id=member_id)
-            except Miembro.DoesNotExist:
-                return JsonResponse({'error': 'Miembro no encontrado'}, status=400)
-
-            if miembro.estado_membresia == 1:
-                # Crear un nuevo registro de asistencia
-                asistencia = Asistencia(miembro=miembro, empleado=request.user)
-                asistencia.save()
-                messages.success(request, 'Asistencia Registrada')
-            else:
-                print("MEMBRESIA VENCIDA")
-                messages.error(request, 'La membresía de este miembro está vencida')
-        else:
-            nombre = request.POST.get('nombre').upper()
-            monto = Empresa.objects.first().tarifa
-            if nombre:
-                asistencia = Asistencia(nombre=nombre, empleado=request.user, monto_pagado=monto)
-                asistencia.save()
-                messages.success(request, 'Asistencia Registrada')
-        return redirect(to='registro_asistencia')
-    
 class ListHistorialAsistencias(ListView):
     model = Asistencia
     template_name = 'AppControlDeClientes/Asistencia/listaHistorialAsistencia.html'
