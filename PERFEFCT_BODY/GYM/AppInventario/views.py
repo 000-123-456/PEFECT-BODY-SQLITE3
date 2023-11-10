@@ -305,14 +305,8 @@ class CreateCompra(CreateView):
         producto = form.cleaned_data['producto']
         #----------- Recupero la cantidad comprada en la compra
         cantidad_comprada = form.cleaned_data['cantidad']
-        # --------------Actualizo la cantidad de productos en stock sumando la cantidad comprada
-        Producto.objects.filter(id=producto.id).update(cantidad=F('cantidad') + cantidad_comprada)
-        # -------------Obténgo la cantidad comprada y el precio unitario del formulario
-        cantidad_comprada = form.cleaned_data['cantidad']
-        precio_unitario = form.cleaned_data['precio_unitario']
-        total_compra = cantidad_comprada * precio_unitario   
 
-        #*********************************************************
+             
         # Verifica si el producto pertenece a una categoría perecedera
         if producto.categoriaP.perecedero:
 
@@ -328,6 +322,15 @@ class CreateCompra(CreateView):
                 messages.error(self.request, "Fecha de Vencimiento: debe ser una fecha futura.")
                 return super().form_invalid(form)
          
+
+        # --------------Actualizo la cantidad de productos en stock sumando la cantidad comprada
+        Producto.objects.filter(id=producto.id).update(cantidad=F('cantidad') + cantidad_comprada)
+        # -------------Obténgo la cantidad comprada y el precio unitario del formulario
+     
+        precio_unitario = form.cleaned_data['precio_unitario']
+        total_compra = cantidad_comprada * precio_unitario   
+
+
         
         
         # ********************************************************  
@@ -485,17 +488,30 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import Compra
 
+from django.db import transaction
+
+@transaction.atomic
 def DeleteCompra(request, pk):
     try:
+        
         compra = Compra.objects.get(id=pk)
-        compra.delete()  # Elimina la compra
+        producto = compra.producto
+
+    
+        producto.cantidad -= compra.cantidad
+        producto.save()
+
+      
+        compra.delete()
+
         messages.success(request, "¡Compra eliminada correctamente!")
     except Compra.DoesNotExist:
         messages.error(request, "¡Error, la compra no se pudo encontrar!")
     except Exception as e:
-        messages.error(request, "¡Error, la acción no se pudo realizar!")
+        messages.error(request, f"¡Error, la acción no se pudo realizar! {str(e)}")
 
     return redirect(to='lista_compras')
+
 
 
 
