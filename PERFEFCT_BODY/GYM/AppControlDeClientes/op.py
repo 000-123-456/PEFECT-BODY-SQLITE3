@@ -17,7 +17,26 @@ opDia = (
     (7, 'Domingo'),
    
 )
+opRango = (
+    (1, '1500 kcal'),
+    (2, '2000 kcal'),
+    (3, '2500 kcal'),
+    (4, '3000 kcal'),
+    (5, '3500 kcal'),
+    (6, '4000 kcal'),
+    (7, '4500 kcal'),
+)
+opTiempo = (
+    (1, 'Pre desayuno'),
+    (2, 'Desayuno'),
+    (3, 'Refrigerio posdesayuno'),
+    (4, 'Almuerzo'),
+    (5, 'Refrigerio posAlmuerzo'),
+    (6, 'Cena'),
+    (7, 'Refrigerio posCena'),
+)
 # clave_segura.py
+listFactorDeActividadMujeres= []
 
 import secrets
 import string

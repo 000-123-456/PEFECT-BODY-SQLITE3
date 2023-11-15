@@ -13,6 +13,21 @@ body {
   font-family: "Open Sans", sans-serif;
   color: #fff;
   background: #000;
+  scrollbar-width: thin;          /* "auto" or "thin" */
+  scrollbar-color: gray orange;   /* scroll thumb and track */  
+}
+body::-webkit-scrollbar {
+  width: 12px;               /* width of the entire scrollbar */
+}
+
+body::-webkit-scrollbar-track {
+  background: orange;        /* color of the tracking area */
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: gray;    /* color of the scroll thumb */
+  border-radius: 20px;       /* roundness of the scroll thumb */
+  border: 3px solid orange;  /* creates padding around scroll thumb */
 }
 
 a {

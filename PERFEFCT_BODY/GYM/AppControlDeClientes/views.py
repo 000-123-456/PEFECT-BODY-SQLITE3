@@ -6,7 +6,7 @@ from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, TemplateView
-from AppControlDeClientes.models import HistorialMiembro, Miembro,Membresia,VentaMembresia, Asistencia
+from AppControlDeClientes.models import Dieta, HistorialMiembro, Miembro,Membresia,VentaMembresia, Asistencia
 from AppControlDeClientes.forms import FormMiembro,FormMembresia, FormHistorialMiembro, FormAsistenciaMiembro
 from django.contrib import messages
 from AppUsers.models import Empresa,User
@@ -17,7 +17,7 @@ from GYM.settings import EMAIL_HOST_USER
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.utils import timezone
-from .funciones import calcular_edad, calcular_fecha_final, getCantidadVentas, obtener_url_imagen,vencimientoMembresias,getVentasMensuales
+from .funciones import calcular_edad, calcular_fecha_final, getCantidadVentas, obtener_url_imagen,vencimientoMembresias,getVentasMensuales, jsonPruebas
 import locale
 from django.db.models import Sum, Count
 from datetime import date
@@ -865,28 +865,31 @@ def eliminarHistorial(request, pk):
     except Exception as e:
         messages.error(request, f"¡Error: {str(e)}")
     return redirect(to='lista_asistencia')
+
+class ListDietas(ListView):
+    model = Dieta
+    template_name = 'AppControlDeClientes/Dietas/listaDietas.html'
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        data = super().get_context_data(**kwargs)
+        try:
+            data['empresa'] = Empresa.objects.first()
+        except:
+            data['empresa'] = 'Error'
+        data['titulo'] = 'Menú de dietas'
+        data['modulo'] = 'Dietas'
+        return data
+    def post(self, request: HttpRequest, *args: str, **kwargs: Any):
+        data = {}
+        try:
+            #Si el parametro action es recomendaciones quiere decir se esta pidiendo recomendaciones de dietas
+            action= request.POST['action']
+            if action == 'recomendaciones':
+                print(request.POST)
+                data=jsonPruebas
+                print(data)
+                
+                return JsonResponse(data)
     
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        except Exception as e:
+            data['error']= str(e)
+        return redirect('dietas')

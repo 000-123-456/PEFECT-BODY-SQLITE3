@@ -146,7 +146,7 @@ class Dieta(models.Model):
     detalle_alimento = models.CharField(max_length=100, null=True, verbose_name='Detalle_Alimento')
     ##Campo Caloria
     ##Porciones
-    tiempo_comida = models.CharField(max_length=100, null=True, verbose_name='Tiempo_Comida')
+    tiempo_comida = models.PositiveIntegerField(null=True, blank=True, choices=opTiempo, verbose_name='Tiempo de comida')
     ###----- CLAVES FORANEAS --------
     miembro = models.ForeignKey(Miembro, on_delete=models.PROTECT, verbose_name='Miembro', null=True, blank=True)
     ##Que tome una agua
@@ -178,3 +178,12 @@ class RutinaEjercicio(models.Model):
         verbose_name = 'Rutinaejercicio'
         verbose_name_plural = 'Rutinaejercicios'
         ordering = ['id']
+
+class RecomendacionDieta(models.Model):
+    nombre = models.CharField(max_length=100, null=True, verbose_name='nombre')
+    rango = models.PositiveIntegerField(null=True, blank=True, choices=opRango, verbose_name='rango')
+
+class RecomendacionPlato(models.Model):
+    nombre = models.CharField(max_length=100, null=True, verbose_name='nombre')
+    tiempo = models.PositiveIntegerField(null=True, blank=True, choices=opTiempo, verbose_name='tiempo')
+    detalle = models.CharField(max_length=100, null=True, verbose_name='detalle')

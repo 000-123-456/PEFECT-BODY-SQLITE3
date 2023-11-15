@@ -51,4 +51,8 @@ urlpatterns = [
     path('Asistencia/marcar_asistencia/',login_required(views.registrar_asistencia), name='registrar_asistencia'),
     path('Asistencia/Listado/',login_required(views.ListHistorialAsistencias.as_view()), name='lista_asistencia'),
     path('Asistencia/eliminarAsistencia/<int:pk>/',login_required(views.eliminarHistorial), name='eliminar_asistencia'),
+
+
+     #--------------------------------------------DIETAS DE MIEMBRO-------------------------------------------------------
+    path('Dietas',login_required(views.ListDietas.as_view()), name='dietas'),    
 ]

@@ -186,5 +186,105 @@ def getCantidadVentas():
         series_data.append({'name': item['membresia__nombre'], 'data': item['cantidad']})
     return series_data
 # Ahora, 'series_data' contiene la estructura que mencionaste
+jsonPruebas = {
+    "success":True,
+  "dietas": [
+    {
+      "nombre": "Dieta picante",
+      "comidas": [
+        {
+          "tipo": "Desayuno",
+          "imagen": "URL_DE_IMAGEN",
+          "descripcion": "Chips fuego con limón y sal.",
+          "calorias": 100
+        },
+        {
+          "tipo": "Merienda",
+          "imagen": "URL_DE_IMAGEN",
+          "descripcion": "Takis fuego con limón y sal.",
+          "calorias": 100
+        },
+        {
+          "tipo": "Almuerzo",
+          "imagen": "URL_DE_IMAGEN",
+          "descripcion": "Chiles habaneros con sal y limón.",
+          "calorias": 100
+        },
+        {
+          "tipo": "Merienda",
+          "imagen": "URL_DE_IMAGEN",
+          "descripcion": "Chips fuego con limón y sal.",
+          "calorias": 100
+        },
+        {
+          "tipo": "Cena",
+          "imagen": "URL_DE_IMAGEN",
+          "descripcion": "Chips fuego con limón y sal.",
+          "calorias": 100
+        },
+        {
+          "tipo": "Merienda",
+          "imagen": "URL_DE_IMAGEN",
+          "descripcion": "Chips fuego con limón y sal.",
+          "calorias": 100
+        },
+        {
+          "tipo": "Desayuno",
+          "imagen": "URL_DE_IMAGEN",
+          "descripcion": "Chips fuego con limón y sal.",
+          "calorias": 100
+        }
+      ]
+    },
+    {
+      "nombre": "Dieta muy picante",
+      "comidas": [
+        {
+          "tipo": "Desayuno",
+          "imagen": "URL_DE_IMAGEN",
+          "descripcion": "Chips fuego con limón y sal.",
+          "calorias": 100
+        },
+        {
+          "tipo": "Merienda",
+          "imagen": "URL_DE_IMAGEN",
+          "descripcion": "Takis fuego con limón y sal.",
+          "calorias": 100
+        },
+        {
+          "tipo": "Almuerzo",
+          "imagen": "URL_DE_IMAGEN",
+          "descripcion": "Chiles habaneros con sal y limón.",
+          "calorias": 100
+        },
+        {
+          "tipo": "Merienda",
+          "imagen": "URL_DE_IMAGEN",
+          "descripcion": "Chips fuego con limón y sal.",
+          "calorias": 100
+        },
+        {
+          "tipo": "Cena",
+          "imagen": "URL_DE_IMAGEN",
+          "descripcion": "Chips fuego con limón y sal.",
+          "calorias": 100
+        },
+        {
+          "tipo": "Merienda",
+          "imagen": "URL_DE_IMAGEN",
+          "descripcion": "Chips fuego con limón y sal.",
+          "calorias": 100
+        },
+        {
+          "tipo": "Desayuno",
+          "imagen": "URL_DE_IMAGEN",
+          "descripcion": "Chips fuego con limón y sal.",
+          "calorias": 100
+        }
+      ]
+    }
+   
+  ]
+}
 
 
