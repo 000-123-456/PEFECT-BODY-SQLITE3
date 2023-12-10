@@ -12,10 +12,19 @@
 
 
 <section class="section">
+    
+  
 
   <div class="row">
-   
-    <div class="col-lg-6">             
+    <div class="col-lg-12 d-flex flex-row-reverse">
+      <a href="#" class="btn btn-outline-dark mx-1 " id="ayuda" onclick="tour ()">
+        <b><i class="bi bi-info-circle"></i> Ayuda</b>
+      </a> 
+    </div>
+    
+    
+    <div class="col-lg-6">
+                   
       <!-- Horizontal Form -->
       {% if form.errors %}
         {% for field  in form  %}
@@ -36,8 +45,8 @@
                         <form class="row g-2" enctype="multipart/form-data">
                           {% csrf_token %}
                           <!-- combo que muestra los miembros -->
-                          <div class="col-md-12 mb-3 mt-4">
-                            <div class="form-floating">
+                          <div class="col-md-12 mb-3 mt-4" id="input_miembro">
+                            <div class="form-floating" >
                                 
                               <!-- Campo de entrada para filtrar miembros -->
                                 <select class="form-control select2" id="miembros-select" style="width: 100%;" ></select>
@@ -67,7 +76,7 @@
                           <!-- combo que muestra los miembros -->
                           <div class="col-md-12 mt-4">
                                 
-                              <div class="form-floating mb-3">
+                              <div class="form-floating mb-3" id="input_cliente">
                                 <input type="text" class="form-control" name="nombre" id="nombreCliente" required>
                                 <label for="nombre">Nombre</label>
                               </div>
@@ -96,7 +105,75 @@
 {% block js %}
 
   <Script type="application/javascript" src="{% static 'assets/js/AppControlDeClientes/Asistencia/asistencia.js' %}"></Script>
+  <script >
+    //-------------------------------Funcion de ayuda--------------------------------------
+const driver = window.driver.js.driver;
+function tour() {
+const driverObj = driver({
+  popoverClass: 'driverjs-theme',
+  nextBtnText: 'Siguiente',
+  prevBtnText: 'Anterior',
+  doneBtnText: 'Completado',
+  showButtons: [
+    'next',
+    'previous',
+    'done'
+  ],
+  steps: [
+    { popover: 
+      { 
+        title: '¡Hola! 😊', 
+        description: 'Comenzarás un tour guiado para explicarte lo que puedes hacer en esta sección y aclarar todas tus dudas.' 
+      } 
+    },
+    { 
+      element: '#input_miembro', 
+      popover: { 
+        title: 'Buscar miembro 💪', 
+        description: 'Aquí podrás buscar a los miembros de tu gimnasio para marcar su asistencia, 😊 y no te preocupes si no escribes su nombre correctamente, el buscador te ayudará a encontrarlo.', 
+        side: "right", 
+        align: 'start' 
+      }
+    },
+    { 
+      element: '#btnMarcarAsistenciaMiembro', 
+      popover: { 
+        title: 'Registrar asistencia ✍️', 
+        description: 'Despues de seleccionar al miembro, puedes marcar su asistencia utilizando este botón.', 
+        side: "right", 
+        align: 'start' 
+      }
+    },
+    { 
+      element: '#input_cliente', 
+      popover: { 
+        title: 'Registrar cliente 🏋️', 
+        description: 'Si tu cliente aún no es un miembro, puedes escribir su nombre aquí.', 
+        side: "left", 
+        align: 'start' 
+      }
+    },
+    { 
+      element: '#btnMarcarAsistenciaCliente', 
+      popover: { 
+        title: 'Registrar asistencia ✍️', 
+        description: 'Despues de escribir el nombre del cliente, puedes registrar su asistencia utilizando este botón.', 
+        side: "left", 
+        align: 'start' 
+      }
+    },
+    { 
+      popover: { 
+        title: '¡Fin del tour! 😁', 
+        description: 'Eso ha sido todo lo que puedes hacer en esta sección, si tienes más dudas puedes ver el tour las veces que gustes.' 
+      } 
+    }
+  ]
+});
 
+driverObj.drive();
+}
+  </script>
 
 
 {% endblock js %}

@@ -849,7 +849,19 @@ class ListHistorialAsistencias(isAdministradorMixin,ListView):
         data['titulo'] = 'Historial de Asistencias'
         data['modulo'] = 'Asistencia'
         data['icono'] = '<i class="bi bi-plus-lg"></i>'
-        data['asistencias'] = Asistencia.objects.all()
+        data['asistencias'] = Asistencia.objects.all().reverse()
+        # CANTIDAD DE LAS ASISTENCIAS DEL DIA
+        fecha_actual = timezone.localtime(timezone.now()).date()
+        asistencias_hoy = Asistencia.objects.filter(fecha=fecha_actual)
+        cantidad_asistencias_hoy = asistencias_hoy.count()
+        data['cantidad_asistencias_hoy'] = cantidad_asistencias_hoy
+        # DINERO RECAUDADO DEL DIAS
+        dinero_recaudado = asistencias_hoy.aggregate(total_recaudado=Sum('monto_pagado'))['total_recaudado']
+        if dinero_recaudado:
+            data['dinero_recaudado'] = dinero_recaudado
+        else:
+            data['dinero_recaudado'] = "0.00"
+
         return data
     
 @csrf_exempt
