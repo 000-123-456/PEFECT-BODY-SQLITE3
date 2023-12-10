@@ -148,6 +148,6 @@ USE_THOUSAND_SEPARATOR = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL='AppUsers.User'
-LOGIN_REDIRECT_URL= reverse_lazy('prueba')
+
 LOGOUT_REDIRECT_URL= reverse_lazy('login')
 LOGIN_URL = reverse_lazy('login')

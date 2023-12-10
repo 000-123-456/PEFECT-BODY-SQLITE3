@@ -5,7 +5,7 @@ from AppUsers.models import User
 from django.contrib.auth.forms import UserCreationForm
 from AppUsers.forms import RegistroUsuarioForm,FormEmpresa
 from django.contrib.auth.views import LoginView
-from django.views.generic import  UpdateView,ListView
+from django.views.generic import  UpdateView,ListView,TemplateView
 from typing import Any
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from AppUsers.models import Empresa
@@ -137,3 +137,10 @@ class UpdateEmpresa(UpdateView):
         data['modulo'] = 'Empresa'
         return data
     
+
+##----CLASES DE ERRORES PERSONALIZADAS ---------------
+class Error404View(TemplateView):
+    template_name = 'Errors/error_404.html'
+
+class SinPermisoView(TemplateView):
+    template_name = 'Errors/sin_permiso.html'    

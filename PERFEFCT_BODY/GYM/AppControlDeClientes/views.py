@@ -1,6 +1,3 @@
-
-import json
-import time
 from typing import Any
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -11,6 +8,7 @@ from AppControlDeClientes.forms import FormMiembro,FormMembresia, FormHistorialM
 from django.contrib import messages
 from AppUsers.models import Empresa,User
 from AppUsers.forms import RegistroUsuarioForm
+from AppControlDeClientes.mixins import isAdministradorMixin,isAdministradorOrEmpleadoMixin,isEmpleadoMixin, isMiembroMixin
 from .op import generar_clave_temporal_segura
 from django.core.mail import send_mail
 from GYM.settings import EMAIL_HOST_USER
@@ -42,7 +40,7 @@ def prueba(request):
 
 
 #*************************Miembro****************************************
-class RegistroMiembroView(CreateView):
+class RegistroMiembroView(isAdministradorOrEmpleadoMixin,CreateView):
     template_name = 'AppControlDeClientes/Miembro/createMiembro.html'
     form_class = FormMiembro
     success_url = reverse_lazy('crear_miembro')
@@ -115,7 +113,7 @@ class RegistroMiembroView(CreateView):
     
 
 
-class ActualizarMiembroView(UpdateView):
+class ActualizarMiembroView(isAdministradorOrEmpleadoMixin,UpdateView):
     model = Miembro
     form_class = FormMiembro
     template_name = 'AppControlDeClientes/Miembro/updateMiembro.html'
@@ -190,7 +188,7 @@ class ActualizarMiembroView(UpdateView):
 
 
 
-class ListMiembro(ListView):
+class ListMiembro(isAdministradorOrEmpleadoMixin,ListView):
     model = Miembro
     template_name = 'AppControlDeClientes/Miembro/listMiembro.html'
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
@@ -210,7 +208,7 @@ class ListMiembro(ListView):
         data['miembros'] = Miembro.objects.filter(estado=0).order_by('-id')
         data['membresias'] = Membresia.objects.filter(estado=0)
         return data
-class ListMiembroEliminados(ListView):
+class ListMiembroEliminados(isAdministradorOrEmpleadoMixin,ListView):
     model = Miembro
     template_name = 'AppControlDeClientes/Miembro/listMiembroBajas.html'
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
@@ -318,7 +316,7 @@ def create_venta_membresia(request, username,idmember):
     
 
 
-class ListVentaMembresia(ListView):
+class ListVentaMembresia(isAdministradorMixin, ListView):
     model = VentaMembresia
     template_name = 'AppControlDeClientes/VentaMembresia/listVentaMembresia.html'
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
@@ -387,7 +385,7 @@ class ListVentaMembresia(ListView):
         else:
             data['ganancia_mes_actual'] = "0.00"
         return data
-class EstadisticasVentaMembresia(ListView):
+class EstadisticasVentaMembresia(isAdministradorMixin,ListView):
     model = VentaMembresia
     template_name = 'AppControlDeClientes/VentaMembresia/estadisticas.html'
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
@@ -485,7 +483,7 @@ def DeleteVentaMembresia(request, pk):
 
 
 #---------------------------Membresia-------------------------------------------------------
-class CreateMembresia(CreateView):
+class CreateMembresia(isAdministradorMixin,CreateView):
     model = Membresia
     form_class = FormMembresia
     success_url= reverse_lazy('crear_membresia')
@@ -512,7 +510,7 @@ class CreateMembresia(CreateView):
         messages.error(self.request, format(form.errors.as_text()))
         return super().form_invalid(form)
 
-class ListMembresia(ListView):
+class ListMembresia(isAdministradorMixin,ListView):
     model = Membresia
     template_name = 'AppControlDeClientes/Membresia/listMembresia.html'
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
@@ -530,7 +528,7 @@ class ListMembresia(ListView):
         return data
     
 
-class ListMembresiaBajas(ListView):
+class ListMembresiaBajas(isAdministradorMixin,ListView):
     model = Membresia
     template_name = 'AppControlDeClientes/Membresia/listMembresiaBajas.html'
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
@@ -548,7 +546,7 @@ class ListMembresiaBajas(ListView):
         return data
 
 
-class UpdateMembresia(UpdateView):
+class UpdateMembresia(isAdministradorMixin,UpdateView):
     model = Membresia
     form_class = FormMembresia
     success_url= reverse_lazy('lista_membresias')
@@ -610,7 +608,7 @@ def AltaTodosMembresia(request):
 ##--------------- FIN VISTAS MEMBRESIA ------------------------------------------
 
 ##---------------------------------------------INICIO DE HISTORIAL DE MIEMBRO---------------------------------
-class CreateHistorialMiembro(CreateView):
+class CreateHistorialMiembro(isMiembroMixin,CreateView):
     model = HistorialMiembro
     form_class = FormHistorialMiembro
     success_url = reverse_lazy('crear_historialmiembro')
@@ -640,7 +638,7 @@ class CreateHistorialMiembro(CreateView):
         form.instance.imc = imc  # Asigna el valor calculado al campo IMC en el modelo
     
 
-        form.instance.miembro = Miembro.objects.get(pk=1)  # Aquí debes reemplazar con el miembro actual
+        form.instance.miembro = Miembro.objects.get(user=self.request.user.pk)  # Aquí debes reemplazar con el miembro actual
 
         # Guarda el registro en la base de datos
         messages.success(self.request, "Bitacora añadida correctamente!")
@@ -666,7 +664,7 @@ def get_historialmiembro(request, name):
     return JsonResponse(data)
 #*********************************
 
-class ListHistorialMiembro(ListView):
+class ListHistorialMiembro(isMiembroMixin,ListView):
     model = HistorialMiembro
     template_name = 'AppControlDeClientes/HistorialMiembro/listHistorialMiembro.html'
 
@@ -683,13 +681,13 @@ class ListHistorialMiembro(ListView):
         data['modulo'] = 'Bitacora'
         data['icono'] = '<i class="bi bi-plus-lg"></i>'
         # Aquí obtén los historiales de miembros y agrégalos al contexto
-        data['historialmiembros'] = HistorialMiembro.objects.all()  # O usa el filtro que necesites
+        data['historialmiembros'] = HistorialMiembro.objects.filter(miembro=Miembro.objects.get(user=self.request.user.pk).pk)  # O usa el filtro que necesites
         return data
 
 
     #********************************
 
-class UpdateHistorialMiembro(UpdateView):
+class UpdateHistorialMiembro(isMiembroMixin,UpdateView):
     model = HistorialMiembro
     form_class = FormHistorialMiembro
     success_url = reverse_lazy('lista_historialmiembros')
@@ -734,7 +732,7 @@ def DeleteHistorialMiembro(request, pk):
 
 
 #***********************************ASISTENCIA**************************************************************
-class CreateAsistenciaMiembro(TemplateView):
+class CreateAsistenciaMiembro(isAdministradorOrEmpleadoMixin,TemplateView):
     template_name = 'AppControlDeClientes/Asistencia/registroAsistencia.html'
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
@@ -837,7 +835,7 @@ def calcular_edad(fecha_nac):
         edad -= 1
     return edad
 
-class ListHistorialAsistencias(ListView):
+class ListHistorialAsistencias(isAdministradorMixin,ListView):
     model = Asistencia
     template_name = 'AppControlDeClientes/Asistencia/listaHistorialAsistencia.html'
     def dispatch(self, request, *args, **kwargs):
@@ -866,7 +864,7 @@ def eliminarHistorial(request, pk):
         messages.error(request, f"¡Error: {str(e)}")
     return redirect(to='lista_asistencia')
 
-class ListDietas(ListView):
+class ListDietas(isMiembroMixin,ListView):
     model = Dieta
     template_name = 'AppControlDeClientes/Dietas/listaDietas.html'
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:

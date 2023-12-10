@@ -23,7 +23,7 @@
         <div class="row">
           <div class="col-md-6 mb-4">
             <div class="bg-image hover-overlay ripple shadow-2-strong" data-mdb-ripple-color="light">
-              <img src="https://mdbcdn.b-cdn.net/img/new/standard/city/041.webp" class="img-fluid verP imgCard" alt="Hollywood Sign" style="border-radius: 20px;">
+              <img src="{% static "assets/img/profile-2.jpg" %}" class="img-fluid verP imgCard" alt="Hollywood Sign" style="border-radius: 20px;">
               <a href="#!">
                
               </a>
@@ -31,19 +31,19 @@
           </div>
 
           <div class="col-md-6 mb-4 text-white">
-            <strong><p id='nombreM' class='verP text-warning'>Doloremque vero ex debitis veritatis?</p></strong>
-            <p><strong>Edad: </strong><span id='edadM' class="verP text-white">20.00</span></p>
-            <p><strong>Género: </strong> <span id='generoM' class="verP text-white">30</span></p>
-            <p><strong>Correo: </strong> <span id='correoM' class="verP text-white">30</span></p>
-            <p><strong>Contácto de emergencia: </strong> <span id='contactoEM' class="verP text-white">Pan dulce</span></p>
-            <p><strong>Membresía: </strong> <span id='membresiaM' class="verP badge bg-success">Vencida</span> <span id='categoriaP' class="verP  text-white"></span></p>
+            <strong><p id='nombreM' class='verP text-warning'></p></strong>
+            <p><strong>Edad: </strong><span id='edadM' class="verP text-white"></span></p>
+            <p><strong>Género: </strong> <span id='generoM' class="verP text-white"></span></p>
+            <p><strong>Correo: </strong> <span id='correoM' class="verP text-white"></span></p>
+            <p><strong>Contácto de emergencia: </strong> <span id='contactoEM' class="verP text-white"></span></p>
+            <p><strong>Membresía: </strong> <span id='membresiaM' class="verP badge bg-success"></span> <span id='categoriaP' class="verP  text-white"></span></p>
             <p>
               <strong>Dirección:</strong>
-              <span id='descripcionP' class="verP text-white">Pan de miga</span>
+              <span id='descripcionP' class="verP text-white"></span>
             </p>
             <p>
               <strong>Teléfono:</strong>
-              <span id='descripcionP' class="verP text-white">Pan de miga</span>
+              <span id='descripcionP' class="verP text-white"></span>
             </p>
           </div>
         </div>
@@ -151,14 +151,16 @@
           
           {% comment %} <div class="col-lg-1"></div> {% endcomment %}
           <div class="col-lg-12 d-flex flex-row-reverse">
-            <a href="{% url 'bajas_miembros' %}" class="btn btn-danger">
+            <a href="#" class="btn btn-outline-dark mx-1" id="ayuda" onclick="tour ()">
+              <b><i class="bi bi-info-circle"></i> Ayuda</b>
+            </a> 
+            <a href="{% url 'bajas_miembros' %}" class="btn btn-danger mx-1" id='papelera'>
               <b><i class="bi bi-trash"></i> Papelera</b>
             </a>
-            <a href="{% url 'crear_miembro' %}" class="btn btn-primary mx-1">
+            <a href="{% url 'crear_miembro' %}" class="btn btn-primary mx-1" id='nuevo'>
               <b><i class="bi bi-plus-lg"></i> Nuevo miembro</b>
             </a>
             
-            <br>
         </div>
           <br>
           <br>
@@ -217,10 +219,10 @@
                             <i class="bi bi-eye iVP"></i>
                           </button>
                           
-                        <a class="btn btn-dark" href="#" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-card-checklist"></i>
+                        <a class="btn btn-dark" href="#" data-bs-toggle="dropdown" id='menu-opciones' aria-expanded="false"><i class="bi bi-card-checklist"></i>
                           <i class="dropdown-toggle"></i></a>
                         <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" style="">
-                          <li><a class="dropdown-item" href="{% url "actualizar_miembro" m.id %}"><strong><i class="bi bi-pencil-square"></i> Actualizar datos</a></strong></li>
+                          <li id='actualizar'><a class="dropdown-item" href="{% url "actualizar_miembro" m.id %}"><strong><i class="bi bi-pencil-square"></i> Actualizar datos</a></strong></li>
                           <li class="liAM"><a class="dropdown-item aAM" href="#" data-bs-toggle="modal" data-bs-target="#asignarM"><strong class="btnAM"><i class="bi bi-person-lines-fill iAM"></i> Asignar membresía</a></strong></li>
                           <li><a class="dropdown-item text-danger" href="#" onclick="eliminarMiembro({{m.id}},'{{m.user.first_name}}')"><strong><i class="bi bi-trash btnUM"></i> Eliminar miembro</a></strong></li>
                         </ul>
@@ -292,6 +294,39 @@
   });
   {% endif %}
 });
+
+
+//-------------------------------Funcion de ayuda--------------------------------------
+const driver = window.driver.js.driver;
+function tour() {
+const driverObj = driver({
+  popoverClass: 'driverjs-theme',
+  nextBtnText: 'Siguiente',
+  prevBtnText: 'Anterior',
+  doneBtnText: 'Completado',
+  showButtons: [
+    'next',
+    'previous',
+    'done'
+  ],
+  steps: [
+  { popover: { title: '¡Hola! 😊', description: 'Comenzarás un tour guiado para explicarte lo que puedes hacer en esta sección y aclarar todas tus dudas.' } },
+    { element: '#nuevo', popover: { title: 'Nuevo', description: 'Los campos con (*) son campos que no pueden ir vacíos. Sigue las indicaciones al pie de la letra 😊.', side: "left", align: 'start' }},
+    { element: '#papelera', popover: { title: 'Papelera 👨🏻', description: 'En este campo se digitan los nombres de los miembros. Digite el nombre real, no digite ningún alias.', side: "bottom", align: 'start' }},
+    { element: '.table-responsive', popover: { title: 'Listado de miembros 👨🏻', description: 'En este campo se digitan los apellidos de los miembros.', side: "bottom", align: 'start' }},
+    { element: '#data_filter', popover: { title: 'Buscar 📧', description: 'En este campo debe digitar el correo electrónico que el miembro usará para ingresar al sistema.', side: "left", align: 'start' }},
+    { element: '.sorting', popover: { title: 'Ordenar datos', description: 'Aquí se selecciona el género del miembro, se utiliza para recomendar dietas y ejercicios 🥗🏋🏻‍♂️.', side: "top", align: 'start' }},
+    { element: '.btnVP', popover: { title: 'Ver más', description: 'Aquí se ingresa la fecha de nacimiento del miembro, igualmente se utiliza para recomendar dietas y ejercicios 🥗🏋🏻‍♂️', side: "right", align: 'start' }},
+    { element: '#menu-opciones', popover: { title: 'Menú de opciones 📲', description: 'Puede ingresar un teléfono para agregarlo al grupo del gimnansio o por cualquier pertencia olvidada poder comunicarse con él.', side: "right", align: 'start' }},
+    { element: '#data_info', popover: { title: 'Información de listado 🗺️', description: 'Puede ingresar una dirección del miembro ya sea por cualquier pertenencia olvidada u otra situación ocurrida.', side: "right", align: 'start' }},
+    { element: '#data_paginate', popover: { title: 'Páginas 👨🏻', description: 'Aquí puede digitar el nombre de una persona que se puede contactar por si le pasa un accidente al miembro del gimnasio.', side: "right", align: 'start' }},
+    { popover: { title: '¡Fin del tour! 😁', description: 'Eso ha sido todo lo que puedes hacer en esta sección, si tienes más dudas puedes ver el tour las veces que gustes.' } }
+  ]
+});
+
+driverObj.drive();
+}
+
 </script>
 <Script type="application/javascript" src="{% static 'assets/js/AppControlDeClientes/Miembro/listMiembro.js' %}"></Script>
 

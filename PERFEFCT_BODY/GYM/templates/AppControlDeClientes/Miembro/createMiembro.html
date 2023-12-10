@@ -12,10 +12,13 @@
 <section class="section">
     
         <div class="row">
-          <div class="col-lg-12 d-flex">
+          <div class="col-lg-12 d-flex justify-content-between">
             <a href="{% url 'lista_miembros' %}" class="btn btn-primary">
               <b><i class="bi bi-arrow-left"></i> Regresar</b>
-            </a>  
+            </a>
+            <a href="#" class="btn btn-outline-dark" id="ayuda" onclick="tour ()">
+              <b><i class="bi bi-info-circle"></i> Ayuda</b>
+            </a>   
         </div>
         
           <div class="col-lg-3"></div>
@@ -44,7 +47,7 @@
               {% endfor %}
             {% endif %}
               <br>
-            <p class="mt-0">Los campo con (<span class="text-danger">*</span>) son campos obligatorios.</p>     
+            <p class="mt-0" id='indicaciones'>Los campo con (<span class="text-danger">*</span>) son campos obligatorios.</p>     
             <div class="card mt-0">
               
               <div class="card-body">
@@ -60,7 +63,7 @@
                         {% if field.name != 'password1' and field.name != 'password2' and field.name != 'username' and field.name != 'rol' and field.name != 'empresa' %}
                             
                             <div class="col-md-6">
-                                <div class="form-floating">
+                                <div class="form-floating" id="{{field.name}}">
                                     {{ field }}
                                     <label for="floatingName" autofocus>{{ field.label }}{% if field.name %}<span class="text-danger"> *</span>{% endif %}</label>
                                 </div>
@@ -76,14 +79,14 @@
                             <div class="col-md-{% if field.label == 'Nombre' or field.label == 'Dirección' or field.name == 'foto'  %}12{% endif %}{% if field.label != 'Nombre' and field.label != 'Dirección' %}6{% endif %}">
                               {% if  field.name == 'foto'%}
                                  
-                                <div class="form-floating">
+                                <div class="form-floating" id="{{field.name}}">
                                   <input type="file" name="foto" accept="image/*" id="id_img" class='form-control'>
                                   <label for="floatingName" autofocus>Foto</label>
                                 </div>
                               
                         
                              {% else %}
-                                <div class="form-floating">
+                                <div class="form-floating" id="{{field.name}}">
                                 {{ field }}
                                 <label for="floatingName" autofocus>{{field.label}}{% if field.name == 'fecha_nac' or field.name == 'genero' %}<span class="text-danger"> *</span>{% endif %}</label>
                                 </div>
@@ -95,8 +98,8 @@
                   
         
                   <div class="text-center">
-                    <button type="submit" class="btn bg-warning text-black">Guardar</button>
-                    <button type="reset" class="btn btn-secondary">Limpiar</button>
+                    <button type="submit" class="btn bg-warning text-black" id='guardar'>Guardar</button>
+                    <button type="reset" class="btn btn-secondary" id='limpiar'>Limpiar</button>
                   </div>
                 </form><!-- End floating Labels Form -->
   
@@ -168,6 +171,42 @@ if (errorMessages.length > 0) {
 }
 
 {% endif %}
+
+//------------------Funcion de ayuda---------------------
+const driver = window.driver.js.driver;
+function tour() {
+const driverObj = driver({
+  popoverClass: 'driverjs-theme',
+  nextBtnText: 'Siguiente',
+  prevBtnText: 'Anterior',
+  doneBtnText: 'Completado',
+  showButtons: [
+    'next',
+    'previous',
+    'done'
+  ],
+  steps: [
+  { popover: { title: '¡Hola! 😊', description: 'Comenzarás un tour guiado para explicarte lo que puedes hacer en esta sección y aclarar todas tus dudas.' } },
+    { element: '#indicaciones', popover: { title: 'Indicaciones', description: 'Los campos con (*) son campos que no pueden ir vacíos. Sigue las indicaciones al pie de la letra 😊.', side: "left", align: 'start' }},
+    { element: '#first_name', popover: { title: 'Nombres 👨🏻', description: 'En este campo se digitan los nombres de los miembros. Digite el nombre real, no digite ningún alias.', side: "bottom", align: 'start' }},
+    { element: '#last_name', popover: { title: 'Apellidos 👨🏻', description: 'En este campo se digitan los apellidos de los miembros.', side: "bottom", align: 'start' }},
+    { element: '#email', popover: { title: 'Correo electrónico 📧', description: 'En este campo debe digitar el correo electrónico que el miembro usará para ingresar al sistema.', side: "left", align: 'start' }},
+    { element: '#genero', popover: { title: 'Género', description: 'Aquí se selecciona el género del miembro, se utiliza para recomendar dietas y ejercicios 🥗🏋🏻‍♂️.', side: "top", align: 'start' }},
+    { element: '#fecha_nac', popover: { title: 'Fecha de nacimiento', description: 'Aquí se ingresa la fecha de nacimiento del miembro, igualmente se utiliza para recomendar dietas y ejercicios 🥗🏋🏻‍♂️', side: "right", align: 'start' }},
+    { element: '#telefono', popover: { title: 'Teléfono 📲', description: 'Puede ingresar un teléfono para agregarlo al grupo del gimnansio o por cualquier pertencia olvidada poder comunicarse con él.', side: "right", align: 'start' }},
+    { element: '#direcccion', popover: { title: 'Dirección 🗺️', description: 'Puede ingresar una dirección del miembro ya sea por cualquier pertenencia olvidada u otra situación ocurrida.', side: "right", align: 'start' }},
+    { element: '#nombreContact', popover: { title: 'Nombre de emergencia 👨🏻', description: 'Aquí puede digitar el nombre de una persona que se puede contactar por si le pasa un accidente al miembro del gimnasio.', side: "right", align: 'start' }},
+    { element: '#telefonoContact', popover: { title: 'Teléfono de contacto 👨🏻📲', description: 'Aquí puede digitar el teléfono de la persona anterior para poder contactarla por cualquier emergencia o accidente.', side: "right", align: 'start' }},
+    { element: '#foto', popover: { title: 'Foto 📷', description: 'Se utiliza para identificar a los miembros que asisten al gimnasio y poder registrar las veces que asisten correctamentex.', side: "right", align: 'start' }},
+    { element: '#guardar', popover: { title: 'Guardar 💾', description: 'Al dar click en guardar y los datos ingresados están correctos se envía un correo al miembro para que pueda usar el sistema y se guardan los datos del miembro.', side: "right", align: 'start' }},
+    { element: '#limpiar', popover: { title: 'Limpiar 🧹', description: 'Al dar click en este botón se limpian todos los campos que tenga algo escrito o seleccionado.', side: "right", align: 'start' }},
+    { popover: { title: '¡Fin del tour! 😁', description: 'Eso ha sido todo lo que puedes hacer en esta sección, si tienes más dudas puedes ver el tour las veces que gustes.' } }
+  ]
+});
+
+driverObj.drive();
+}
+
 
 
 </script>

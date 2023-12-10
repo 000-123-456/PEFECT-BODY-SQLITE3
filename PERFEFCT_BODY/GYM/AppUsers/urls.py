@@ -13,4 +13,7 @@ urlpatterns = [
     
     #USER UI
     path('userUI/',login_required(views.inicioMiembro), name='inicio_miembro'),
+    #URL DE PERMISOS
+    path('permisos/',login_required(views.SinPermisoView.as_view()), name='sin_permiso'),
+
 ]
