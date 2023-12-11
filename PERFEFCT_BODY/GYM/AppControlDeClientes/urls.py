@@ -55,4 +55,9 @@ urlpatterns = [
 
      #--------------------------------------------DIETAS DE MIEMBRO-------------------------------------------------------
     path('Dietas',login_required(views.ListDietas.as_view()), name='dietas'),    
+
+     #--------------------------------------------RECOMENDACIONES DIETAS-------------------------------------------------------
+    path('Recomendaciones/Dietas/registro/',login_required(views.CreateRecomendacionDieta.as_view()), name='registro_recomendaciones_dieta'),
+    path('Recomendaciones/Dietas/',login_required(views.ListRecomendacionDieta.as_view()), name='lista_recomendaciones_dieta'),    
+    
 ]

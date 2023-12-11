@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, TemplateView
 from AppControlDeClientes.models import Dieta, HistorialMiembro, Miembro,Membresia,VentaMembresia, Asistencia
-from AppControlDeClientes.forms import FormMiembro,FormMembresia, FormHistorialMiembro, FormAsistenciaMiembro
+from AppControlDeClientes.forms import FormDieta, FormMiembro,FormMembresia, FormHistorialMiembro, FormAsistenciaMiembro
 from django.contrib import messages
 from AppUsers.models import Empresa,User
 from AppUsers.forms import RegistroUsuarioForm
@@ -903,3 +903,41 @@ class ListDietas(isMiembroMixin,ListView):
         except Exception as e:
             data['error']= str(e)
         return redirect('dietas')
+    
+#-----------RECOMENDACIONES DE DIETAS --------------------------------------------
+class CreateRecomendacionDieta(isAdministradorMixin,CreateView):
+    template_name = 'AppControlDeClientes/RecomendacionesDietas/createRecomendacion.html'
+    form_class = FormDieta
+    success_url = reverse_lazy('registro_recomendaciones_dieta')
+    
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        try:
+             data['empresa'] = Empresa.objects.first()
+        except:
+             data['empresa'] = 'Error'
+        data['titulo'] = 'Registro'
+        data['modulo'] = 'Dietas'
+        return data
+    def form_valid(self, form):
+        messages.success(self.request, "Dieta registrada correctamente")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, format(form.errors.as_text()))
+        return super().form_invalid(form)
+
+class ListRecomendacionDieta(isAdministradorMixin,ListView):
+    model = Dieta
+    template_name = 'AppControlDeClientes/RecomendacionesDietas/listRecomendacion.html'
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        try:
+             data['empresa'] = Empresa.objects.first()
+        except:
+             data['empresa'] = 'Error'
+        data['titulo'] = 'Listado'
+        data['modulo'] = 'Dietas'
+        data['dietas'] = Dieta.objects.all().reverse()
+        return data
+    

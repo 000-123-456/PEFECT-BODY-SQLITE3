@@ -178,12 +178,28 @@ class RutinaEjercicio(models.Model):
         verbose_name = 'Rutinaejercicio'
         verbose_name_plural = 'Rutinaejercicios'
         ordering = ['id']
-
-class RecomendacionDieta(models.Model):
+#Registro de dieta
+class Dieta(models.Model):
     nombre = models.CharField(max_length=100, null=True, verbose_name='nombre')
     rango = models.PositiveIntegerField(null=True, blank=True, choices=opRango, verbose_name='rango')
+    class Meta:
+        db_table = 'dieta'
+        verbose_name = 'dieta'
+        verbose_name_plural = 'dietas'
+        ordering = ['id']
+    
 
-class RecomendacionPlato(models.Model):
+#Este es es la tabla que llevará cada comida de una dieta determinada
+class Comida(models.Model):
     nombre = models.CharField(max_length=100, null=True, verbose_name='nombre')
     tiempo = models.PositiveIntegerField(null=True, blank=True, choices=opTiempo, verbose_name='tiempo')
-    detalle = models.CharField(max_length=100, null=True, verbose_name='detalle')
+    #Este campo lleva todos los ingredientes con su respectiva porcion que contiene la comida
+    detalle = models.CharField(max_length=500, null=True, verbose_name='detalle')
+    #Campo que indica a que dieta pertenece este plato de comida
+    dieta = models.ForeignKey(Dieta, on_delete=models.CASCADE, verbose_name='Dieta')
+    class Meta:
+        db_table = 'comida'
+        verbose_name = 'comida'
+        verbose_name_plural = 'comidas'
+        ordering = ['id']
+

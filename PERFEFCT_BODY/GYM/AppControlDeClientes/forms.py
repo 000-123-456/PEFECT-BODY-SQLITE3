@@ -193,7 +193,7 @@ FormMembresia.field_order = [
         ]
 
 from django.forms import ModelForm, Select
-from .models import Asistencia, Miembro
+from .models import Asistencia, Dieta, Miembro
 
 class FormAsistenciaMiembro(ModelForm):
     class Meta:
@@ -215,3 +215,49 @@ class FormAsistenciaMiembro(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['miembro'].queryset = Miembro.objects.filter(estado=True).filter(estado_membresia=1)
+
+
+class FormDieta(ModelForm):
+    
+    class Meta:
+        model=Dieta
+        fields = {
+            'nombre',
+            'rango',
+        }
+        labels={
+            'nombre': 'Nombre',
+            'rango': 'Rango',   
+        }
+        
+        widgets={
+                'nombre': TextInput(
+                    attrs={
+                        'class': 'form-control',
+                        'placeholder': 'Ingrese nombre completo',
+                        'autocomplete':"off",
+                        
+                    }
+                ),
+                'rango': Select(
+                    attrs={
+                        'type':'text',
+                        'class': 'form-control',
+                        'placeholder': 'Ingrese nombre completo',
+                        'autocomplete':"off",
+                        
+
+                        
+                    }
+                ),
+
+         
+         
+        }
+
+FormDieta.field_order = [
+            'nombre',
+            'rango',
+
+        ]
+        
