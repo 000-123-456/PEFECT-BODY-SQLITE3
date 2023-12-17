@@ -40,7 +40,7 @@
             <br>
             <div class="card">
               
-              <div class="card-body"> 
+              <div class="card-body table-responsive"> 
                 <h5 class="card-title text-warning"> <i class="bi bi-list-task"></i> {{titulo}}</h5>
                 <hr>
                 
@@ -49,27 +49,26 @@
                       <tr>
                         <th scope="col">#</th>
                         <th scope="col">Nombre</th>
-                        <th scope="col">Calorías</th>
-                                    
+                        <th scope="col">Tiempo</th>
+                        <th scope="col">Ingredientes</th>            
                         <th scope="col">Opciones</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {% if dietas %} {% for d in dietas %}
+                      {% if comidas %} {% for c in comidas %}
                       <tr>
-                        <td>{{forloop.counter}}</td>
-                        <td>{{ d.nombre }}</td>
-                        <td>{{ d.get_rango_display  }}</td>
-                        
-                       
-                        <td>
+                        <td class="text-nowrap">{{forloop.counter}}</td>
+                        <td class="text-nowrap">{{ c.nombre }}</td>
+                        <td class="text-nowrap">{{ c.get_tiempo_display  }}</td>
+                        <td class="text-nowrap">{{ c.detalle  }}</td>
+                        <td class="text-nowrap">
                           <a class="btn btn-dark" href="#" data-bs-toggle="dropdown" id='menu-opciones' aria-expanded="false"><i class="bi bi-card-checklist"></i>
                             <i class="dropdown-toggle"></i></a>
                           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" style="">
-                            <li id='actualizar'><a class="dropdown-item" href="{% url "actualizar_miembro" d.id %}"><strong><i class="bi bi-pencil-square"></i> Actualizar dieta</a></strong></li>
-                            <li><a class="dropdown-item text-danger" href="#" onclick="eliminarMiembro({{d.id}},'{{m.user.first_name}}')"><strong><i class="bi bi-trash btnUM"></i> Eliminar dieta</a></strong></li>
-                            <li><a class="dropdown-item" href="{% url "registro_recomendaciones_comida" d.id %}"><strong class="btnAM"> <b><i class="bi bi-plus-lg"></i> Agregar comida</a></strong></li>
-                              <li><a class="dropdown-item" href="{% url "lista_recomendaciones_comida" d.id %}"><strong class="btnAM"> <b><i class='bx bxs-bowl-hot'></i> Ver comidas</a></strong></li>
+                            <li id='actualizar'><a class="dropdown-item" href="{% url "actualizar_miembro" c.id %}"><strong><i class="bi bi-pencil-square"></i> Actualizar dieta</a></strong></li>
+                            <li><a class="dropdown-item text-danger" href="#" onclick="eliminarMiembro({{c.id}},'{{m.user.first_name}}')"><strong><i class="bi bi-trash btnUM"></i> Eliminar dieta</a></strong></li>
+                            <li><a class="dropdown-item" href="#"><strong class="btnAM"> <b><i class="bi bi-plus-lg"></i> Agregar comida</a></strong></li>
+                              <li><a class="dropdown-item" href="#"><strong class="btnAM"> <b><i class='bx bxs-bowl-hot'></i> Ver comidas</a></strong></li>
                           </ul>
                           
                        
@@ -166,7 +165,7 @@
     }
 };
 
-  {% if dietas %}
+  {% if comidas %}
   let table = new DataTable('#data', dataTableOptions);
   //remove the default 'Search' text for all DataTable search boxes
   $('[type=search]').each(function () {

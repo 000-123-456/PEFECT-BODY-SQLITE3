@@ -18,8 +18,8 @@
   .section-dietas {
     font: 16px / 24px "Rubik", sans-serif;
     color: var(--black);
-    /* background-image: url("fondo1.jpg"); */
-    background-color: var(--black);
+    background-image: url("{% static "assets/img/fondoCard.jpg" %}"); 
+    /*background-color: var(--black);*/
     margin: 50px 0 10px 10px;
     margin-right: 10px;
     padding: 0.5rem;
@@ -333,7 +333,7 @@
         <div class="row gy-2 gx-md-3">
           <input type="hidden" name="action" value="recomendaciones">
             <div class="col-6 form-group input-dietas">
-              <input type="text" name="name" class="form-control" id="altura" placeholder="Altura(cm)" required="" autocomplete='none'>
+              <input type="text" name="altura" class="form-control" id="altura" placeholder="Altura(cm)" required="" autocomplete='none'>
             </div>
             <div class="col-6 form-group input-dietas">
                 <select class="form-select" aria-label="Default select example" name='actividad_fisica'>

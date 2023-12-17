@@ -1,6 +1,7 @@
-from django.forms import  ModelForm, Select, TextInput,Textarea,DateInput,NumberInput,CharField
+from django.forms import  ChoiceField, ModelForm, Select, TextInput,Textarea,DateInput,NumberInput,CharField
 from AppControlDeClientes.models import Miembro,Membresia,HistorialMiembro,Asistencia
 from .op import opGenero
+from AppControlDeClientes import op
 class FormMiembro(ModelForm):
     
     class Meta:
@@ -193,7 +194,7 @@ FormMembresia.field_order = [
         ]
 
 from django.forms import ModelForm, Select
-from .models import Asistencia, Dieta, Miembro
+from .models import Asistencia, Comida, Dieta, Miembro
 
 class FormAsistenciaMiembro(ModelForm):
     class Meta:
@@ -258,6 +259,56 @@ class FormDieta(ModelForm):
 FormDieta.field_order = [
             'nombre',
             'rango',
+
+        ]
+
+class FormComida(ModelForm):
+    tiempo = ChoiceField(choices=op.opTiempo, widget=Select(
+        attrs={
+            'class': 'form-control',
+            'placeholder': 'Ingrese tiempo de comida',
+            'autocomplete': 'off',
+        }
+    ))
+    class Meta:
+        model=Comida
+        fields = {
+            'nombre',
+            'tiempo',
+            'detalle'
+        }
+        labels={
+            'nombre': 'Nombre',
+            'tiempo': 'Tiempo de comida',
+            'detalle': 'Ingredientes',     
+        }
+        
+        widgets={
+                'nombre': TextInput(
+                    attrs={
+                        'class': 'form-control',
+                        'placeholder': 'Ingrese nombre completo',
+                        'autocomplete':"off",
+                        
+                    }
+                ),
+               
+                'detalle': Textarea(
+                    attrs={
+                        'style':'height: 150px',
+                        'class': 'form-control',
+                        'placeholder': 'Ingrese nombre completo',
+                         'autocomplete':'off',
+                    }
+                ),
+         
+         
+        }
+
+FormComida.field_order = [
+            'nombre',
+            'tiempo',
+            'detalle',
 
         ]
         

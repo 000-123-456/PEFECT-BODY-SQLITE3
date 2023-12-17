@@ -27,14 +27,26 @@ opRango = (
     (7, '4500 kcal'),
 )
 opTiempo = (
-    (1, 'Pre desayuno'),
+    (1, 'Merienda'),
     (2, 'Desayuno'),
-    (3, 'Refrigerio posdesayuno'),
+    (3, 'Refrigerio de media mañana'),
     (4, 'Almuerzo'),
-    (5, 'Refrigerio posAlmuerzo'),
+    (5, 'Refrigerio de media tarde'),
     (6, 'Cena'),
-    (7, 'Refrigerio posCena'),
+    (7, 'Refrigerio de noche'),
 )
+factor_hombres = [
+    [16, 'Sedentario'],
+    [21, 'Moderado'],
+    [26, 'Muy activa'],  
+]
+factor_mujeres = [
+    [14, 'Sedentario'],
+    [18, 'Moderado'],
+    [22, 'Muy activa'],  
+]
+
+
 # clave_segura.py
 listFactorDeActividadMujeres= []
 

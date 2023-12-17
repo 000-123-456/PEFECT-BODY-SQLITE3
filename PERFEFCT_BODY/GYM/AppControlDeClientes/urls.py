@@ -58,6 +58,9 @@ urlpatterns = [
 
      #--------------------------------------------RECOMENDACIONES DIETAS-------------------------------------------------------
     path('Recomendaciones/Dietas/registro/',login_required(views.CreateRecomendacionDieta.as_view()), name='registro_recomendaciones_dieta'),
-    path('Recomendaciones/Dietas/',login_required(views.ListRecomendacionDieta.as_view()), name='lista_recomendaciones_dieta'),    
+    path('Recomendaciones/Dietas/',login_required(views.ListRecomendacionDieta.as_view()), name='lista_recomendaciones_dieta'), 
+    #--------------------------------------------RECOMENDACIONES DE COMIDAS-------------------------------------------------------
+    path('Recomendaciones/Dietas/comida/registro/<int:pk>/',login_required(views.CreateRecomendacionComida.as_view()), name='registro_recomendaciones_comida'),
+    path('Recomendaciones/Dietas/comida/lista/<int:pk>/',login_required(views.ListRecomendacionComida.as_view()), name='lista_recomendaciones_comida'),       
     
 ]

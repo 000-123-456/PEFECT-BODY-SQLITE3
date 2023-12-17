@@ -3,8 +3,8 @@ from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, TemplateView
-from AppControlDeClientes.models import Dieta, HistorialMiembro, Miembro,Membresia,VentaMembresia, Asistencia
-from AppControlDeClientes.forms import FormDieta, FormMiembro,FormMembresia, FormHistorialMiembro, FormAsistenciaMiembro
+from AppControlDeClientes.models import Comida, Dieta, HistorialMiembro, Miembro,Membresia,VentaMembresia, Asistencia
+from AppControlDeClientes.forms import FormComida, FormDieta, FormMiembro,FormMembresia, FormHistorialMiembro, FormAsistenciaMiembro
 from django.contrib import messages
 from AppUsers.models import Empresa,User
 from AppUsers.forms import RegistroUsuarioForm
@@ -23,6 +23,8 @@ from datetime import timedelta
 from django.db.models import Q
 from fuzzywuzzy import process
 from django.views.decorators.csrf import csrf_exempt
+
+from AppControlDeClientes import op
 
 # Create your views here.
 def prueba(request):
@@ -894,10 +896,26 @@ class ListDietas(isMiembroMixin,ListView):
             #Si el parametro action es recomendaciones quiere decir se esta pidiendo recomendaciones de dietas
             action= request.POST['action']
             if action == 'recomendaciones':
-                print(request.POST)
-                data=jsonPruebas
-                print(data)
-                
+                #obtenemos el miembro que ha iniciado sesion
+                miembro = Miembro.objects.get(user = request.user.pk)
+                #Verificamos si es hombre o mujer para definir el peso ideal y factor de actividad
+                if miembro.genero == 1:
+                    peso_ideal = int(request.POST['altura'])-100+3
+                    factor_actividad = op.factor_hombres[int(request.POST['actividad_fisica'])-1][0]
+                else:
+                    peso_ideal = int(request.POST['altura'])-100-3
+                    factor_actividad = op.factor_mujeres[int(request.POST['actividad_fisica'])-1][0]
+                peso_ideal*=2.2
+                calorias = peso_ideal*factor_actividad
+                print(f'Peso ideal: {peso_ideal}')
+                print(f'Factor de actividad: {factor_actividad}')
+                print(f'Calorias necesarias: {calorias}')
+                if int(request.POST['objetivo']) == 1:
+                    calorias -=500
+                else:
+                    calorias +=500
+                print(f'Calorias necesarias para el objetivo: {calorias}')
+                data = jsonPruebas
                 return JsonResponse(data)
     
         except Exception as e:
@@ -908,7 +926,7 @@ class ListDietas(isMiembroMixin,ListView):
 class CreateRecomendacionDieta(isAdministradorMixin,CreateView):
     template_name = 'AppControlDeClientes/RecomendacionesDietas/createRecomendacion.html'
     form_class = FormDieta
-    success_url = reverse_lazy('registro_recomendaciones_dieta')
+    success_url = reverse_lazy('lista_recomendaciones_dieta')
     
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
@@ -916,7 +934,7 @@ class CreateRecomendacionDieta(isAdministradorMixin,CreateView):
              data['empresa'] = Empresa.objects.first()
         except:
              data['empresa'] = 'Error'
-        data['titulo'] = 'Registro'
+        data['titulo'] = 'Registro de dieta'
         data['modulo'] = 'Dietas'
         return data
     def form_valid(self, form):
@@ -936,8 +954,57 @@ class ListRecomendacionDieta(isAdministradorMixin,ListView):
              data['empresa'] = Empresa.objects.first()
         except:
              data['empresa'] = 'Error'
-        data['titulo'] = 'Listado'
+        data['titulo'] = 'Listado de dietas'
         data['modulo'] = 'Dietas'
         data['dietas'] = Dieta.objects.all().reverse()
         return data
-    
+class ListRecomendacionComida(isAdministradorMixin,ListView):
+    model = Comida
+    template_name = 'AppControlDeClientes/RecomendacionesDietas/RecomendacionesComida/listComida.html'
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        # Obtengo el id de la dieta que paso por la URL
+        id_dieta = self.kwargs.get('pk', None)
+        try:
+             data['empresa'] = Empresa.objects.first()
+        except:
+             data['empresa'] = 'Error'
+        data['titulo'] = 'Listado de comidas'
+        data['modulo'] = 'Dietas'
+        data['comidas'] = Comida.objects.filter(dieta=id_dieta).reverse()
+        return data
+
+class CreateRecomendacionComida(isAdministradorMixin,CreateView):
+    template_name = 'AppControlDeClientes/RecomendacionesDietas/RecomendacionesComida/createComida.html'
+    form_class = FormComida
+    success_url = reverse_lazy('registro_recomendaciones_dieta')
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        
+        # Agrega una opción adicional al campo 'tiempo'
+        form.fields['tiempo'].choices += [('', 'Seleccione una opción')]
+
+        return form
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        try:
+             data['empresa'] = Empresa.objects.first()
+        except:
+             data['empresa'] = 'Error'
+        data['titulo'] = 'Registro de comida'
+        data['modulo'] = 'Dietas'
+        return data
+    def form_valid(self, form):
+        #Obtengo el id de la dieta que paso por url
+        id_dieta = self.kwargs.get('pk', None)
+
+        # Se lo asigno al campo del modelo antes de guardarlo para crear la relacion
+        # Obtengo el objeto Dieta correspondiente al ID
+        dieta = Dieta.objects.get(id=id_dieta)
+        form.instance.dieta = dieta
+        messages.success(self.request, "Dieta registrada correctamente")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, format(form.errors.as_text()))
+        return super().form_invalid(form)    

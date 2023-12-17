@@ -196,7 +196,7 @@ class Comida(models.Model):
     #Este campo lleva todos los ingredientes con su respectiva porcion que contiene la comida
     detalle = models.CharField(max_length=500, null=True, verbose_name='detalle')
     #Campo que indica a que dieta pertenece este plato de comida
-    dieta = models.ForeignKey(Dieta, on_delete=models.CASCADE, verbose_name='Dieta')
+    dieta = models.ForeignKey(Dieta, on_delete=models.CASCADE, verbose_name='Dieta',null=True, blank=True)
     class Meta:
         db_table = 'comida'
         verbose_name = 'comida'

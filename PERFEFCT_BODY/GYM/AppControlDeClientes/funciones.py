@@ -190,97 +190,63 @@ jsonPruebas = {
     "success":True,
   "dietas": [
     {
-      "nombre": "Dieta picante",
+      "nombre": "Dieta 1",
       "comidas": [
         {
           "tipo": "Desayuno",
           "imagen": "URL_DE_IMAGEN",
-          "descripcion": "Chips fuego con limón y sal.",
-          "calorias": 100
+          "descripcion": "1 Huevo frito con 1 cucharada de queso cheddar.",
+          "calorias": 200
         },
         {
           "tipo": "Merienda",
           "imagen": "URL_DE_IMAGEN",
-          "descripcion": "Takis fuego con limón y sal.",
-          "calorias": 100
+          "descripcion": "1 taza de tutifrutis.",
+          "calorias": 250
         },
         {
           "tipo": "Almuerzo",
           "imagen": "URL_DE_IMAGEN",
-          "descripcion": "Chiles habaneros con sal y limón.",
-          "calorias": 100
+          "descripcion": "5 onzas de pollo a la plancha, 1 taza de ensalada de vegetales.",
+          "calorias": 300
         },
-        {
-          "tipo": "Merienda",
-          "imagen": "URL_DE_IMAGEN",
-          "descripcion": "Chips fuego con limón y sal.",
-          "calorias": 100
-        },
-        {
-          "tipo": "Cena",
-          "imagen": "URL_DE_IMAGEN",
-          "descripcion": "Chips fuego con limón y sal.",
-          "calorias": 100
-        },
-        {
-          "tipo": "Merienda",
-          "imagen": "URL_DE_IMAGEN",
-          "descripcion": "Chips fuego con limón y sal.",
-          "calorias": 100
-        },
-        {
-          "tipo": "Desayuno",
-          "imagen": "URL_DE_IMAGEN",
-          "descripcion": "Chips fuego con limón y sal.",
-          "calorias": 100
-        }
+        
       ]
     },
     {
-      "nombre": "Dieta muy picante",
+      "nombre": "Dieta 2",
       "comidas": [
         {
           "tipo": "Desayuno",
           "imagen": "URL_DE_IMAGEN",
-          "descripcion": "Chips fuego con limón y sal.",
-          "calorias": 100
+          "descripcion": "Omelette de huevo con jamón:1 huevos enteros + 1 lasca de jamón de pavo (sal y pimienta al gusto).\n½ taza de vegetales crudos (lechuga, tomate, rábano, pepino).",
+          "calorias": 250
         },
         {
           "tipo": "Merienda",
           "imagen": "URL_DE_IMAGEN",
-          "descripcion": "Takis fuego con limón y sal.",
-          "calorias": 100
+          "descripcion": "2/3 de taza de yogurt con 6 fresas.",
+          "calorias": 200
         },
         {
           "tipo": "Almuerzo",
           "imagen": "URL_DE_IMAGEN",
-          "descripcion": "Chiles habaneros con sal y limón.",
-          "calorias": 100
+          "descripcion": "5 onza de pollo a la plancha, 1 taza de ensalada de vegetales, 1 taza de arroz, 2 tortillas o panes y 1 vaso de jugo de naranja con 3 cucharaditas de azúcar.",
+          "calorias": 300
         },
         {
           "tipo": "Merienda",
           "imagen": "URL_DE_IMAGEN",
-          "descripcion": "Chips fuego con limón y sal.",
-          "calorias": 100
+          "descripcion": "1 barra de granola, 1 guineo mediano.",
+          "calorias": 150
         },
         {
           "tipo": "Cena",
           "imagen": "URL_DE_IMAGEN",
-          "descripcion": "Chips fuego con limón y sal.",
-          "calorias": 100
+          "descripcion": "1 ½ taza de pasta con ½ taza de vegetales salteado..",
+          "calorias": 200
         },
-        {
-          "tipo": "Merienda",
-          "imagen": "URL_DE_IMAGEN",
-          "descripcion": "Chips fuego con limón y sal.",
-          "calorias": 100
-        },
-        {
-          "tipo": "Desayuno",
-          "imagen": "URL_DE_IMAGEN",
-          "descripcion": "Chips fuego con limón y sal.",
-          "calorias": 100
-        }
+        
       ]
     }
    
