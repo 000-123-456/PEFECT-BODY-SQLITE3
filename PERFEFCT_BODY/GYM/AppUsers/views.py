@@ -16,6 +16,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.urls import reverse
 from AppControlDeClientes.models import Miembro
+from AppInventario.funciones import listar_productos_con_cantidad_baja, obtener_compras_proximas_a_vencer
 from GYM.settings import STATIC_URL
 # Create your views here.
 def inicioMiembro(request):
@@ -144,3 +145,13 @@ class Error404View(TemplateView):
 
 class SinPermisoView(TemplateView):
     template_name = 'Errors/sin_permiso.html'    
+
+class NotificacionesView(TemplateView):
+    template_name = 'notificaciones/notificacion.html'
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["notificaciones_productos_bajos"] = listar_productos_con_cantidad_baja()
+        context["notificaciones_productos_vencidos"] = obtener_compras_proximas_a_vencer()
+        context["notificaciones_count"] = listar_productos_con_cantidad_baja()['count_productos_bajos_total']+obtener_compras_proximas_a_vencer()['cantidad_registros_total']
+        return context
+    

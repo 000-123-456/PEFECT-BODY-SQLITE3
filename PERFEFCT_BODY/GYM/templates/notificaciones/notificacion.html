@@ -1,0 +1,77 @@
+
+{% extends "layout/index.html" %}
+{% load static %}
+{% block cuerpo %}
+<section class="section">
+    <div class="row">
+      <div class="col-lg-6 bg-dark bg-gradient rounded-3 mx-3 my-3">        
+            <!-- Horizontal Form -->
+           <!-- Flexbox container for aligning the toasts -->
+        <h3 class='my-3 mx-3 text-white'><strong>Productos cerca de vencer</strong></h3>
+        {% for cv in notificaciones_productos_vencidos.compras_proximas_a_vencer %}
+        <div aria-live="polite" aria-atomic="true" class="d-flex my-3 justify-content-center align-items-center w-100">
+        
+            <!-- Then put toasts within -->
+            <div class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header bg-dark text-warning">
+                    <svg class="bd-placeholder-img rounded me-2" width="20" height="20" aria-hidden="true"
+                        focusable="false" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="100%" height="100%" fill="#fa0000"></rect>
+                    </svg>
+                    <strong class="me-auto">{{cv.producto|upper}}</strong>
+                
+                    
+                </div>
+                <div class="toast-body bg-body-tertiary text-black">
+                    <span class='text-wrap'>El lote de <span class='text-dark font-weight-bold'> <strong>{{cv.producto|upper}}</strong></span> que se compró el {{cv.fecha_compra}} <strong class='text-danger'>vence el {{cv.fecha_vec}}</strong>. 
+                <!--Variacion-->
+                {% comment %} 
+                <em><p class='text-white'>Cantidad actual: {{pb.cantidad}}</p></em>
+                <em><p class='text-white'>Cantidad mínima: {{pb.nivel_bajo}}</p></em> 
+                {% endcomment %}
+                </span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        
+</div>
+
+      <!--INICIO Notificaciones de inventario bajo-->
+      <div class="col-lg-5 bg-dark bg-gradient rounded-3 mx-3 my-3">        
+        <!-- Horizontal Form -->
+        <h3 class='my-3 mx-3 text-white'><strong>Nivel bajo de inventario</strong></h3>
+        {% for pb in notificaciones_productos_bajos.productos_bajos %}
+        <div aria-live="polite" aria-atomic="true" class="d-flex my-3 justify-content-center align-items-center w-100">
+        
+       <!-- Flexbox container for aligning the toasts -->
+<!-- Then put toasts within -->
+
+            <div class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header bg-dark text-warning">
+                    <svg class="bd-placeholder-img rounded me-2" width="20" height="20" aria-hidden="true"
+                        focusable="false" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="100%" height="100%" fill="#ffda00"></rect>
+                    </svg>
+                    <strong class="me-auto"> {{pb.nombre|upper}}</strong>
+                
+                </div>
+                <div class="toast-body bg-body-tertiary text-black">
+                <span class='text-wrap'>El producto <strong>{{pb.nombre|upper}}</strong></span> esta por debajo del nivel mínimo requerido en inventario.
+                <!--Variacion-->
+                <em><p class='text-danger text-wrap'>
+                    <br>
+                    <strong>Cantidad actual: <span class='text-danger text-wrap'>{{pb.cantidad|upper}}</strong>
+                    </span>
+                </p></em>
+                <em><p>Cantidad mínima: {{pb.nivel_bajo}}</p></em> 
+                </span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+  </div>
+  <!--Fin de notificaciones de nivel bajo-->
+    </div>
+  </section>
+{% endblock cuerpo %}
