@@ -285,6 +285,38 @@
 {% endblock linkModulo %} {% block contenido %}
 
 <!-- ======= Contact Section ======= -->
+<div class="modal fade" id="guardar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-warning">
+        <h5 class="modal-title text-black" id="exampleModalLabel">Guardar dieta</h5>
+        <button type="button" class="close bg-warning" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-dark">
+        <form>
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Día:</label>
+            <select class="form-select">
+              <option value='1'>Lunes</option>
+              <option value='2'>Martes</option>
+              <option value='3'>Miercoles</option>
+              <option value='4'>Jueves</option>
+              <option value='5'>Viernes</option>
+              <option value='6'>Sábado</option>
+              <option value='7'>Domingo</option>
+              </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer bg-dark">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-warning">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
 <section id="contact" class="contact">
     <div class="my-3 mx-3">
         <ul class="nav nav-pills mb-3 mt-3 mx-3 d-flex justify-content-between bg-platinum" id="pills-tab" role="tablist"> <li class="nav-item">
@@ -1034,19 +1066,39 @@
             elementosEliminar.forEach(elemento => elemento.remove());
             function getImagenUrl(tipo) {
               // Define la lógica para obtener la URL de la imagen según el tipo de comida
-              switch (tipo.toLowerCase()) {
-                  case 'desayuno':
+              switch (tipo) {
+                  case 2:
                       return '{% static "assets/img/dietas/hora-de-comer.png" %}';
-                  case 'cena':
-                      return '{% static "assets/img/dietas/cena.png" %}';
-                  case 'almuerzo':
+                  case 4:
                       return '{% static "assets/img/dietas/pollo.png" %}';
-                  case 'merienda':
-                      return '{% static "assets/img/dietas/rotura.png" %}';
+                  case 6:
+                      return '{% static "assets/img/dietas/cena.png" %}';
                   default:
                       return '{% static "assets/img/dietas/rotura.png" %}';
               }
           }
+          function getTiempo(tipo) {
+            // Define la lógica para obtener la URL de la imagen según el tipo de comida
+            switch (tipo) {
+                case 1:
+                    return 'Merienda';
+                case 2:
+                    return 'Desayuno';
+                case 3:
+                    return 'Refrigerio de media mañana';
+                case 4:
+                    return 'Almuerzo';
+                case 5:
+                    return 'Refrigerio de media tarde';
+                case 6:
+                    return 'Cena';
+                case 7:
+                    return 'Refrigerio de noche';
+
+                default:
+                    return '{% static "assets/img/dietas/rotura.png" %}';
+            }
+        }
                 data.dietas.forEach(dieta => {
                     const sectionDieta = document.createElement('div');
                     sectionDieta.classList.add('section-dietas', 'mx-1');
@@ -1061,8 +1113,9 @@
                     tituloElement.classList.add('text-warning');
                     tituloElement.textContent = dieta.nombre;
 
-                    const guardarBtn = document.createElement('a');
-                    guardarBtn.href = "";
+                    const guardarBtn = document.createElement('button');
+                    guardarBtn.setAttribute('data-toggle', 'modal')
+                    guardarBtn.setAttribute('data-target', '#guardar');
                     guardarBtn.classList.add('btn', 'btn-warning');
                     guardarBtn.innerHTML = '<i class="bi bi-bookmark-plus"></i> Guardar';
 
@@ -1081,17 +1134,14 @@
                         const contenido = `
                             <div>
                                 <h3 class="card-dieta-title">
-                                    <img src="${getImagenUrl(comida.tipo)}" alt="${comida.tipo}" class="icon-image" />
-                                    ${comida.tipo}
+                                    <img src="${getImagenUrl(comida.tiempo)}" alt="${(comida.tiempo)}" class="icon-image img-fluid" />
+                                    ${getTiempo(comida.tiempo)}
                                 </h3>
                                 <div class="card-dieta-content">
-                                    <p>${comida.descripcion}</p><br>
-                                    <span><em>${comida.calorias} calorías</em></span>
+                                    <p>${comida.detalle}</p><br>
                                 </div>
                             </div>
-                            <div class="card-dieta-link-wrapper">
-                                <a href="" class="card-dieta-link"><i class="bi bi-plus-lg"></i>Agregar a mi día</a>
-                            </div>
+                            
                         `;
 
                         cardDieta.innerHTML = contenido;

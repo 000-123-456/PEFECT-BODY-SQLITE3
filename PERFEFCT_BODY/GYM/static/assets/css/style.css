@@ -131,7 +131,6 @@ h6 {
 
 .dropdown-menu .dropdown-footer a:hover {
   text-decoration: none;
-  background-color: #FED201;
   
 }
 
@@ -544,7 +543,13 @@ h6 {
 }
 
 .header-nav .notifications .notification-item:hover {
-  background-color: #f6f9ff;
+  background-color: #434242;
+}
+.dropdown-menu .dropdown-item:hover {
+  background-color: #434242;
+}
+.header-nav .notifications:hover {
+  background-color: #434242;
 }
 
 .header-nav .messages {

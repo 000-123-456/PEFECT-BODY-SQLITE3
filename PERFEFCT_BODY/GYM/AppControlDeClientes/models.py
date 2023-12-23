@@ -187,6 +187,9 @@ class Dieta(models.Model):
         verbose_name = 'dieta'
         verbose_name_plural = 'dietas'
         ordering = ['id']
+    def toJSON(self):
+        item = model_to_dict(self)
+        return item
     
 
 #Este es es la tabla que llevará cada comida de una dieta determinada
@@ -202,4 +205,7 @@ class Comida(models.Model):
         verbose_name = 'comida'
         verbose_name_plural = 'comidas'
         ordering = ['id']
-
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['dieta'] = self.dieta.toJSON()
+        return item

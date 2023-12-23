@@ -1,4 +1,5 @@
 from typing import Any
+from django.forms import model_to_dict
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
@@ -9,13 +10,13 @@ from django.contrib import messages
 from AppUsers.models import Empresa,User
 from AppUsers.forms import RegistroUsuarioForm
 from AppControlDeClientes.mixins import isAdministradorMixin,isAdministradorOrEmpleadoMixin,isEmpleadoMixin, isMiembroMixin
-from .op import generar_clave_temporal_segura
+from .op import generar_clave_temporal_segura,rango
 from django.core.mail import send_mail
 from GYM.settings import EMAIL_HOST_USER
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.utils import timezone
-from .funciones import calcular_edad, calcular_fecha_final, getCantidadVentas, obtener_url_imagen,vencimientoMembresias,getVentasMensuales, jsonPruebas
+from .funciones import calcular_edad, calcular_fecha_final, encontrar_posicion_mas_cercana, getCantidadVentas, obtener_comidas_por_dieta, obtener_url_imagen,vencimientoMembresias,getVentasMensuales, jsonPruebas
 import locale
 from django.db.models import Sum, Count
 from datetime import date
@@ -915,8 +916,11 @@ class ListDietas(isMiembroMixin,ListView):
                 else:
                     calorias +=500
                 print(f'Calorias necesarias para el objetivo: {calorias}')
-                data = jsonPruebas
-                return JsonResponse(data)
+                rango_dietas = encontrar_posicion_mas_cercana(rango, int(request.POST['objetivo']),calorias)
+                print(rango_dietas)
+                data = obtener_comidas_por_dieta(rango_dietas)
+                print(data)
+                return JsonResponse(data, safe=False)
     
         except Exception as e:
             data['error']= str(e)
@@ -930,10 +934,6 @@ class CreateRecomendacionDieta(isAdministradorMixin,CreateView):
     
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        try:
-             data['empresa'] = Empresa.objects.first()
-        except:
-             data['empresa'] = 'Error'
         data['titulo'] = 'Registro de dieta'
         data['modulo'] = 'Dietas'
         return data

@@ -76,3 +76,6 @@ def generar_clave_temporal_segura():
             any(c in clave_temporal for c in digitos) and
             len(clave_temporal) == 8):
             return clave_temporal
+
+
+rango = [1500,2000,2500,3000,3500,4000,4500,5000,5500,6000,6500,7000,7500,8000]

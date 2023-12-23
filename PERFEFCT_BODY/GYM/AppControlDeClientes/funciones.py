@@ -6,7 +6,7 @@ from django.templatetags.static import static
 import os
 from django.db.models import Sum, Count
 from django.db.models.functions import ExtractMonth, ExtractYear
-from .models import VentaMembresia
+from .models import Dieta, VentaMembresia
 
 
 # Directorio que contiene las imágenes
@@ -252,5 +252,43 @@ jsonPruebas = {
    
   ]
 }
+
+def encontrar_posicion_mas_cercana(array, objetivo, valor):
+    minimo = min(array)
+    maximo = max(array)
+
+    if objetivo == 1 and valor < minimo:
+        return 1  # Devuelve la posición más uno del valor mínimo
+    elif objetivo == 2 and valor > maximo:
+        return len(array)  # Devuelve la posición más uno del valor máximo
+    if objetivo == 1:
+        valores_por_debajo = [x for x in array if x <= valor]
+        return array.index(max(valores_por_debajo)) + 1
+    elif objetivo == 2:
+        valores_por_encima = [x for x in array if x >= valor]
+        return array.index(min(valores_por_encima)) + 1
+
+from django.http import JsonResponse
+from django.forms.models import model_to_dict
+
+def obtener_comidas_por_dieta(rango):
+    # Filtrar las dietas por el rango proporcionado
+    dietas = Dieta.objects.filter(rango=rango)
+
+    # Obtener todas las comidas relacionadas con esas dietas y convertirlas a diccionarios
+    comidas_por_dieta = []
+
+    for dieta in dietas:
+        comidas = dieta.comida_set.all().order_by('tiempo')  # Ordenar las comidas por el campo 'tiempo'
+        comidas_dict = {
+            'nombre': dieta.nombre,
+            'comidas': [comida.toJSON() for comida in comidas]
+        }
+        comidas_por_dieta.append(comidas_dict)
+
+    # Devolver la respuesta en formato JSON
+    return {'dietas': comidas_por_dieta, 'success': True}
+
+
 
 
