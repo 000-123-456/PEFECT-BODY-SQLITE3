@@ -1,3 +1,4 @@
+from django import forms
 from AppUsers.models import User,Empresa
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import  DateField, DateInput, ModelForm, Select, TextInput,ClearableFileInput,NumberInput,Textarea
@@ -12,6 +13,7 @@ class RegistroUsuarioForm(UserCreationForm):
         self.fields['first_name'].required = True
         self.fields['last_name'].required = True
         self.fields['email'].required = True
+
     class Meta:
         model = User
         fields=[
@@ -22,6 +24,7 @@ class RegistroUsuarioForm(UserCreationForm):
             'rol',
             'empresa',
         ]
+
         labels={
             'username': 'Usuario',
             'first_name': 'Nombres',

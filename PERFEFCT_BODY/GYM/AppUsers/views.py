@@ -7,8 +7,8 @@ from AppUsers.forms import RegistroUsuarioForm,FormEmpresa
 from django.contrib.auth.views import LoginView
 from django.views.generic import  UpdateView,ListView,TemplateView
 from typing import Any
-from django.http import HttpRequest, HttpResponse, JsonResponse
 from AppUsers.models import Empresa
+from django.db import IntegrityError
 from django.contrib import messages
 from django.contrib.auth import login, authenticate
 from django.shortcuts import redirect, get_object_or_404
@@ -17,7 +17,13 @@ from django.utils.decorators import method_decorator
 from django.urls import reverse
 from AppControlDeClientes.models import Miembro
 from AppInventario.funciones import listar_productos_con_cantidad_baja, obtener_compras_proximas_a_vencer
+from AppControlDeClientes.op import generar_clave_temporal_segura
 from GYM.settings import STATIC_URL
+from django.core.mail import send_mail
+from GYM.settings import EMAIL_HOST_USER
+from django.urls import reverse
+from django.http import HttpRequest
+from django.contrib.auth.hashers import make_password
 # Create your views here.
 def inicioMiembro(request):
     try:
@@ -66,7 +72,24 @@ class LoginFormView(LoginView):
             return redirect('registrar')
         return super().dispatch(request, *args, **kwargs)
     def form_invalid(self, form):
-        messages.error(self.request, "Usuario no encontrado. Por favor, verifique sus credenciales e inténtelo de nuevo.")
+        username = form.cleaned_data.get('username', '')
+        print(f"Datos del formulario cuando es inválido para el usuario: {username}")
+
+        # Imprimir otros datos del formulario si es necesario
+        print(f"Contraseña proporcionada: {form.cleaned_data.get('password', '')}")
+
+        try:
+            user = User.objects.get(username=username)
+            # Usuario existe, pero la contraseña es incorrecta
+            messages.error(self.request, "Contraseña incorrecta. Por favor, verifique sus credenciales e inténtelo de nuevo.")
+        except User.DoesNotExist:
+            # Usuario no existe
+            messages.error(self.request, "Usuario no encontrado. Por favor, verifique sus credenciales e inténtelo de nuevo.")
+        # Imprimir los errores del formulario
+        print("Errores del formulario:")
+        for field, errors in form.errors.items():
+            for error in errors:
+                print(f"{field}: {error}")
         return super().form_invalid(form)
     def form_valid(self, form):
         # Realizar la autenticación del usuario
@@ -80,6 +103,60 @@ class LoginFormView(LoginView):
             return redirect('prueba')  # Reemplaza 'otra_vista' con el nombre de la vista a la que deseas redirigir a otros usuarios autenticados
 
     
+class CrearUsuario(CreateView):
+    model= User
+    template_name = 'AppUsers/User/createUsuario.html'
+    form_class = RegistroUsuarioForm
+    success_url = reverse_lazy('crear_usuario')
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["titulo"] = 'Registrar usuarios'
+        context["modulo"] = 'Usuarios'
+        context["url_modulo"] = reverse_lazy('lista_usuario')
+        return context
+    def form_valid(self, form):
+        
+        #obtengo la url absoluta
+        user_form = RegistroUsuarioForm(self.request.POST)
+        url = self.request.build_absolute_uri(reverse('crear_usuario'))
+        try:
+            if form.cleaned_data['username'] == '':
+            # Asignar el valor del campo 'email' al campo 'username' si viene vacio
+                form.instance.username = form.cleaned_data['email']
+            user = user_form.save(commit=False)
+            clave = str(generar_clave_temporal_segura())
+            user.rol = self.request.POST['rol']
+            user.set_password(clave)
+            user.empresa = Empresa.objects.first()
+            user.save()
+            subject = 'Bienvenido'
+            message = f'Se ha registrado exitosamente, con los siguientes datos podrá hacer uso del sistema.\n\nUsuario: {user.username}\nContraseña: {clave}\nIngrese al siguiente link: {url}\n\n¡BIENVENIDO A LA FAMILIA PERFECT BODY!💛🖤\nSiempre dandole lo mejor a nuestros clientes.'
+            from_email = EMAIL_HOST_USER
+            recipient_list = [user.email]
+            send_mail(subject, message,from_email, recipient_list)
+            print('correcto')
+            messages.success(self.request, "Usuario registrado correctamente")
+            
+        # 3. Validación de usuario guardado correctamente
+        except IntegrityError:
+            print('Fallo')
+            messages.error(self.request, "El nombre o correo ya existe de usuario ya existe. Por favor, elija otro nombre de usuario.")
+            return render(self.request, self.template_name, {'form': form, 'titulo':'Registrar usuarios','modulo':'Usuarios'})
+
+        return redirect('crear_usuario')
+    
+class ListUsuarios(ListView):
+    model= User
+    template_name = 'AppUsers/User/listUsuario.html'
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["titulo"] = 'Listado de usuarios'
+        context["modulo"] = 'Usuarios'
+        context["url_modulo"] = reverse_lazy('lista_usuario')
+        context["url_nuevo"] = reverse_lazy('crear_usuario')
+        #Obtiene todos los usuarios que no son miembros
+        context["usuarios"] = User.objects.exclude(miembro__isnull=False)
+        return context
     
 #-------------------------------------------------EMPRESA-----------------------------
 
@@ -154,4 +231,6 @@ class NotificacionesView(TemplateView):
         context["notificaciones_productos_vencidos"] = obtener_compras_proximas_a_vencer()
         context["notificaciones_count"] = listar_productos_con_cantidad_baja()['count_productos_bajos_total']+obtener_compras_proximas_a_vencer()['cantidad_registros_total']
         return context
+    
+
     

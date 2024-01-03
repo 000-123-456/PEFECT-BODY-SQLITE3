@@ -1,0 +1,15 @@
+{% extends "layout/form.html" %}
+{% block form %}
+{% for field in form.visible_fields %}
+                        {% if field.name != 'password1' and field.name != 'password2'   and field.name != 'empresa' %}
+                            
+                            <div class="col-md-6">
+                                <div class="form-floating" id="{{field.name}}">
+                                    {{ field }}
+                                    <label for="floatingName" autofocus>{{ field.label }}{% if field.field.required %}<span class="text-danger"> *</span>{% endif %}</label>
+                                </div>
+                            </div>
+                           
+                        {% endif %}
+{% endfor %}
+{% endblock form %}

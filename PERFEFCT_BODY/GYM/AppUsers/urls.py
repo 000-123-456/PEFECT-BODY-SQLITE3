@@ -18,5 +18,10 @@ urlpatterns = [
     #Notificaciones
     path('notificaciones/',login_required(views.NotificacionesView.as_view()), name='notificaciones'),
 
+    #USUARIOS QUE CREA EL ADMINISTRADOR(EMPLEADOS Y ADMINISTRADORES)
+    path('usuarios/crear/',login_required(views.CrearUsuario.as_view()), name='crear_usuario'),
+    path('usuarios/',login_required(views.ListUsuarios.as_view()), name='lista_usuario'),
+
+
 
 ]

@@ -14,17 +14,20 @@
 
     <nav class="header-nav ms-auto">
       <ul class="d-flex align-items-center">
+        {% if request.user.rol == 1 or request.user.rol == 2 %}
         <li class="nav-item dropdown">
 
           <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
             <i class="bi bi-bell"></i>
-            <span class="badge bg-danger badge-number text-white">{{notications.count}}</span>
+            {% if not notications.count == 0 %} <span class="badge bg-danger badge-number text-white">{{notications.count}}</span>{% endif %}
           </a><!-- End Notification Icon -->
 
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications bg-dark text-white">
             <li class="dropdown-header text-white">
              Tienes {{notications.count}} notificaciones
+             {% if not notications.count == 0 %}
               <a href="{% url "notificaciones" %}"><span class="badge rounded-pill bg-warning text-black p-2 ms-2">Ver todas</span></a>
+              {% endif %}
             </li>
             <li>
               {% for pb in notications.notification_producto_bajos.productos_bajos %}
@@ -75,14 +78,15 @@
             <li>
               <hr class="dropdown-divider">
             </li>
+            {% if not notications.count == 0 %}
             <li class="dropdown-footer">
               <a href="{% url "notificaciones" %}" class='text-white'>Ver todas las notificaciones</a>
             </li>
-
+            {% endif %}
           </ul><!-- End Notification Dropdown Items -->
 
         </li><!-- End Notification Nav -->
-
+        {% endif %}
         
 
         <li class="nav-item dropdown pe-3">
@@ -92,11 +96,11 @@
             <span class="d-none d-md-block dropdown-toggle ps-2">{{user.first_name}}</span>
           </a><!-- End Profile Iamge Icon -->
 
-          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile bg-dark text-white">
             <b>
             <li class="dropdown-header">
-              <span>Yasser Gallardo</span><br>
-              <span>Administrador</span>
+              <span class='text-warning'>{{request.user.first_name}} {{request.user.last_name}}</span><br>
+              <span class='text-white'>{{ request.user.get_rol_display }}</span>
             </li>
           </b>
             <li>
@@ -104,34 +108,10 @@
             </li>
 
             <li>
-              <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+              <a class="dropdown-item d-flex align-items-center" href="{% url "logout" %}">
                 <b>
-                <i class="bi bi-gear"></i>
-                <span>Account Settings</span>
-              </b>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li>
-              <a class="dropdown-item d-flex align-items-center" href="pages-faq.html">
-                <b>
-                <i class="bi bi-question-circle"></i>
-                <span>Need Help?</span>
-                </b>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li>
-              <a class="dropdown-item d-flex align-items-center" href="#">
-                <b>
-                <i class="bi bi-box-arrow-right"></i>
-                <span>Sign Out</span>
+                <i class="bi bi-box-arrow-right text-warning"></i>
+                <span class='text-white'>Cerrar sesión</span>
                 </b>
               </a>
             </li>

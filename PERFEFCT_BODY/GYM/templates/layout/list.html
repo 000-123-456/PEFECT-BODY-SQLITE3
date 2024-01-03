@@ -1,0 +1,188 @@
+{% extends 'layout/index.html' %}
+{% load static %}
+{% block cuerpo %}
+<section class="section">
+    
+        <div class="row">
+          {% comment %} <div class="col-lg-1"></div> {% endcomment %}
+         
+          <div class="col-lg-12 d-flex flex-row-reverse">
+            <a href="#" class="btn btn-outline-dark mx-1" id="ayuda" onclick="tour ()">
+                <b><i class="bi bi-info-circle"></i> Ayuda</b>
+              </a>
+            <a href="{{url_papelera}}" class="btn btn-danger">
+              <b><i class="bi bi-trash"></i> Papelera</b>
+            </a>
+            <a href="{{url_nuevo}}" class="btn btn-primary mx-1">
+              <b><i class="bi bi-plus-lg"></i> Nuevo</b>
+            </a>
+            
+            <br>
+        </div>
+          <br>
+          <br>
+          <div class="col-lg-12">
+                
+                <!-- Horizontal Form -->
+
+                {% if form.errors %}
+                {% for field  in form  %}
+                        {% for error in field.errors %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>Notificacion: </strong>{{error}}.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" arial-label="Close"></button>
+                        </div>
+                        {% endfor %}
+                {% endfor %}
+              {% endif %}
+            <br>
+            <div class="card">
+              
+              <div class="card-body table-responsive"> 
+                <h5 class="card-title text-warning"> <i class="bi bi-list-task"></i> {{titulo}}</h5>
+                <hr>
+                
+                <table class="table bg-black text-white strip rounded mb-4" style="text-align: center" id="data">
+                    <thead class="bg-warning text-black">
+                      <tr>
+                        {% block cols %}
+                        <th scope="col">#</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Precio</th>
+                        <th scope="col">Duración (Meses)</th>               
+                        <th scope="col">Opciones</th>
+                        {% endblock cols %}
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {% block rows %}
+                      {% if membresias %} {% for m in membresias %}
+                      <tr>
+                        <td class="text-nowrap">{{forloop.counter}}</td>
+                        <td class="text-nowrap">{{ m.nombre }}</td>
+                        <td class="text-nowrap">$ {{ m.precio }}</td>
+                        <td class="text-nowrap">{{ m.duracion }}</td>
+                       
+                        <td class="text-nowrap">
+                       
+                          <a type="button" class="btn btn-secondary" href="{%url 'actualizar_membresia' m.id %}">
+                            <i class="bi bi-pencil-square"></i>
+                          </a>
+                          
+                          <a class="btn btn-danger" href="#" onclick="EliminarMembresia({{m.id}})">
+                            <i class="bi bi-trash btnUM"></i>
+                        </a>
+                          
+                       
+                        </td>
+                      </tr>
+                  
+                      {% endfor %} {% else %}
+                     
+                      <td colspan="9" style="text-align: center">
+                        <b>No hay datos para mostrar</b>
+                      </td>
+                      {% endif %}
+                      {% endblock rows %}
+                    </tbody>
+                  </table>
+              </div>
+            </div>
+          </div>
+          {% comment %} <div class="col-lg-1"></div> {% endcomment %}
+        </div>
+        
+      </section>
+
+
+
+{% endblock cuerpo %}
+
+
+{% block js %}
+<script>
+  function EliminarMembresia(id){
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: 'btn btn-primary',
+        cancelButton: 'btn btn-danger'
+      },
+      buttonsStyling: false
+    })
+    
+    swalWithBootstrapButtons.fire({
+      title: '¿Seguro que desea eliminar la Membresia de este Cliente?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Confirmar!',
+      cancelButtonText: 'Cancelar!',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        
+        window.location.href = "EliminarMembresia/"+id+"/"
+      } else if (
+        /* Read more about handling dismissals below */
+        result.dismiss === Swal.DismissReason.cancel
+      ) {
+        swalWithBootstrapButtons.fire(
+          'Operacion cancelada',
+          'la Membresia no se ha eliminado  :)',
+          'error'
+        )
+      }
+    })
+  }
+
+</script>
+
+<script>
+  const dataTableOptions = {
+    //scrollX: "400px",
+    lengthChange: false,
+    filter:[
+      { className: "form-control"},
+    ],
+    lengthMenu: [5, 10, 15, 20, 100, 200, 500],
+    columnDefs: [
+        { className: "text-center", targets: [0, 1, 2, 3, 4] },
+        { orderable: false, targets: [4] },
+        { searchable: false, targets: [0,4] },
+        //{ width: "5%", targets: [0] }
+    ],
+    pageLength: 5,
+    destroy: true,
+    language: {
+        lengthMenu: "Mostrar _MENU_ registros por página",
+        zeroRecords: "Ningúna membresía  encontrada",
+        info: "Mostrando de _START_ a _END_ de un total de _TOTAL_ registros",
+        infoEmpty: "Ningún usuario encontrado",
+        infoFiltered: "(filtrados desde _MAX_ registros totales)",
+        search: "",
+        loadingRecords: "Cargando...",
+        paginate: {
+            first: "Primero",
+            last: "Último",
+            next: "Siguiente",
+            previous: "Anterior"
+        }
+    }
+};
+
+  {% if membresias %}
+  let table = new DataTable('#data', dataTableOptions);
+  //remove the default 'Search' text for all DataTable search boxes
+  $('[type=search]').each(function () {
+    $(this).attr("placeholder", "Buscar...");
+    $(this).before('<span class="bi bi-search"></span>');
+  });
+  {% endif %}
+</script>
+
+
+
+
+
+{% endblock js %}
+
+

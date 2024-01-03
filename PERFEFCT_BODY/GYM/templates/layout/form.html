@@ -1,36 +1,33 @@
 {% extends 'layout/index.html' %}
 {% load static %}
-{% block titulo %}   {{titulo}}   {% endblock titulo %}
-{% block tituloP %}  {{titulo}}   {% endblock tituloP %}
-{% block modulo %}   {{modulo}}   {% endblock modulo %}
-{% block tituloS %}  {{titulo}}   {% endblock tituloS %}
 {% block cuerpo %}
 <section class="section">
     
         <div class="row">
-          <div class="col-lg-12 d-flex">
-            <a href="{% url 'lista_productos' %}" class="btn btn-primary">
+          <div class="col-lg-12 d-flex justify-content-between">
+            <a href="{% url 'lista_miembros' %}" class="btn btn-primary">
               <b><i class="bi bi-arrow-left"></i> Regresar</b>
-            </a>  
+            </a>
+            <a href="#" class="btn btn-outline-dark" id="ayuda" onclick="tour ()">
+              <b><i class="bi bi-info-circle"></i> Ayuda</b>
+            </a>   
         </div>
         
           <div class="col-lg-3"></div>
           <div class="col-lg-6">
-                
-                <!-- Horizontal Form -->
-
-                {% if form.errors %}
-                {% for field  in form  %}
-                        {% for error in field.errors %}
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <strong>Notificacion: </strong>{{error}}.
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" arial-label="Close"></button>
-                        </div>
-                        {% endfor %}
-                {% endfor %}
-              {% endif %}
+            {% if form.errors %}
+            {% for field  in form  %}
+                    {% for error in field.errors %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Notificacion: </strong>{{error}}.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" arial-label="Close"></button>
+                    </div>
+                    {% endfor %}
+            {% endfor %}
+          {% endif %}
               <br>
-              
+              <p class="mt-0" id='indicaciones'>Los campo con (<span class="text-danger">*</span>) son campos obligatorios.</p>     
+             
             <div class="card">
               
               <div class="card-body">
@@ -41,24 +38,17 @@
                   
                            
                   {% csrf_token %}
+                  {% block form %}
                   {% for field in form.visible_fields %}
-                  <div class="col-md-{% if field.label == 'Nombre' or field.label == 'Dirección'  %}12{% endif %}{% if field.label != 'Nombre' and field.label != 'Dirección' %}6{% endif %}">
-                
-                    <div class="form-floating">
-                      {{ field }}
-                      <label for="floatingName" autofocus>{{field.label}}</label>
-                    </div>
-                  </div>
-            
-        {% endfor %}
+  <div class="col-md-{% block dist %}{% if field.label == 'Nombre' or field.label == 'Dirección'  %}12{% endif %}{% if field.label != 'Nombre' and field.label != 'Dirección' %}6{% endif %}{% endblock dist %}">
+    <div class="form-floating">
+      {{ field }}
+      <label for="floatingName">{{field.label}}{% if field.field.required %}<span class="text-danger"> *</span>{% endif %}</label>
+    </div>
+  </div>
+{% endfor %}
+                  {% endblock form %}
                   
-        <div class="drag-image col-md-12">
-          <div class="icon"><i class="fas fa-cloud-upload-alt"></i></div>
-          <h6>Drag & Drop File Here</h6>
-          <span>OR</span>
-          <button>Browse File</button>
-          <input type="file" hidden>
-        </div>
                   <div class="text-center">
                     <button type="submit" class="btn bg-warning text-black">Guardar</button>
                     <button type="reset" class="btn btn-secondary">Limpiar</button>
@@ -80,81 +70,73 @@
 {% endblock cuerpo %}
 {% block js %}
 <script>
-  
- IMask(
-  document.getElementById('tel'),
-  {
-    mask: [
-      {
-        mask: "[0000]-[0000]"
-      }
-      
-    ]
-  }
-)
-IMask(
-  document.getElementById('telContact'),
-  {
-    mask: [
-      {
-        mask: "[0000]-[0000]"
-      }
-      
-    ]
-  }
-)
-const dropArea = document.querySelector(".drag-image"),
-dragText = dropArea.querySelector("h6"),
-button = dropArea.querySelector("button"),
-input = dropArea.querySelector("input");
-let file; 
-
-button.onclick = ()=>{
-  input.click(); 
-}
-
-input.addEventListener("change", function(){
+ {% if form.errors %}
+ // Crear una lista para almacenar los mensajes de error
+ var errorMessages = [];
  
-  file = this.files[0];
-  dropArea.classList.add("active");
-  viewfile();
-});
-
-dropArea.addEventListener("dragover", (event)=>{
-  event.preventDefault();
-  dropArea.classList.add("active");
-  dragText.textContent = "Release to Upload File";
-});
-
-
-dropArea.addEventListener("dragleave", ()=>{
-  dropArea.classList.remove("active");
-  dragText.textContent = "Drag & Drop to Upload File";
-}); 
-
-dropArea.addEventListener("drop", (event)=>{
-  event.preventDefault(); 
-   
-  file = event.dataTransfer.files[0];
-  viewfile(); 
-});
-
-function viewfile(){
-  let fileType = file.type; 
-  let validExtensions = ["image/jpeg", "image/jpg", "image/png"];
-  if(validExtensions.includes(fileType)){ 
-    let fileReader = new FileReader(); 
-    fileReader.onload = ()=>{
-      let fileURL = fileReader.result; 
-       let imgTag = `<img src="${fileURL}" alt="image">`;
-      dropArea.innerHTML = imgTag; 
-    }
-    fileReader.readAsDataURL(file);
-  }else{
-    alert("This is not an Image File!");
-    dropArea.classList.remove("active");
-    dragText.textContent = "Drag & Drop to Upload File";
-  }
-}
-</script>
+ {% for field in form %}
+ {% for error in field.errors %}
+     // Agregar cada mensaje de error junto con el nombre del campo a la lista
+     errorMessages.push("{{ field.label|escapejs }}: " + "{{ error|escapejs }}".toLowerCase());
+ {% endfor %}
+ {% endfor %}
+ 
+ // Comprobar si hay mensajes de error
+ if (errorMessages.length > 0) {
+     // Utilizar SweetAlert para mostrar todos los mensajes de error en una sola alerta
+     const swalWithBootstrapButtons = Swal.mixin({
+       customClass: {
+         confirmButton: 'btn btn-primary',
+         cancelButton: 'btn btn-danger'
+       },
+       buttonsStyling: false
+     })
+     swalWithBootstrapButtons.fire({
+         icon: 'error',
+         title: 'Datos incorrectos en los siguientes campos:',
+         html: errorMessages.join('<br>'),
+     });
+ }
+ 
+ {% endif %}
+ 
+ //------------------Funcion de ayuda---------------------
+ const driver = window.driver.js.driver;
+ function tour() {
+ const driverObj = driver({
+   popoverClass: 'driverjs-theme',
+   nextBtnText: 'Siguiente',
+   prevBtnText: 'Anterior',
+   doneBtnText: 'Completado',
+   showButtons: [
+     'next',
+     'previous',
+     'done'
+   ],
+   steps: [
+   { popover: { title: '¡Hola! 😊', description: 'Comenzarás un tour guiado para explicarte lo que puedes hacer en esta sección y aclarar todas tus dudas.' } },
+     { element: '#indicaciones', popover: { title: 'Indicaciones', description: 'Los campos con (*) son campos que no pueden ir vacíos. Sigue las indicaciones al pie de la letra 😊.', side: "left", align: 'start' }},
+     { element: '#first_name', popover: { title: 'Nombres 👨🏻', description: 'En este campo se digitan los nombres de los miembros. Digite el nombre real, no digite ningún alias.', side: "bottom", align: 'start' }},
+     { element: '#last_name', popover: { title: 'Apellidos 👨🏻', description: 'En este campo se digitan los apellidos de los miembros.', side: "bottom", align: 'start' }},
+     { element: '#email', popover: { title: 'Correo electrónico 📧', description: 'En este campo debe digitar el correo electrónico que el miembro usará para ingresar al sistema.', side: "left", align: 'start' }},
+     { element: '#genero', popover: { title: 'Género', description: 'Aquí se selecciona el género del miembro, se utiliza para recomendar dietas y ejercicios 🥗🏋🏻‍♂️.', side: "top", align: 'start' }},
+     { element: '#fecha_nac', popover: { title: 'Fecha de nacimiento', description: 'Aquí se ingresa la fecha de nacimiento del miembro, igualmente se utiliza para recomendar dietas y ejercicios 🥗🏋🏻‍♂️', side: "right", align: 'start' }},
+     { element: '#telefono', popover: { title: 'Teléfono 📲', description: 'Puede ingresar un teléfono para agregarlo al grupo del gimnansio o por cualquier pertencia olvidada poder comunicarse con él.', side: "right", align: 'start' }},
+     { element: '#direcccion', popover: { title: 'Dirección 🗺️', description: 'Puede ingresar una dirección del miembro ya sea por cualquier pertenencia olvidada u otra situación ocurrida.', side: "right", align: 'start' }},
+     { element: '#nombreContact', popover: { title: 'Nombre de emergencia 👨🏻', description: 'Aquí puede digitar el nombre de una persona que se puede contactar por si le pasa un accidente al miembro del gimnasio.', side: "right", align: 'start' }},
+     { element: '#telefonoContact', popover: { title: 'Teléfono de contacto 👨🏻📲', description: 'Aquí puede digitar el teléfono de la persona anterior para poder contactarla por cualquier emergencia o accidente.', side: "right", align: 'start' }},
+     { element: '#foto', popover: { title: 'Foto 📷', description: 'Se utiliza para identificar a los miembros que asisten al gimnasio y poder registrar las veces que asisten correctamentex.', side: "right", align: 'start' }},
+     { element: '#guardar', popover: { title: 'Guardar 💾', description: 'Al dar click en guardar y los datos ingresados están correctos se envía un correo al miembro para que pueda usar el sistema y se guardan los datos del miembro.', side: "right", align: 'start' }},
+     { element: '#limpiar', popover: { title: 'Limpiar 🧹', description: 'Al dar click en este botón se limpian todos los campos que tenga algo escrito o seleccionado.', side: "right", align: 'start' }},
+     { popover: { title: '¡Fin del tour! 😁', description: 'Eso ha sido todo lo que puedes hacer en esta sección, si tienes más dudas puedes ver el tour las veces que gustes.' } }
+   ]
+ });
+ 
+ driverObj.drive();
+ }
+ 
+ 
+ 
+ </script>
 {% endblock js %}
+

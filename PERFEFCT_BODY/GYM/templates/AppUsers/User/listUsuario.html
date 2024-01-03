@@ -1,0 +1,38 @@
+{% extends "layout/list.html" %}
+{% block cols %}
+<th scope="col">#</th>
+<th scope="col">Nombre</th>
+<th scope="col">Correo</th>
+<th scope="col">Usuario</th>
+<th scope="col">Rol</th>               
+<th scope="col">Opciones</th>
+{% endblock cols %}
+{% block rows %}
+{% if usuarios %} {% for u in usuarios %}
+                      <tr>
+                        <td class="text-nowrap">{{forloop.counter}}</td>
+                        <td class="text-nowrap">{{ u.first_name }} {{u.last_name}}</td>
+                        <td class="text-nowrap">{{ u.email }}</td>
+                        <td class="text-nowrap">{{ u.username }}</td>
+                        <td class="text-nowrap">{{ u.get_rol_display }}</td>
+                       
+                        <td class="text-nowrap">
+                       
+                          <a type="button" class="btn btn-secondary" href="{%url 'actualizar_membresia' u.id %}">
+                            <i class="bi bi-pencil-square"></i>
+                          </a>
+                          
+                          <a class="btn btn-danger" href="#" onclick="EliminarMembresia({{u.id}})">
+                            <i class="bi bi-trash btnUM"></i>
+                        </a>
+                          
+                       
+                        </td>
+                      </tr>
+                  
+{% endfor %} {% else %}
+<td colspan="9" style="text-align: center">
+    <b>No hay datos para mostrar</b>
+  </td>
+  {% endif %}
+{% endblock rows %}

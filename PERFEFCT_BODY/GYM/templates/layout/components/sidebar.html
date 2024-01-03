@@ -3,7 +3,7 @@
   <aside id="sidebar" class="sidebar">
 
     <ul class="sidebar-nav" id="sidebar-nav">
-     
+      {% if request.user.rol == 1 or request.user.rol == 2 %}
       <li class="nav-item">
         <a class="nav-link " href="{% url "prueba" %}">
           <i class="bi bi-grid"></i>
@@ -21,14 +21,17 @@
               <i class="bi bi-circle-fill"></i><span>Registro</span>
             </a>
           </li>
+          {% if request.user.rol == 1 %}
           <li>
+           
             <a href="{% url 'lista_asistencia' %}">
               <i class="bi bi-circle-fill"></i><span>Listado</span>
             </a>
           </li>
+          {% endif %}
         </ul>
       </li><!-- End Components Nav -->
-
+      {% if request.user.rol == 1 %}
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-journal-text"></i><span>Membresias</span><i class="bi bi-chevron-down ms-auto"></i>
@@ -49,10 +52,10 @@
           </li>
         </ul>
       </li><!-- End Forms Nav -->
-
+      {% endif %}
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-person"></i><span>Miembros</span><i class="bi bi-chevron-down ms-auto"></i>
+          <i class="bi bi-person-badge"></i><span>Miembros</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
@@ -67,11 +70,11 @@
           </li>
         </ul>
       </li><!-- End Tables Nav -->
-
+      
      
 
       
-
+      {% if request.user.rol == 1 %}
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#charts-nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-receipt-cutoff"></i><span>Venta de membresia</span><i class="bi bi-chevron-down ms-auto"></i>
@@ -90,15 +93,38 @@
           
         </ul>
       </li><!-- End Charts Nav -->
+      {% endif %}
+      {% endif %}
+      {% if request.user.rol == 1%}
+      <li class="nav-heading">MENÚ DE EMPRESA</li>
       <li class="nav-item">
         <a class="nav-link collapsed" href="{% url 'actualizar_empresa' empresa.id %}">
           <i class="bi bi-buildings-fill"></i><span>Empresa</span>
         </a>
       </li><!-- End Login Page Nav -->
       
-
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#user-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-people"></i><span>Usuarios</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="user-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="{% url "crear_usuario" %}">
+              <i class="bi bi-circle"></i><span>Crear</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url "lista_usuario" %}">
+              <i class="bi bi-circle"></i><span>Lista</span>
+            </a>
+          </li>
+          
+        </ul>
+      </li><!-- End Charts Nav -->
+      {% endif %}
+      {% if request.user.rol == 1 or request.user.rol == 2 %}
       <li class="nav-heading">MENÚ INVENTARIO</li>
-
+      {% if request.user.rol == 1 %}
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#producto-nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-menu-button-wide"></i><span>Productos</span><i class="bi bi-chevron-down ms-auto"></i>
@@ -126,7 +152,8 @@
           </li>
         </ul>
       </li><!-- End Components Nav -->
-
+      {% endif %}
+      {% if request.user.rol == 1 %}
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#maquinaria-nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-bicycle"></i><span>Máquinas</span><i class="bi bi-chevron-down ms-auto"></i>
@@ -149,24 +176,9 @@
           </li>
         </ul>
       </li><!-- End Components Nav -->
-      <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#dieta-nav" data-bs-toggle="collapse" href="#">
-          <i class='bx bx-bowl-hot'></i><span>Dietas</span><i class="bi bi-chevron-down ms-auto"></i>
-        </a>
-        <ul id="dieta-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-          <li>
-            <a href="{% url 'lista_recomendaciones_dieta' %}">
-              <i class="bi bi-circle-fill"></i><span>Ver</span>
-            </a>
-          </li>
-          <li>
-            <a href="{% url 'registro_recomendaciones_dieta' %}">
-              <i class="bi bi-circle-fill"></i><span>Agregar</span>
-            </a>
-          </li>
-        </ul>
-      </li><!-- End Components Nav -->
-
+      {% endif %}
+      
+      {% if request.user.rol == 1 %}
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#compra-nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-bicycle"></i><span>Compras</span><i class="bi bi-chevron-down ms-auto"></i>
@@ -186,6 +198,7 @@
        
         </ul>
       </li><!-- End Components Nav -->
+      {% endif %}
 
       <li class="nav-item">
         <a class="nav-link collapsed" href="pages-contact.html">
@@ -193,15 +206,36 @@
           <span>Venta</span>
         </a>
       </li><!-- End Contact Page Nav -->
-
+      {% if request.user.rol == 1 %}
       <li class="nav-item">
         <a class="nav-link collapsed" href="pages-register.html">
           <i class="bi bi-card-list"></i>
           <span>Proveedores</span>
         </a>
       </li><!-- End Register Page Nav -->
-
-      
+      {% endif %}
+      {% endif %}
+      {% if request.user.rol == 3 %}
+      <li class="nav-heading">MENÚ Dietas</li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#dieta-nav" data-bs-toggle="collapse" href="#">
+          <i class='bx bx-bowl-hot'></i><span>Dietas</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="dieta-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="{% url 'lista_recomendaciones_dieta' %}">
+              <i class="bi bi-circle-fill"></i><span>Ver</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'registro_recomendaciones_dieta' %}">
+              <i class="bi bi-circle-fill"></i><span>Agregar</span>
+            </a>
+          </li>
+        </ul>
+      </li><!-- End Components Nav -->
+      {% endif %}
+      <li class="nav-heading">OTRAS OPCIONES</li>
       <li class="nav-item">
         <a class="nav-link collapsed" href="{% url "logout" %}">
           <i class="bi bi-box-arrow-in-right"></i>
