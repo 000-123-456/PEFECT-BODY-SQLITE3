@@ -215,7 +215,7 @@
       </li><!-- End Register Page Nav -->
       {% endif %}
       {% endif %}
-      {% if request.user.rol == 3 %}
+      {% if request.user.rol == 4 %}
       <li class="nav-heading">MENÚ Dietas</li>
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#dieta-nav" data-bs-toggle="collapse" href="#">
@@ -235,6 +235,28 @@
         </ul>
       </li><!-- End Components Nav -->
       {% endif %}
+      {% if request.user.rol == 5 %}
+      <li class="nav-heading">MENÚ Rutinas</li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#rutina-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-card-list"></i><span>Rutinas Ejercicio</span><i class="bi bi-chevron-down ms-auto"></i>          
+        </a>
+      
+        <ul id="rutina-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="{% url 'registro_Rutina_Ejercicio' %}">
+              <i class="bi bi-circle-fill"></i><span>Agregar</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'lista_Rutina_Ejercicio' %}">
+              <i class="bi bi-circle-fill"></i><span>Listado</span>
+            </a>
+          </li>
+        </ul>
+      </li><!-- End Components Nav -->
+      {% endif %}
+
       <li class="nav-heading">OTRAS OPCIONES</li>
       <li class="nav-item">
         <a class="nav-link collapsed" href="{% url "logout" %}">

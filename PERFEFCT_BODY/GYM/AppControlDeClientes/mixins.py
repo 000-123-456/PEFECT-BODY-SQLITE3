@@ -38,3 +38,21 @@ class isMiembroMixin(object):
             return super().dispatch(request, *args, **kwargs)
         #Sino redirige a una pagina personalizada para indicar que no tiene permisos
         return redirect('sin_permiso')    
+    
+#Mixin que valida si el usuario es miembro, sirve para dar permiso de acceder a la vistas al miembro    
+class isNutricionistaMixin(object):
+    def dispatch(self, request, *args, **kwargs):
+        #Si el usuario iniciado en sesion tiene el rol 3 (Miembro) que muestre la pagina 
+        if request.user.rol == 4:
+            return super().dispatch(request, *args, **kwargs)
+        #Sino redirige a una pagina personalizada para indicar que no tiene permisos
+        return redirect('sin_permiso')  
+    
+#Mixin que valida si el usuario es miembro, sirve para dar permiso de acceder a la vistas al miembro    
+class isEntrenadorMixin(object):
+    def dispatch(self, request, *args, **kwargs):
+        #Si el usuario iniciado en sesion tiene el rol 3 (Miembro) que muestre la pagina 
+        if request.user.rol == 5:
+            return super().dispatch(request, *args, **kwargs)
+        #Sino redirige a una pagina personalizada para indicar que no tiene permisos
+        return redirect('sin_permiso')  
