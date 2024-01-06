@@ -35,6 +35,7 @@ opTiempo = (
     (6, 'Cena'),
     (7, 'Refrigerio de noche'),
 )
+
 factor_hombres = [
     [16, 'Sedentario'],
     [21, 'Moderado'],
@@ -44,6 +45,26 @@ factor_mujeres = [
     [14, 'Sedentario'],
     [18, 'Moderado'],
     [22, 'Muy activa'],  
+]
+
+
+
+#***************************************************************************
+experiencia_hombres = [
+    [16, 'Principiante'],
+    [21, 'Intermedio'],
+    [26, 'Avanzado'],  
+]
+experiencia_mujeres = [
+    [14, 'Sedentario'],
+    [18, 'Moderado'],
+    [22, 'Muy activa'],  
+]
+
+opIntensidad = [
+    (1, 'Baja'),
+    (2, 'Media'),
+    (3, 'Alta'),
 ]
 
 

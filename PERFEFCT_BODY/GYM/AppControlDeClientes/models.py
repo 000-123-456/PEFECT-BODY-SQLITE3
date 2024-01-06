@@ -162,8 +162,9 @@ class Dieta(models.Model):
 
 
 class RutinaEjercicio(models.Model):
-    dia = models.CharField(max_length=50, null=False, verbose_name='Dia')
+    dia = models.CharField(max_length=50, null=False, blank=True, choices=opDia, verbose_name='Dia')
     tipo_ejercicio = models.CharField(max_length=50, null=False, verbose_name='Tipo_ejercicio')
+    imagen = models.ImageField(upload_to='Rutina/%Y/%m/%d',null=True,blank=True)
     links_video = models.CharField(max_length=50, null=False, verbose_name='Links_video')
     detalle_ejercicio = models.CharField(max_length=100, null=True, verbose_name='Detalle_Ejercicio')
     recomendacion = models.CharField(max_length=100, null=True, verbose_name='Recomendacion')
@@ -175,9 +176,33 @@ class RutinaEjercicio(models.Model):
         
     class Meta:
         db_table = 'rutinaejercicio'
-        verbose_name = 'Rutinaejercicio'
+        verbose_name = 'rutinaejercicio'
         verbose_name_plural = 'Rutinaejercicios'
         ordering = ['id']
+
+
+#Rutina Personalizada
+class RutinaPersonalizada(models.Model):
+    ejercicio = models.CharField(max_length=50, null=False, verbose_name='ejercicio')    
+    intensidad = models.PositiveIntegerField(null=True, blank=True, choices=opIntensidad, verbose_name='intensidad')
+    duracionejer = models.CharField(max_length=50, null=False, verbose_name='duracion') 
+    descanso = models.CharField(max_length=50, null=False, verbose_name='descanso')
+
+    #Campo que indica a que rutina pertenece esta rutina Personalizada
+    rutinaejercicio = models.ForeignKey(RutinaEjercicio, on_delete=models.CASCADE, verbose_name='rutinaEjercicio',null=True, blank=True)
+
+    class Meta:
+        db_table = 'rutinapersonalizada'
+        verbose_name = 'rutinapersonalizada'
+        verbose_name_plural = 'rutinapersonalizadas'
+        ordering = ['id']
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['rutinaejercicio'] = self.dieta.toJSON()
+        return item
+
+
+
 #Registro de dieta
 class Dieta(models.Model):
     nombre = models.CharField(max_length=100, null=True, verbose_name='nombre')

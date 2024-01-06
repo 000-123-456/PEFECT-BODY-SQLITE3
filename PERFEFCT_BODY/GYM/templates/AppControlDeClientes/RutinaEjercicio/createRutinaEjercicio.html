@@ -1,0 +1,99 @@
+{% extends 'layout/index.html' %}
+{% load static %}
+{% block titulo %}   {{titulo}}   {% endblock titulo %}
+{% block tituloP %}  {{titulo}}   {% endblock tituloP %}
+{% block modulo %}   {{modulo}}   {% endblock modulo %}
+{% block tituloS %}  {{titulo}}   {% endblock tituloS %}
+{% block cuerpo %}
+<section class="section">
+    
+    <div class="row">
+        <div class="col-lg-12 d-flex justify-content-between">
+          <a href="{% url 'lista_Rutina_Ejercicio' %}" class="btn btn-primary">
+            <b><i class="bi bi-arrow-left"></i> Regresar</b>
+          </a>
+          <a href="#" class="btn btn-outline-dark" id="ayuda" onclick="tour ()">
+            <b><i class="bi bi-info-circle"></i> Ayuda</b>
+          </a>   
+      </div>
+          <div class="col-lg-3"></div>
+          <div class="col-lg-6">             
+                <!-- Horizontal Form -->
+                
+              <br>
+              <p class="mt-0" id='indicaciones'>Los campo con (<span class="text-danger">*</span>) son campos obligatorios.</p>
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title text-warning"><i class="bi bi-plus-lg"></i> {{titulo}}</h5>
+                
+                <!-- Floating Labels Form -->
+                <form class="row g-3" method="post" enctype="multipart/form-data" action='.'>
+                  {% csrf_token %}
+                  {% for field in form.visible_fields %}
+                  
+                       <div class="col-md-12">   
+                          
+                        <div class="form-floating">
+                          {{ field }}
+                          <label for="floatingName" autofocus>{{field.label}}<span class="text-danger"> *</span></label>
+                        </div>
+                      </div>
+                  
+                  {% endfor %}
+                  
+                  <div class="text-center">
+                    <button type="submit" class="btn bg-warning text-black">Guardar</button>
+                    <a href="{% url 'lista_membresias' %}" class="btn btn-secondary">
+                       Cancelar
+                    </a>
+                  </div>
+                </form><!-- End floating Labels Form -->
+  
+              </div>
+              
+            </div>
+  
+          </div>
+          <div class="col-lg-3"></div>
+        </div>
+        
+      </section>
+
+
+
+{% endblock cuerpo %}
+{% block js %}
+<script>
+{% if form.errors %}
+      // Crear una lista para almacenar los mensajes de error
+      var errorMessages = [];
+
+      {% for field in form %}
+      {% for error in field.errors %}
+      
+          // Agregar cada mensaje de error junto con el nombre del campo a la lista
+          errorMessages.push("{{ field.label|escapejs }}: " + "{{ error|escapejs }}".toLowerCase());
+        
+      {% endfor %}
+  {% endfor %}
+
+      // Comprobar si hay mensajes de error
+      if (errorMessages.length > 0) {
+          // Utilizar SweetAlert para mostrar todos los mensajes de error en una sola alerta
+          const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+              confirmButton: 'btn btn-primary',
+              cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false
+          })
+          swalWithBootstrapButtons.fire({
+              icon: 'error',
+              title: 'Datos incorrectos en los siguientes campos:',
+              html: errorMessages.join('<br>'),
+          });
+      }
+ 
+{% endif %}
+    </script>
+{% endblock js %}

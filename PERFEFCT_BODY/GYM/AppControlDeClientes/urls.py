@@ -59,8 +59,23 @@ urlpatterns = [
      #--------------------------------------------RECOMENDACIONES DIETAS-------------------------------------------------------
     path('Recomendaciones/Dietas/registro/',login_required(views.CreateRecomendacionDieta.as_view()), name='registro_recomendaciones_dieta'),
     path('Recomendaciones/Dietas/',login_required(views.ListRecomendacionDieta.as_view()), name='lista_recomendaciones_dieta'), 
+
     #--------------------------------------------RECOMENDACIONES DE COMIDAS-------------------------------------------------------
     path('Recomendaciones/Dietas/comida/registro/<int:pk>/',login_required(views.CreateRecomendacionComida.as_view()), name='registro_recomendaciones_comida'),
     path('Recomendaciones/Dietas/comida/lista/<int:pk>/',login_required(views.ListRecomendacionComida.as_view()), name='lista_recomendaciones_comida'),       
     
+
+       #--------------------------------------------DIETAS DE MIEMBRO-------------------------------------------------------
+    #path('Rutinas',login_required(views.ListDietas.as_view()), name='rutinas'),    
+
+     #--------------------------------------------RECOMENDACIONES RUTINAS-------------------------------------------------------
+    path('Recomendaciones/Rutinas/registro/',login_required(views.CreateRutinaEjercicio.as_view()), name='registro_Rutina_Ejercicio'),
+    path('Recomendaciones/Rutinas/',login_required(views.ListRutinaEjercicio.as_view()), name='lista_Rutina_Ejercicio'),
+    
+
+        #--------------------------------------------RUTINAS PERSONALIZADAS-------------------------------------------------------
+    path('Recomendaciones/RutinaEjercicio/Personalizadas/registro/<int:pk>/', login_required(views.CreateRutinaPersonalizada.as_view()), name='registro_RutinaPersonalizada'),
+
+    path('Recomendaciones/RutinaEjercicio/Personalizadas/lista/<int:pk>/',login_required(views.ListRutinaPersonalizada.as_view()), name='lista_RutinaPersonalizada'),       
+    #path('Recomendaciones/RutinaEjercicio/Personalizadas/lista/<int:pk>/', views.ListRutinaPersonalizada.as_view(), name='lista_RutinaPersonalizada'),
 ]

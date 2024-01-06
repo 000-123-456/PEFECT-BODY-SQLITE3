@@ -4,8 +4,8 @@ from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, TemplateView
-from AppControlDeClientes.models import Comida, Dieta, HistorialMiembro, Miembro,Membresia,VentaMembresia, Asistencia
-from AppControlDeClientes.forms import FormComida, FormDieta, FormMiembro,FormMembresia, FormHistorialMiembro, FormAsistenciaMiembro
+from AppControlDeClientes.models import Comida, Dieta, HistorialMiembro, Miembro,Membresia,VentaMembresia, Asistencia,RutinaEjercicio,RutinaPersonalizada
+from AppControlDeClientes.forms import FormComida, FormDieta, FormMiembro,FormMembresia, FormHistorialMiembro, FormAsistenciaMiembro,FormRutinaEjercicio,FormRutinaPersonalizada
 from django.contrib import messages
 from AppUsers.models import Empresa,User
 from AppUsers.forms import RegistroUsuarioForm
@@ -879,6 +879,9 @@ def eliminarHistorial(request, pk):
         messages.error(request, f"¡Error: {str(e)}")
     return redirect(to='lista_asistencia')
 
+
+#----------------------AQUI SE METE A DIETAS********************
+
 class ListDietas(isMiembroMixin,ListView):
     model = Dieta
     template_name = 'AppControlDeClientes/Dietas/listaDietas.html'
@@ -958,6 +961,15 @@ class ListRecomendacionDieta(isAdministradorMixin,ListView):
         data['modulo'] = 'Dietas'
         data['dietas'] = Dieta.objects.all().reverse()
         return data
+    
+
+
+
+
+#AQUI YA DE COMIDA
+
+
+
 class ListRecomendacionComida(isAdministradorMixin,ListView):
     model = Comida
     template_name = 'AppControlDeClientes/RecomendacionesDietas/RecomendacionesComida/listComida.html'
@@ -1008,3 +1020,201 @@ class CreateRecomendacionComida(isAdministradorMixin,CreateView):
     def form_invalid(self, form):
         messages.error(self.request, format(form.errors.as_text()))
         return super().form_invalid(form)    
+    
+
+
+
+
+
+#-----------RUTINAS DE EJERCICIO --------------------------------------------
+#VISTA DE MIEMBRO
+
+    
+#-----------VISTA DE ADMINISTRADOR --------------------------------------------
+class CreateRutinaEjercicio(isAdministradorMixin,CreateView):
+    template_name = 'AppControlDeClientes/RutinaEjercicio/createRutinaEjercicio.html'
+    form_class = FormRutinaEjercicio
+    success_url = reverse_lazy('lista_Rutina_Ejercicio')
+    
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data['titulo'] = 'Rutina Ejercicio'
+        data['modulo'] = 'Rutinas'
+        return data
+    def form_valid(self, form):
+        messages.success(self.request, "Rutina registrada correctamente")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, format(form.errors.as_text()))
+        return super().form_invalid(form)
+
+
+
+class ListRutinaEjercicio(isAdministradorMixin,ListView):
+    model = RutinaEjercicio
+    template_name = 'AppControlDeClientes/RutinaEjercicio/listRutinas.html'
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        try:
+             data['empresa'] = Empresa.objects.first()
+        except:
+             data['empresa'] = 'Error'
+        data['titulo'] = 'Listado de Rutinas de Ejercicio'
+        data['modulo'] = 'Rutinas'
+        data['rutinas'] = RutinaEjercicio.objects.all().reverse()
+        return data
+
+
+
+#-------------------------Rutinas  Personalizadas-----------------------------------
+
+
+
+'''class ListRutinaPersonalizada(isAdministradorMixin,ListView):
+    model = RutinaPersonalizada
+    template_name = 'AppControlDeClientes/RutinaEjercicio/RutinaPersonalizada/listPersonalizadas.html'
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        # Obtengo el id de la dieta que paso por la URL
+        id_rutinaejercicio = self.kwargs.get('pk', None)
+        try:
+             data['empresa'] = Empresa.objects.first()
+        except:
+             data['empresa'] = 'Error'
+        data['titulo'] = 'Listado de Rutinas Personalizadas'
+        data['modulo'] = 'Rutinas'
+        data['rutinapersonalizadas'] = RutinaPersonalizada.objects.filter(rutinaejercicio=id_rutinaejercicio).reverse()
+        data['rutinaejercicio'] = RutinaEjercicio.objects.get(pk=id_rutinaejercicio)  # Agrega el objeto RutinaEjercicio
+        return data'''
+from django.shortcuts import get_object_or_404
+
+class ListRutinaPersonalizada(isAdministradorMixin, ListView):
+    model = RutinaPersonalizada
+    template_name = 'AppControlDeClientes/RutinaEjercicio/RutinaPersonalizada/listPersonalizadas.html'
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        id_rutinaejercicio = self.kwargs.get('pk', None)
+
+        try:
+            data['empresa'] = Empresa.objects.first()
+        except:
+            data['empresa'] = 'Error'
+
+        # Manejar el caso cuando no se encuentra RutinaEjercicio
+        data['rutinaejercicio'] = get_object_or_404(RutinaEjercicio, pk=id_rutinaejercicio)
+
+        data['titulo'] = 'Listado de Rutinas Personalizadas'
+        data['modulo'] = 'Rutinas'
+        data['rutinapersonalizadas'] = RutinaPersonalizada.objects.filter(rutinaejercicio=id_rutinaejercicio).reverse()
+        return data
+
+
+
+
+'''class CreateRutinaPersonalizada(isAdministradorMixin, CreateView):
+    template_name = 'AppControlDeClientes/RutinaEjercicio/RutinaPersonalizada/createPersonalizadas.html'
+    form_class = FormRutinaPersonalizada
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['intensidad'].choices += [('', 'Seleccione una opción')]
+        return form
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        try:
+             data['empresa'] = Empresa.objects.first()
+        except:
+             data['empresa'] = 'Error'
+        data['titulo'] = 'Registro de Rutinas Personalizadas'
+        data['modulo'] = 'Rutinas'
+        return data
+
+    def form_valid(self, form):
+        id_rutinaejercicio = self.kwargs.get('pk', None)
+        rutinaejercicio = RutinaEjercicio.objects.get(id=id_rutinaejercicio)
+        form.instance.rutinaejercicio = rutinaejercicio
+        messages.success(self.request, "Rutina registrada correctamente")
+
+        # Redirige a la lista de rutinas personalizadas de la rutina de ejercicio
+        return redirect('registro_RutinaPersonalizada', pk=id_rutinaejercicio)
+
+    def form_invalid(self, form):
+        messages.error(self.request, format(form.errors.as_text()))
+        return super().form_invalid(form)'''
+    
+
+from django.shortcuts import redirect
+
+'''class CreateRutinaPersonalizada(isAdministradorMixin, CreateView):
+    template_name = 'AppControlDeClientes/RutinaEjercicio/RutinaPersonalizada/createPersonalizadas.html'
+    form_class = FormRutinaPersonalizada
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['intensidad'].choices += [('', 'Seleccione una opción')]
+        return form
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        try:
+            data['empresa'] = Empresa.objects.first()
+        except:
+            data['empresa'] = 'Error'
+        data['titulo'] = 'Registro de Rutinas Personalizadas'
+        data['modulo'] = 'Rutinas'
+        return data
+
+    def form_valid(self, form):
+        id_rutinaejercicio = self.kwargs.get('pk', None)
+        rutinaejercicio = RutinaEjercicio.objects.get(id=id_rutinaejercicio)
+        form.instance.rutinaejercicio = rutinaejercicio
+        messages.success(self.request, "Rutina registrada correctamente")
+
+        # Redirige a la lista de rutinas personalizadas de la rutina de ejercicio
+        return redirect('lista_RutinaPersonalizada', pk=id_rutinaejercicio)
+
+    def form_invalid(self, form):
+        messages.error(self.request, format(form.errors.as_text()))
+        return super().form_invalid(form)'''
+#********************************************************************************
+class CreateRutinaPersonalizada(isAdministradorMixin,CreateView):
+    template_name = 'AppControlDeClientes/RutinaEjercicio/RutinaPersonalizada/createPersonalizadas.html'
+    form_class = FormRutinaPersonalizada
+
+    success_url = reverse_lazy('registro_Rutina_Ejercicio')
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        
+        # Agrega una opción adicional al campo 'tiempo'
+        form.fields['intensidad'].choices += [('', 'Seleccione una opción')]
+
+        return form
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        try:
+             data['empresa'] = Empresa.objects.first()
+        except:
+             data['empresa'] = 'Error'
+        data['titulo'] = 'Registro de comida'
+        data['modulo'] = 'rutinas'
+        return data
+    def form_valid(self, form):
+
+
+        #Obtengo el id de la dieta que paso por url
+        id_rutinaejercicio = self.kwargs.get('pk', None)
+
+        # Se lo asigno al campo del modelo antes de guardarlo para crear la relacion
+        # Obtengo el objeto Dieta correspondiente al ID
+        rutinaejercicio = RutinaEjercicio.objects.get(id=id_rutinaejercicio)
+        form.instance.rutinaejercicio = rutinaejercicio
+        messages.success(self.request, "Rutina registrada correctamente")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, format(form.errors.as_text()))
+        return super().form_invalid(form)    
+    
