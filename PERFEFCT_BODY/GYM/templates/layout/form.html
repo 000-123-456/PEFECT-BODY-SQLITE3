@@ -5,7 +5,7 @@
     
         <div class="row">
           <div class="col-lg-12 d-flex justify-content-between">
-            <a href="{% url 'lista_miembros' %}" class="btn btn-primary">
+            <a href="{{url_modulo}}" class="btn btn-primary">
               <b><i class="bi bi-arrow-left"></i> Regresar</b>
             </a>
             <a href="#" class="btn btn-outline-dark" id="ayuda" onclick="tour ()">
@@ -31,7 +31,7 @@
             <div class="card">
               
               <div class="card-body">
-                <h5 class="card-title">{{titulo}}</h5>
+                <h5 class="card-title text-warning"><i class="{{icono}}"></i> {{titulo}}</h5>
                 
                 <!-- Floating Labels Form -->
                 <form class="row g-3" method="post">
@@ -50,8 +50,8 @@
                   {% endblock form %}
                   
                   <div class="text-center">
-                    <button type="submit" class="btn bg-warning text-black">Guardar</button>
-                    <button type="reset" class="btn btn-secondary">Limpiar</button>
+                    <button type="submit" class="btn bg-warning text-black" id='guardar'>Guardar</button>
+                    <button type="reset" class="btn btn-secondary" id='limpiar'>Limpiar</button>
                   </div>
                 </form><!-- End floating Labels Form -->
   
@@ -126,7 +126,7 @@
      { element: '#nombreContact', popover: { title: 'Nombre de emergencia 👨🏻', description: 'Aquí puede digitar el nombre de una persona que se puede contactar por si le pasa un accidente al miembro del gimnasio.', side: "right", align: 'start' }},
      { element: '#telefonoContact', popover: { title: 'Teléfono de contacto 👨🏻📲', description: 'Aquí puede digitar el teléfono de la persona anterior para poder contactarla por cualquier emergencia o accidente.', side: "right", align: 'start' }},
      { element: '#foto', popover: { title: 'Foto 📷', description: 'Se utiliza para identificar a los miembros que asisten al gimnasio y poder registrar las veces que asisten correctamentex.', side: "right", align: 'start' }},
-     { element: '#guardar', popover: { title: 'Guardar 💾', description: 'Al dar click en guardar y los datos ingresados están correctos se envía un correo al miembro para que pueda usar el sistema y se guardan los datos del miembro.', side: "right", align: 'start' }},
+     { element: '#guardar', popover: { title: 'Guardar 💾', description: 'Este botón guarda toda la información. Al hacer clic, también dispara un correo con un usuario y una contraseña al email que ingresaste. Esa contraseña es tu llave para entrar al sistema. ¡Fácil y listo para empezar! 😊📧✨', side: "right", align: 'start' }},
      { element: '#limpiar', popover: { title: 'Limpiar 🧹', description: 'Al dar click en este botón se limpian todos los campos que tenga algo escrito o seleccionado.', side: "right", align: 'start' }},
      { popover: { title: '¡Fin del tour! 😁', description: 'Eso ha sido todo lo que puedes hacer en esta sección, si tienes más dudas puedes ver el tour las veces que gustes.' } }
    ]

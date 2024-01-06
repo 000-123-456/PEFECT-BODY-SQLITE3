@@ -13,3 +13,40 @@
                         {% endif %}
 {% endfor %}
 {% endblock form %}
+{% block js %}
+<script>
+    //------------------Funcion de ayuda---------------------
+ const driver = window.driver.js.driver;
+ function tour() {
+ const driverObj = driver({
+   popoverClass: 'driverjs-theme',
+   nextBtnText: 'Siguiente',
+   prevBtnText: 'Anterior',
+   doneBtnText: 'Completado',
+   showButtons: [
+     'next',
+     'previous',
+     'done'
+   ],
+   steps: [
+   { popover: { title: '¡Hola! 😊', description: 'Iniciaremos un recorrido para aprender a ingresar los datos de un nuevo empleado y resolver tus dudas. 🚀' } },
+     { element: '#indicaciones', popover: { title: 'Indicaciones', description: 'Los campos con (*) son campos que no pueden ir vacíos. Sigue las indicaciones al pie de la letra. 🚦😊', side: "left", align: 'start' }},
+     { element: '#username', popover: { title: 'Usuario 👤', description: 'El "Usuario" es como el nombre de usuario o apodo de tus empleados para entrar al sistema. Puede ser algo fácil de recordar y único. Si no tienen uno, usaremos su correo electrónico.', side: "top", align: 'start' }},
+     { element: '#first_name', popover: { title: 'Nombres 👨🏻', description: 'Aquí, ingresamos los nombres reales del empleado. Asegúrate de tener esta información correcta. 📛', side: "bottom", align: 'start' }},
+     { element: '#last_name', popover: { title: 'Apellidos 👨🏻', description: 'En este campo, ingresamos los apellidos del nuevo empleado. 📘', side: "bottom", align: 'start' }},
+     { element: '#email', popover: { title: 'Correo electrónico 📧', description: 'Asegúrate de tener el correo electrónico de tus empleados para la comunicación y, en caso de olvido del "Usuario", podrán usar su correo para recuperar la cuenta.', side: "left", align: 'start' }},
+     { element: '#rol', popover: { title: 'Rol 🏋️‍♂️', description: 'Define el papel principal de tus empleados en el gimnasio, como entrenador, recepcionista, etc.', side: "left", align: 'start' }},
+     { element: '#guardar', popover: { title: 'Guardar 💾', description: 'Al clicar en guardar y con datos correctos, se enviará automáticamente un correo al empleado con la información necesaria para acceder al sistema. 📧✨', side: "right", align: 'start' }},
+     { element: '#limpiar', popover: { title: 'Limpiar 🧹', description: 'Al dar click en este botón se limpian todos los campos que tenga algo escrito o seleccionado.  ♻️', side: "right", align: 'start' }},
+     { popover: { title: '¡Fin del tour! 😁', description: '¡Eso es todo! Ahora puedes repetir estos pasos con cada nuevo empleado que se una al equipo.🚀\n Si tienes más dudas puedes ver el tour las veces que gustes.' } }
+   ]
+ });
+ 
+ driverObj.drive();
+ }
+ 
+ 
+ 
+</script>
+{% endblock js %}
+

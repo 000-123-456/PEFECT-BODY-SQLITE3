@@ -113,6 +113,8 @@ class CrearUsuario(CreateView):
         context["titulo"] = 'Registrar usuarios'
         context["modulo"] = 'Usuarios'
         context["url_modulo"] = reverse_lazy('lista_usuario')
+        context["icono"] = 'bi bi-plus-lg'
+        
         return context
     def form_valid(self, form):
         
@@ -130,7 +132,7 @@ class CrearUsuario(CreateView):
             user.empresa = Empresa.objects.first()
             user.save()
             subject = 'Bienvenido'
-            message = f'Se ha registrado exitosamente, con los siguientes datos podrá hacer uso del sistema.\n\nUsuario: {user.username}\nContraseña: {clave}\nIngrese al siguiente link: {url}\n\n¡BIENVENIDO A LA FAMILIA PERFECT BODY!💛🖤\nSiempre dandole lo mejor a nuestros clientes.'
+            message = f'Se ha registrado exitosamente, con los siguientes datos podrá hacer uso del sistema.\nUsuario: {user.username}\nContraseña: {clave}\nIngrese al siguiente link: {url}\n\n¡BIENVENIDO A LA FAMILIA PERFECT BODY!💛🖤\nSiempre dandole lo mejor a nuestros clientes.'
             from_email = EMAIL_HOST_USER
             recipient_list = [user.email]
             send_mail(subject, message,from_email, recipient_list)
@@ -144,7 +146,73 @@ class CrearUsuario(CreateView):
             return render(self.request, self.template_name, {'form': form, 'titulo':'Registrar usuarios','modulo':'Usuarios'})
 
         return redirect('crear_usuario')
-    
+
+class UpdateUsuario(UpdateView):
+    model = User
+    form_class = RegistroUsuarioForm
+    template_name = 'AppUsers/User/updateUsuario.html'
+    success_url = reverse_lazy('lista_usuario')
+    def form_valid(self, form):
+        user_form = RegistroUsuarioForm(self.request.POST)
+        try:
+            current_user = User.objects.get(pk=self.object.pk)
+
+            # Verificar si el username ha cambiado
+            if form.cleaned_data['username'] != current_user.username:
+                form.instance.username = form.cleaned_data['username']
+                
+                # Generar una nueva clave temporal segura
+                user = user_form.save(commit=False)
+                clave = str(generar_clave_temporal_segura())
+                user.rol = self.request.POST['rol']
+                user.set_password(clave)
+                user.empresa = Empresa.objects.first()
+                user.save()
+                # Guardar el usuario con los cambios
+
+                # Enviar correo con la nueva contraseña
+                subject = 'Actualizacion de datos'
+                message = f'Se ha actualizado exitosamente, con los siguientes datos podrá acceder al sistema.\nUsuario: {form.instance.username}\nContraseña: {clave}\nIngrese al siguiente link: {self.request.build_absolute_uri(reverse("crear_usuario"))}\n\n¡BIENVENIDO A LA FAMILIA PERFECT BODY!💛🖤\nSiempre dándole lo mejor a nuestros clientes.'
+                from_email = EMAIL_HOST_USER
+                recipient_list = [form.instance.email]
+                send_mail(subject, message, from_email, recipient_list)
+
+                messages.success(self.request, "Usuario actualizado correctamente")
+                return redirect('lista_usuario')
+
+            # Verificar si el email ha cambiado
+            elif form.cleaned_data['email'] != current_user.email:
+                form.save()
+
+                # Enviar correo de confirmación del email
+                subject = 'Confirmación de Email'
+                message = f'{form.instance.first_name} {form.instance.last_name}, su dirección de correo electrónico ha sido actualizada correctamente a {form.instance.email}.'
+                from_email = EMAIL_HOST_USER
+                recipient_list = [form.instance.email]
+                send_mail(subject, message, from_email, recipient_list)
+
+                messages.success(self.request, "Usuario actualizado correctamente")
+                return redirect('lista_usuario')
+
+            # Si no hay cambios en el username ni en el email
+            else:
+                form.save()
+
+                messages.success(self.request, "Usuario actualizado correctamente")
+                return redirect('lista_usuario')
+
+        except IntegrityError:
+            messages.error(self.request, "El nombre de usuario ya existe. Por favor, elija otro nombre de usuario.")
+            return render(self.request, self.template_name, {'form': form, 'titulo': 'Actualizar usuarios', 'modulo': 'Usuarios'})
+
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["titulo"] = 'Actualizar usuarios'
+        context["modulo"] = 'Usuarios'
+        context["url_modulo"] = reverse_lazy('lista_usuario')
+        context["icono"] = 'bi bi-pencil-square'
+        
+        return context
 class ListUsuarios(ListView):
     model= User
     template_name = 'AppUsers/User/listUsuario.html'
@@ -155,7 +223,8 @@ class ListUsuarios(ListView):
         context["url_modulo"] = reverse_lazy('lista_usuario')
         context["url_nuevo"] = reverse_lazy('crear_usuario')
         #Obtiene todos los usuarios que no son miembros
-        context["usuarios"] = User.objects.exclude(miembro__isnull=False)
+        context["usuarios"] = User.objects.exclude(miembro__isnull=False).order_by('-id')
+
         return context
     
 #-------------------------------------------------EMPRESA-----------------------------

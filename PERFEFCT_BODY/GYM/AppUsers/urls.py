@@ -21,6 +21,7 @@ urlpatterns = [
     #USUARIOS QUE CREA EL ADMINISTRADOR(EMPLEADOS Y ADMINISTRADORES)
     path('usuarios/crear/',login_required(views.CrearUsuario.as_view()), name='crear_usuario'),
     path('usuarios/',login_required(views.ListUsuarios.as_view()), name='lista_usuario'),
+     path('usuarios/actualizar/<int:pk>/',login_required(views.UpdateUsuario.as_view()), name='actualizar_usuario'),
 
 
 

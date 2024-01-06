@@ -310,17 +310,17 @@ const driverObj = driver({
     'done'
   ],
   steps: [
-  { popover: { title: '¡Hola! 😊', description: 'Comenzarás un tour guiado para explicarte lo que puedes hacer en esta sección y aclarar todas tus dudas.' } },
-    { element: '#nuevo', popover: { title: 'Nuevo', description: 'Los campos con (*) son campos que no pueden ir vacíos. Sigue las indicaciones al pie de la letra 😊.', side: "left", align: 'start' }},
-    { element: '#papelera', popover: { title: 'Papelera 👨🏻', description: 'En este campo se digitan los nombres de los miembros. Digite el nombre real, no digite ningún alias.', side: "bottom", align: 'start' }},
-    { element: '.table-responsive', popover: { title: 'Listado de miembros 👨🏻', description: 'En este campo se digitan los apellidos de los miembros.', side: "bottom", align: 'start' }},
-    { element: '#data_filter', popover: { title: 'Buscar 📧', description: 'En este campo debe digitar el correo electrónico que el miembro usará para ingresar al sistema.', side: "left", align: 'start' }},
-    { element: '.sorting', popover: { title: 'Ordenar datos', description: 'Aquí se selecciona el género del miembro, se utiliza para recomendar dietas y ejercicios 🥗🏋🏻‍♂️.', side: "top", align: 'start' }},
-    { element: '.btnVP', popover: { title: 'Ver más', description: 'Aquí se ingresa la fecha de nacimiento del miembro, igualmente se utiliza para recomendar dietas y ejercicios 🥗🏋🏻‍♂️', side: "right", align: 'start' }},
-    { element: '#menu-opciones', popover: { title: 'Menú de opciones 📲', description: 'Puede ingresar un teléfono para agregarlo al grupo del gimnansio o por cualquier pertencia olvidada poder comunicarse con él.', side: "right", align: 'start' }},
-    { element: '#data_info', popover: { title: 'Información de listado 🗺️', description: 'Puede ingresar una dirección del miembro ya sea por cualquier pertenencia olvidada u otra situación ocurrida.', side: "right", align: 'start' }},
-    { element: '#data_paginate', popover: { title: 'Páginas 👨🏻', description: 'Aquí puede digitar el nombre de una persona que se puede contactar por si le pasa un accidente al miembro del gimnasio.', side: "right", align: 'start' }},
-    { popover: { title: '¡Fin del tour! 😁', description: 'Eso ha sido todo lo que puedes hacer en esta sección, si tienes más dudas puedes ver el tour las veces que gustes.' } }
+  { popover: { title: '¡Hola! 😊', description: 'Bienvenido al tour guiado por la sección de miembros del gimnasio. Aquí te explicaré todas las funciones disponibles y resolveré cualquier duda que puedas tener. ¡Empecemos!' } },
+  { element: '#nuevo', popover: { title: 'Nuevo Miembro ➕', description: 'Haz clic en este botón para agregar un nuevo miembro al gimnasio.', side: 'left', align: 'start' }},
+  { element: '#papelera', popover: { title: 'Papelera de Miembros 🗑️', description: 'Este botón te llevará a la papelera de miembros. Aquí podrás ver y restaurar miembros que hayan sido dados de baja previamente.', side: 'bottom', align: 'start' }},
+  { element: '.table-responsive', popover: { title: 'Listado de Miembros 🏋️', description: 'En esta tabla se muestra información detallada de todos los miembros del gimnasio.', side: 'in', align: 'start' }},
+  { element: '#data_filter', popover: { title: 'Buscar 🔍', description: 'Utiliza este campo para escribir y filtrar información específica de los miembros en la tabla.', side: 'left', align: 'start' }},
+  { element: '.sorting', popover: { title: 'Ordenar Datos 🔄', description: 'Haz clic en los encabezados de la tabla para ordenar la información de los miembros.', side: 'right', align: 'start' }},
+  { element: '.btnVP', popover: { title: 'Ver Detalles 👁️‍🗨️', description: 'Al hacer clic en este botón, podrás ver información detallada de cada miembro y verificar el estado de su membresía.', side: 'right', align: 'start' }},
+  { element: '#menu-opciones', popover: { title: 'Opciones Miembro ⚙️', description: 'Este botón despliega opciones para actualizar datos, asignar membresía y dar de baja a un miembro.', side: 'right', align: 'start' }},
+  { element: '#data_info', popover: { title: 'Información del Listado 📊', description: 'Aquí se muestra la cantidad total de miembros y cuántos están siendo visualizados actualmente.', side: 'right', align: 'start' }},
+  { element: '#data_paginate', popover: { title: 'Páginas 📄➡️', description: 'Navega entre las páginas para ver diferentes conjuntos de miembros en el listado.', side: 'left', align: 'start' }},
+  { popover: { title: '¡Fin del tour! 😁', description: 'Espero que esta presentación sea la que estás buscando. Puedes ver el tour las veces que gustes 😊' }}
   ]
 });
 

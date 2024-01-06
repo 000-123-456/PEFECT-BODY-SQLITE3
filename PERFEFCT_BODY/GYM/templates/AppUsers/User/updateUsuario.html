@@ -1,0 +1,37 @@
+{% extends "AppUsers/User/createUsuario.html" %}
+{% block js %}
+<script>
+    //------------------Funcion de ayuda---------------------
+ const driver = window.driver.js.driver;
+ function tour() {
+ const driverObj = driver({
+   popoverClass: 'driverjs-theme',
+   nextBtnText: 'Siguiente',
+   prevBtnText: 'Anterior',
+   doneBtnText: 'Completado',
+   showButtons: [
+     'next',
+     'previous',
+     'done'
+   ],
+   steps: [
+   { popover: { title: '¡Hola! 😊', description: 'Iniciaremos un recorrido para aprender a actualizar los datos de un empleado y resolver tus dudas. 🚀😊' } },
+   { element: '#indicaciones', popover: { title: 'Indicaciones', description: 'Campos con (*) son obligatorios. Sigue estas indicaciones para un proceso sin problemas. 🚦😊', side: 'left', align: 'start' }},
+   { element: '#username', popover: { title: 'Usuario 👤', description: '"Usuario" es el apodo para ingresar al sistema. Puede ser algo fácil de recordar o se usará su correo electrónico. 🌐🔑', side: 'top', align: 'start' }},
+   { element: '#first_name', popover: { title: 'Nombres 👨🏻', description: 'Actualiza los nombres completos del empleado. 📝😊', side: 'bottom', align: 'start' }},
+   { element: '#last_name', popover: { title: 'Apellidos 👨🏻', description: 'Modifica los apellidos para tener un registro actualizado. 📚✅', side: 'bottom', align: 'start' }},
+   { element: '#email', popover: { title: 'Correo electrónico 📧', description: 'Actualiza el correo principal del empleado para comunicaciones y acceso al sistema. También se puede usar para recuperar la cuenta o cambiar la contraseña. 📬🔐🔄', side: 'left', align: 'start' }},
+   { element: '#rol', popover: { title: 'Rol 🏋️‍♂️', description: 'Selecciona el nuevo rol del empleado en el gimnasio (recepcionista, nutricionista, etc.). 🤸‍♂️👩‍💼', side: 'left', align: 'start' }},
+   { element: '#actualizar', popover: { title: 'Actualizar 💾', description: 'Al hacer clic en actualizar y si cambiaste el correo o el usuario, se enviará un correo al empleado con la información actualizada. 📧✨💼', side: 'right', align: 'start' }},
+   { element: '#limpiar', popover: { title: 'Limpiar 🧹', description: 'Al dar click en este botón se limpian todos los campos que tenga algo escrito o seleccionado.  ♻️', side: "right", align: 'start' }},
+    { popover: { title: '¡Fin del tour! 😁', description: '¡Eso es todo! Ahora puedes repetir estos pasos con cada nuevo empleado que se una al equipo.🚀\n Si tienes más dudas puedes ver el tour las veces que gustes.' } }
+   ]
+ });
+ 
+ driverObj.drive();
+ }
+ 
+ 
+ 
+</script>
+{% endblock js %}

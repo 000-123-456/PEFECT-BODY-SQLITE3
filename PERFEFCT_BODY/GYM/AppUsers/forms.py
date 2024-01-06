@@ -16,7 +16,7 @@ class RegistroUsuarioForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields=[
+        fields = [
             'username',
             'first_name',
             'last_name',
@@ -25,54 +25,61 @@ class RegistroUsuarioForm(UserCreationForm):
             'empresa',
         ]
 
-        labels={
+        labels = {
             'username': 'Usuario',
             'first_name': 'Nombres',
             'last_name': 'Apellidos',
             'email': 'Correo electrónico',
-            'rol':'Rol',
-            'empresa':'Empresa',
+            'rol': 'Rol',
+            'empresa': 'Empresa',
         }
-        widgets={
-                'username': TextInput(
-                    attrs={
-                        'class': 'form-control',
-                        'placeholder': 'Nombre de usuario...',
-                        'autocomplete':"off",
-                    }
-                ),
-                'first_name':  TextInput(
-                    attrs={
-                        'class': 'form-control',
-                        'placeholder': 'Nombres...',
-                        'autocomplete':"off",
-                        
-                    }
-                ),
-                'last_name': TextInput(
-                    attrs={
-                        'class': 'form-control',
-                        'placeholder': 'Apellidos...',
-                        'autocomplete':"off",
-                    }
-                ),
-                'email': TextInput(
-                    attrs={
-                        'type': 'email',
-                        'class': 'form-control',
-                        'placeholder': 'Correo...',
-                        'autocomplete':"off",
-                    }
-                ),
-                 'rol': Select(
-                    attrs={
-                        'class': 'form-control',
-                        'placeholder': 'Seleccione el rol...',
-                        'autocomplete':"off",
-                    }
-                ),
-            }
-        
+        widgets = {
+            'username': TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'placeholder': 'Nombre de usuario...',
+                    'autocomplete': "off",
+                }
+            ),
+            'first_name': TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'placeholder': 'Nombres...',
+                    'autocomplete': "off",
+
+                }
+            ),
+            'last_name': TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'placeholder': 'Apellidos...',
+                    'autocomplete': "off",
+                }
+            ),
+            'email': TextInput(
+                attrs={
+                    'type': 'email',
+                    'class': 'form-control',
+                    'placeholder': 'Correo...',
+                    'autocomplete': "off",
+                }
+            ),
+            'rol': Select(
+                attrs={
+                    'class': 'form-control',
+                    'placeholder': 'Seleccione el rol...',
+                    'autocomplete': "off",
+                }
+            ),
+        }
+    def clean_username(self):
+        # Retornar el username actual si no hay cambios
+        return self.cleaned_data['username'] or self.instance.username
+
+    def clean_email(self):
+        # Retornar el email actual si no hay cambios
+        return self.cleaned_data['email'] or self.instance.email
+     
 #------------------------------------------------------Empresa---------------------------------------------
 class FormEmpresa(ModelForm):
     class Meta:
