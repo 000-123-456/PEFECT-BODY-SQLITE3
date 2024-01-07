@@ -1,4 +1,4 @@
-{% extends "layout/list.html" %}
+{% extends "layout/list_bajas.html" %}
 {% load static %}
 {% block cols %}
 <th scope="col">#</th>
@@ -18,15 +18,9 @@
                         <td class="text-nowrap">{{ u.get_rol_display }}</td>
                         <td class="text-nowrap">
                        
-                          <a type="button" class="btn btn-secondary" id='btn-actualizar' href="{%url 'actualizar_usuario' u.id %}">
-                            <i class="bi bi-pencil-square"></i>
-                          </a>
-                          
-                          <a class="btn btn-danger" href="#" id='btn-eliminar' onclick="eliminarUsuario({{u.id}},'{{u.first_name}}')">
-                            <i class="bi bi-trash btnUM"></i>
-                        </a>
-                          
-                       
+                            <a type="button" title='Restaurar' id='restaurar' class="btn btn-success" href="#" onclick="altaUsuario({{u.id}},'{{u.first_name}}')">
+                                <i class="bi bi-arrow-repeat"></i>
+                            </a>
                         </td>
                       </tr>
                   
@@ -36,7 +30,6 @@
   </td>
   {% endif %}
 {% endblock rows %}
-
 {% block js %}
 <script>
   const dataTableOptions = {
@@ -80,6 +73,6 @@
   });
   {% endif %}
 </script>
-<script type="application/javascript" src="{% static 'assets/js/AppUsers/User/listUsuario.js' %}"></script>
+<script type="application/javascript" src="{% static 'assets/js/AppUsers/User/listBajasUsuario.js' %}"></script>
 
 {% endblock js %}

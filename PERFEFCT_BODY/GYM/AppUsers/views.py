@@ -18,6 +18,7 @@ from django.urls import reverse
 from AppControlDeClientes.models import Miembro
 from AppInventario.funciones import listar_productos_con_cantidad_baja, obtener_compras_proximas_a_vencer
 from AppControlDeClientes.op import generar_clave_temporal_segura
+from AppControlDeClientes.mixins import isAdministradorMixin, isMiembroMixin
 from GYM.settings import STATIC_URL
 from django.core.mail import send_mail
 from GYM.settings import EMAIL_HOST_USER
@@ -25,22 +26,15 @@ from django.urls import reverse
 from django.http import HttpRequest
 from django.contrib.auth.hashers import make_password
 # Create your views here.
-def inicioMiembro(request):
-    try:
-        data = {
-            'empresa': Empresa.objects.first(),
-            'titulo':"Inicio",
-            'modulo':"Home",
-            'miembro_datos': Miembro.objects.get(user=request.user),
-            }
-    except Empresa.DoesNotExist:
-        data = {
-                    'empresa':{'nombre':'Perfect Body',
-                               'logo': '{}{}'.format(STATIC_URL,'assets/img/logo-dark.png')},
-                               
-        }
+class inicioMiembro(isMiembroMixin,TemplateView):
+    template_name = 'layout/userUI/index.html'
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["titulo"] = 'Inicio'
+        context["modulo"] = 'Home'
+        return context
 
-    return render(request, "layout/userUI/index.html",data) 
+
 # Create your views here.
 class RegistroUsuario(CreateView):
     model = User
@@ -63,8 +57,14 @@ class LoginFormView(LoginView):
     template_name='AppUsers/User/login.html'
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
+            if request.user.rol == 2:
+                return redirect('registro_asistencia')
             if request.user.rol == 3:
                 return redirect('inicio_miembro')
+            if request.user.rol == 4:
+                return redirect('lista_recomendaciones_dieta')
+            if request.user.rol == 5:
+                return redirect('lista_Rutina_Ejercicio')
             else:
                 return redirect('prueba')
         
@@ -80,8 +80,16 @@ class LoginFormView(LoginView):
 
         try:
             user = User.objects.get(username=username)
+                    # Verificar si el usuario está activo
+            if not user.is_active:
+                messages.error(self.request, "Su cuenta no está activa. Comuníquese con el administrador.")
+            if user.rol == 3:
+                if not Miembro.objects.get(user = user).venta_activa:
+                    messages.error(self.request, "No puede acceder al sistema, su membresía se venció o no cuenta con una. Comuníquese con el administrador o recepcionista para renovarla.")
+            else:
             # Usuario existe, pero la contraseña es incorrecta
-            messages.error(self.request, "Contraseña incorrecta. Por favor, verifique sus credenciales e inténtelo de nuevo.")
+                messages.error(self.request, "Contraseña incorrecta. Por favor, verifique sus credenciales e inténtelo de nuevo.")
+                
         except User.DoesNotExist:
             # Usuario no existe
             messages.error(self.request, "Usuario no encontrado. Por favor, verifique sus credenciales e inténtelo de nuevo.")
@@ -94,16 +102,33 @@ class LoginFormView(LoginView):
     def form_valid(self, form):
         # Realizar la autenticación del usuario
         self.user = form.get_user()
+                # Verificar si el usuario está activo
+        if not self.user.is_active:
+            messages.error(self.request, "Su cuenta no está activa. Comuníquese con el administrador.")
+            return self.form_invalid(form)
+        user = User.objects.get(username = self.user.username)
+
+        # Comprobar si el rol es igual a 3 (miembro) y comprobar si el miembro tiene membresia activa
+        if user.rol == 3:
+            print('dentro')
+            if not Miembro.objects.get(user = user).venta_activa:
+                return self.form_invalid(form)   
+
         login(self.request, self.user)
 
         # Verificar el rol del usuario y redirigir en consecuencia
-        if self.user.rol == 3:  # Comprobar si el rol es igual a 3 (miembro)
-            return redirect('inicio_miembro')  # Reemplaza 'vista_miembro' con el nombre de la vista a la que deseas redirigir a los miembros
-        else:
-            return redirect('prueba')  # Reemplaza 'otra_vista' con el nombre de la vista a la que deseas redirigir a otros usuarios autenticados
+  # Reemplaza 'vista_miembro' con el nombre de la vista a la que deseas redirigir a los miembros
+        if self.user.rol == 2:
+            return redirect('registro_asistencia')  # Reemplaza 'otra_vista' con el nombre de la vista a la que deseas redirigir a otros usuarios autenticados
+        if self.user.rol == 3:
+                return redirect('inicio_miembro')
+        if self.user.rol == 4:
+            return redirect('lista_recomendaciones_dieta')  # Reemplaza 'otra_vista' con el nombre de la vista a la que deseas redirigir a otros usuarios autenticados
+        if self.user.rol == 5:
+            return redirect('lista_Rutina_Ejercicio')  # Reemplaza 'otra_vista' con el nombre de la vista a la que deseas redirigir a otros usuarios autenticados
 
     
-class CrearUsuario(CreateView):
+class CrearUsuario(isAdministradorMixin,CreateView):
     model= User
     template_name = 'AppUsers/User/createUsuario.html'
     form_class = RegistroUsuarioForm
@@ -147,7 +172,7 @@ class CrearUsuario(CreateView):
 
         return redirect('crear_usuario')
 
-class UpdateUsuario(UpdateView):
+class UpdateUsuario(isAdministradorMixin,UpdateView):
     model = User
     form_class = RegistroUsuarioForm
     template_name = 'AppUsers/User/updateUsuario.html'
@@ -213,7 +238,7 @@ class UpdateUsuario(UpdateView):
         context["icono"] = 'bi bi-pencil-square'
         
         return context
-class ListUsuarios(ListView):
+class ListUsuarios(isAdministradorMixin,ListView):
     model= User
     template_name = 'AppUsers/User/listUsuario.html'
     def get_context_data(self, **kwargs) -> dict[str, Any]:
@@ -221,15 +246,48 @@ class ListUsuarios(ListView):
         context["titulo"] = 'Listado de usuarios'
         context["modulo"] = 'Usuarios'
         context["url_modulo"] = reverse_lazy('lista_usuario')
+        context["url_papelera"] = reverse_lazy('papelera_usuario')
         context["url_nuevo"] = reverse_lazy('crear_usuario')
         #Obtiene todos los usuarios que no son miembros
-        context["usuarios"] = User.objects.exclude(miembro__isnull=False).order_by('-id')
-
+        context["usuarios"] = User.objects.exclude(miembro__isnull=False).order_by('-id').filter(is_active=True)
         return context
-    
+class ListBajasUsuarios(isAdministradorMixin,ListView):
+    model= User
+    template_name = 'AppUsers/User/listBajasUsuario.html'
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["titulo"] = 'Usuarios eliminados'
+        context["modulo"] = 'Usuarios'
+        context["url_modulo"] = reverse_lazy('lista_usuario')
+        #Obtiene todos los usuarios que no son miembros que no estan activos
+        context["usuarios"] = User.objects.exclude(miembro__isnull=False).order_by('-id').filter(is_active=False)
+        return context
+
+
+
+def BajaUsuario(request, pk):
+    try:
+        user = User.objects.get(id=pk)
+        user.is_active = False
+        user.save()
+        messages.success(request, "¡Usuario eliminado correctamente!")
+    except:
+        messages.error(request, "¡Error, la accion no se pudo realizar!")
+    return redirect(to='lista_usuario')
+
+def AltaUsuario(request, pk):
+    try:
+        user = User.objects.get(id=pk)
+        user.is_active = True
+        user.save()
+        messages.success(request, "Usuario restaurado correctamente!")
+    except:
+        messages.error(request, "¡Error, la accion no se pudo realizar!")
+    return redirect(to='papelera_usuario')
+
 #-------------------------------------------------EMPRESA-----------------------------
 
-class CrearEmpresa(CreateView):
+class CrearEmpresa(isAdministradorMixin,CreateView):
     model = Empresa
     template_name = 'AppUsers/Empresa/createEmpresa.html'
     form_class= FormEmpresa

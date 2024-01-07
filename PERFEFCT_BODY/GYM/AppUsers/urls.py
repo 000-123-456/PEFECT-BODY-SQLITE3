@@ -12,7 +12,7 @@ urlpatterns = [
     
     
     #USER UI
-    path('userUI/',login_required(views.inicioMiembro), name='inicio_miembro'),
+    path('userUI/',login_required(views.inicioMiembro.as_view()), name='inicio_miembro'),
     #URL DE PERMISOS
     path('permisos/',login_required(views.SinPermisoView.as_view()), name='sin_permiso'),
     #Notificaciones
@@ -21,8 +21,10 @@ urlpatterns = [
     #USUARIOS QUE CREA EL ADMINISTRADOR(EMPLEADOS Y ADMINISTRADORES)
     path('usuarios/crear/',login_required(views.CrearUsuario.as_view()), name='crear_usuario'),
     path('usuarios/',login_required(views.ListUsuarios.as_view()), name='lista_usuario'),
-     path('usuarios/actualizar/<int:pk>/',login_required(views.UpdateUsuario.as_view()), name='actualizar_usuario'),
-
+    path('usuarios/actualizar/<int:pk>/',login_required(views.UpdateUsuario.as_view()), name='actualizar_usuario'),
+    path('usuarios/baja/<int:pk>/',login_required(views.BajaUsuario), name='baja_usuario'),
+    path('usuarios/papelera/alta/<int:pk>/',login_required(views.AltaUsuario), name='alta_usuario'),
+    path('usuarios/papelera/',login_required(views.ListBajasUsuarios.as_view()), name='papelera_usuario'),
 
 
 ]

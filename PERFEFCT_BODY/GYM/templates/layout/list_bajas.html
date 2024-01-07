@@ -1,0 +1,66 @@
+{% extends 'layout/index.html' %}
+{% load static %}
+{% block cuerpo %}
+<section class="section">
+    
+        <div class="row">
+        <div class="d-flex justify-content-between bd-highlight mb-3">
+
+            <a href="{{url_modulo}}" class="btn btn-primary">
+                <b><i class="bi bi-arrow-left"></i> Regresar</b>
+            </a> 
+            <a href="#" class="btn btn-outline-dark mx-1" id="ayuda" onclick="tour ()">
+                <b><i class="bi bi-info-circle"></i> Ayuda</b>
+            </a>
+          </div>
+          <br>
+          <br>
+          <div class="col-lg-12">
+                
+                <!-- Horizontal Form -->
+
+                {% if form.errors %}
+                {% for field  in form  %}
+                        {% for error in field.errors %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>Notificacion: </strong>{{error}}.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" arial-label="Close"></button>
+                        </div>
+                        {% endfor %}
+                {% endfor %}
+              {% endif %}
+            <br>
+            <div class="card">
+              
+              <div class="card-body table-responsive"> 
+                <h5 class="card-title text-warning"> <i class="bi bi-list-task"></i> {{titulo}}</h5>
+                <hr>
+                
+                <table class="table bg-black text-white strip rounded mb-4" style="text-align: center" id="data">
+                    <thead class="bg-warning text-black">
+                      <tr>
+                        {% block cols %}
+                        {% endblock cols %}
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {% block rows %}
+                      {% endblock rows %}
+                    </tbody>
+                  </table>
+              </div>
+            </div>
+          </div>
+          {% comment %} <div class="col-lg-1"></div> {% endcomment %}
+        </div>
+        
+      </section>
+
+
+
+{% endblock cuerpo %}
+
+
+
+
+
