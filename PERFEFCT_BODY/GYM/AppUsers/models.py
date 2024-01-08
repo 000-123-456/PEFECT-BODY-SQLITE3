@@ -24,7 +24,7 @@ class Empresa(models.Model):
 class User(AbstractUser):
     rol = models.PositiveIntegerField(null=True, blank=True, choices=opRol, name='rol', verbose_name='Rol')
     empresa = models.ForeignKey(Empresa, on_delete=models.PROTECT, verbose_name='Empresa', null=True, blank=True)
-
+    primer_ingreso = models.BooleanField(default=True)
 
 
 

@@ -23,8 +23,7 @@ from GYM.settings import STATIC_URL
 from django.core.mail import send_mail
 from GYM.settings import EMAIL_HOST_USER
 from django.urls import reverse
-from django.http import HttpRequest
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth import logout
 # Create your views here.
 class inicioMiembro(isMiembroMixin,TemplateView):
     template_name = 'layout/userUI/index.html'
@@ -59,11 +58,11 @@ class LoginFormView(LoginView):
         if request.user.is_authenticated:
             if request.user.rol == 2:
                 return redirect('registro_asistencia')
-            if request.user.rol == 3:
+            elif request.user.rol == 3:
                 return redirect('inicio_miembro')
-            if request.user.rol == 4:
+            elif request.user.rol == 4:
                 return redirect('lista_recomendaciones_dieta')
-            if request.user.rol == 5:
+            elif request.user.rol == 5:
                 return redirect('lista_Rutina_Ejercicio')
             else:
                 return redirect('prueba')
@@ -102,7 +101,12 @@ class LoginFormView(LoginView):
     def form_valid(self, form):
         # Realizar la autenticación del usuario
         self.user = form.get_user()
-                # Verificar si el usuario está activo
+        print(f"Usuario después de form.get_user(): {self.user}")
+        if self.user is not None:
+        # Verificar si es el primer ingreso
+            if self.user.primer_ingreso:
+                login(self.request, self.user)
+                return redirect('primera_clave')
         if not self.user.is_active:
             messages.error(self.request, "Su cuenta no está activa. Comuníquese con el administrador.")
             return self.form_invalid(form)
@@ -110,7 +114,6 @@ class LoginFormView(LoginView):
 
         # Comprobar si el rol es igual a 3 (miembro) y comprobar si el miembro tiene membresia activa
         if user.rol == 3:
-            print('dentro')
             if not Miembro.objects.get(user = user).venta_activa:
                 return self.form_invalid(form)   
 
@@ -120,14 +123,71 @@ class LoginFormView(LoginView):
   # Reemplaza 'vista_miembro' con el nombre de la vista a la que deseas redirigir a los miembros
         if self.user.rol == 2:
             return redirect('registro_asistencia')  # Reemplaza 'otra_vista' con el nombre de la vista a la que deseas redirigir a otros usuarios autenticados
-        if self.user.rol == 3:
+        elif self.user.rol == 3:
                 return redirect('inicio_miembro')
-        if self.user.rol == 4:
+        elif self.user.rol == 4:
             return redirect('lista_recomendaciones_dieta')  # Reemplaza 'otra_vista' con el nombre de la vista a la que deseas redirigir a otros usuarios autenticados
-        if self.user.rol == 5:
+        elif self.user.rol == 5:
             return redirect('lista_Rutina_Ejercicio')  # Reemplaza 'otra_vista' con el nombre de la vista a la que deseas redirigir a otros usuarios autenticados
-
+        else:
+            return redirect('prueba') 
+class PrimeraClave(UpdateView):
+    model = User
+    template_name = "AppUsers/User/primeraClave.html"
+    form_class = RegistroUsuarioForm
+    success_url = reverse_lazy('nombre_de_tu_url')
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.primer_ingreso:
+            if request.user.rol == 2:
+                return redirect('registro_asistencia')
+            elif request.user.rol == 3:
+                return redirect('inicio_miembro')
+            elif request.user.rol == 4:
+                return redirect('lista_recomendaciones_dieta')
+            elif request.user.rol == 5:
+                return redirect('lista_Rutina_Ejercicio')
+            else:
+                return redirect('prueba')
+        return super().dispatch(request, *args, **kwargs)
     
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        # Hacer campos no relacionados con contraseñas opcionales
+        form.fields['username'].required = False
+        form.fields['email'].required = False
+        form.fields['first_name'].required = False
+        form.fields['last_name'].required = False
+        return form
+
+    def get_object(self, queryset=None):
+        # Devuelve el objeto del usuario actual
+        return self.request.user
+
+    def form_valid(self, form):
+        # Lógica para manejar el formulario válido
+        user_current = User.objects.get(username=self.request.user.username)
+        user_current.set_password(self.request.POST['password1'])
+        user_current.primer_ingreso = False
+        user_current.save()
+
+        logout(self.request)
+        login(self.request,user_current)
+        messages.success(self.request, "Contraseña actualizada correctamente.")
+        if user_current.rol == 2:
+            return redirect('registro_asistencia')  # Reemplaza 'otra_vista' con el nombre de la vista a la que deseas redirigir a otros usuarios autenticados
+        elif user_current.rol == 3:
+                return redirect('inicio_miembro')
+        elif user_current.rol == 4:
+            return redirect('lista_recomendaciones_dieta')  # Reemplaza 'otra_vista' con el nombre de la vista a la que deseas redirigir a otros usuarios autenticados
+        elif user_current.rol == 5:
+            return redirect('lista_Rutina_Ejercicio')  # Reemplaza 'otra_vista' con el nombre de la vista a la que deseas redirigir a otros usuarios autenticados
+        else:
+             return redirect('prueba')
+
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Por favor, corrige los errores en el formulario.")
+        return super().form_invalid(form) 
 class CrearUsuario(isAdministradorMixin,CreateView):
     model= User
     template_name = 'AppUsers/User/createUsuario.html'
@@ -145,7 +205,7 @@ class CrearUsuario(isAdministradorMixin,CreateView):
         
         #obtengo la url absoluta
         user_form = RegistroUsuarioForm(self.request.POST)
-        url = self.request.build_absolute_uri(reverse('crear_usuario'))
+        url = self.request.build_absolute_uri(reverse('login'))
         try:
             if form.cleaned_data['username'] == '':
             # Asignar el valor del campo 'email' al campo 'username' si viene vacio
@@ -192,12 +252,13 @@ class UpdateUsuario(isAdministradorMixin,UpdateView):
                 user.rol = self.request.POST['rol']
                 user.set_password(clave)
                 user.empresa = Empresa.objects.first()
+                user.primer_ingreso = True
                 user.save()
                 # Guardar el usuario con los cambios
 
                 # Enviar correo con la nueva contraseña
                 subject = 'Actualizacion de datos'
-                message = f'Se ha actualizado exitosamente, con los siguientes datos podrá acceder al sistema.\nUsuario: {form.instance.username}\nContraseña: {clave}\nIngrese al siguiente link: {self.request.build_absolute_uri(reverse("crear_usuario"))}\n\n¡BIENVENIDO A LA FAMILIA PERFECT BODY!💛🖤\nSiempre dándole lo mejor a nuestros clientes.'
+                message = f'Se ha actualizado exitosamente, con los siguientes datos podrá acceder al sistema.\nUsuario: {form.instance.username}\nContraseña: {clave}\nIngrese al siguiente link: {self.request.build_absolute_uri(reverse("login"))}\n\n¡BIENVENIDO A LA FAMILIA PERFECT BODY!💛🖤\nSiempre dándole lo mejor a nuestros clientes.'
                 from_email = EMAIL_HOST_USER
                 recipient_list = [form.instance.email]
                 send_mail(subject, message, from_email, recipient_list)
