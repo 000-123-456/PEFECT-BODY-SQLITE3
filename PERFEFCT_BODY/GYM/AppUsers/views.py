@@ -135,7 +135,6 @@ class PrimeraClave(UpdateView):
     model = User
     template_name = "AppUsers/User/primeraClave.html"
     form_class = RegistroUsuarioForm
-    success_url = reverse_lazy('nombre_de_tu_url')
     def dispatch(self, request, *args, **kwargs):
         if not request.user.primer_ingreso:
             if request.user.rol == 2:
@@ -188,6 +187,31 @@ class PrimeraClave(UpdateView):
     def form_invalid(self, form):
         messages.error(self.request, "Por favor, corrige los errores en el formulario.")
         return super().form_invalid(form) 
+class OlvidoClave(TemplateView):
+    template_name = "AppUsers/User/olvido-clave.html"
+    def post(self, request, *args, **kwargs):
+        form = request.POST
+        #Se comprueba si el usuario ingresado existe y mandar el correo de recuperacion 
+        if User.objects.filter(username=form['username']).exists():
+            user = User.objects.get(username=form['username'])
+            clave = str(generar_clave_temporal_segura())
+            user.set_password(clave)
+            ## Se activa primer ingreso para que pueda cambiar la clave temporal
+            user.primer_ingreso = True
+            user.save()
+            subject = 'Olvido de contraseña'
+            message = f'Hola {user.first_name}, con los siguientes datos podras ingresar al sistema y cambiar tu contraseña.\nUsuario: {user.username}\nContraseña temporal: {clave}\nIngrese al siguiente link: {self.request.build_absolute_uri(reverse("login"))}\n\n¡LA FAMILIA PERFECT BODY, SIEMPRE PARA DARTE LOS MEJOR DE NOSOTROS! 💛🖤'
+            from_email = EMAIL_HOST_USER
+            recipient_list = [user.email]
+            send_mail(subject, message,from_email, recipient_list)
+            messages.success(self.request, 'Revisa tu correo, se han enviado tus datos para que puedas acceder al sistema.')
+            return redirect('login')
+        else:
+            messages.warning(self.request, "El usuario ingresado no existe, revise que sus datos sean correctos.")
+        return redirect('olvido_clave')
+    
+
+
 class CrearUsuario(isAdministradorMixin,CreateView):
     model= User
     template_name = 'AppUsers/User/createUsuario.html'
