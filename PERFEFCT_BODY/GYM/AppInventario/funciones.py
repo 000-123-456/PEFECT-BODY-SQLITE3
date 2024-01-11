@@ -28,17 +28,15 @@ from django.utils import timezone
 def obtener_compras_proximas_a_vencer():
     # Obtener la fecha actual
     fecha_actual = timezone.now().date()
-
     # Calcular la fecha límite (fecha actual + 10 días)
     fecha_limite = fecha_actual + timezone.timedelta(days=10)
 
-    # Filtrar las compras cuya fecha de vencimiento esté dentro de los próximos 10 días y obtener solo los primeros 3 registros
-    compras_proximas_a_vencer = Compra.objects.filter(fecha_vec__lte=fecha_limite)[:3]
+    # Filtrar las compras cuya fecha de vencimiento esté dentro de los próximos 10 días pero no haya superado la fecha actual
+    compras_proximas_a_vencer = Compra.objects.filter(fecha_vec__gte=fecha_actual, fecha_vec__lte=fecha_limite)[:3]
 
     # Obtener la cantidad total de registros sin aplicar el límite
-    cantidad_registros_total = Compra.objects.filter(fecha_vec__lte=fecha_limite).count()
-
-    # Crear una lista de diccionarios con los detalles de cada compra
+    cantidad_registros_total = Compra.objects.filter(fecha_vec__gte=fecha_actual, fecha_vec__lte=fecha_limite).count()
+        # Crear una lista de diccionarios con los detalles de cada compra
     compras_detalles = [
         {
             'id': compra.id,

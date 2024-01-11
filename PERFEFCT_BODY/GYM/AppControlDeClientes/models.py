@@ -139,67 +139,52 @@ class Asistencia(models.Model):
         verbose_name_plural = 'Asistencias'
         ordering = ['id']
 
-class Dieta(models.Model):
-    dia = models.PositiveIntegerField(null=True, blank=True, choices=opDia, verbose_name='Dia')
-    nombre = models.CharField(max_length=50, null=False, verbose_name='Nombre')
-    imagen = models.ImageField(upload_to='Plato/%Y/%m/%d',null=True,blank=True)
-    detalle_alimento = models.CharField(max_length=100, null=True, verbose_name='Detalle_Alimento')
-    ##Campo Caloria
-    ##Porciones
-    tiempo_comida = models.PositiveIntegerField(null=True, blank=True, choices=opTiempo, verbose_name='Tiempo de comida')
-    ###----- CLAVES FORANEAS --------
-    miembro = models.ForeignKey(Miembro, on_delete=models.PROTECT, verbose_name='Miembro', null=True, blank=True)
-    ##Que tome una agua
-    def __str__(self) -> str:
-        return self.id
-    
+
+#Rutina - Espalda - Pierna para principiante - 1
+        #Ejercicios - Pull Over 4x12 manos cerca del torso, jalon al pecho 4x10 no mucho balanceo, Remos cerrado 3x10
+class Rutina(models.Model):
+    experiencia = models.PositiveIntegerField(null=True, blank=True, choices=opExperiencia, verbose_name='Experiencia')
+    tipo_ejercicio = models.PositiveIntegerField(null=True, blank=True, choices=opTipoEjercicio, verbose_name='Tipo de ejercicio')
+    nombre = models.CharField(max_length=100, null=True, verbose_name='Nombre')
     class Meta:
-        db_table = 'dieta'
-        verbose_name = 'Dieta'
-        verbose_name_plural = 'Dietas'
-        ordering = ['id']
-
-
-
-class RutinaEjercicio(models.Model):
-    dia = models.CharField(max_length=50, null=False, blank=True, choices=opDia, verbose_name='Dia')
-    tipo_ejercicio = models.CharField(max_length=50, null=False, verbose_name='Tipo_ejercicio')
-    imagen = models.ImageField(upload_to='Rutina/%Y/%m/%d',null=True,blank=True)
-    links_video = models.CharField(max_length=50, null=False, verbose_name='Links_video')
-    detalle_ejercicio = models.CharField(max_length=100, null=True, verbose_name='Detalle_Ejercicio')
-    recomendacion = models.CharField(max_length=100, null=True, verbose_name='Recomendacion')
-    ###----- CLAVES FORANEAS --------
-    miembro = models.ForeignKey(Miembro, on_delete=models.PROTECT, verbose_name='Miembro', null=True, blank=True)
-    
-    def __str__(self) -> str:
-        return self.id
-        
-    class Meta:
-        db_table = 'rutinaejercicio'
-        verbose_name = 'rutinaejercicio'
-        verbose_name_plural = 'Rutinaejercicios'
-        ordering = ['id']
-
-
-#Rutina Personalizada
-class RutinaPersonalizada(models.Model):
-    ejercicio = models.CharField(max_length=50, null=False, verbose_name='ejercicio')    
-    intensidad = models.PositiveIntegerField(null=True, blank=True, choices=opIntensidad, verbose_name='intensidad')
-    duracionejer = models.CharField(max_length=50, null=False, verbose_name='duracion') 
-    descanso = models.CharField(max_length=50, null=False, verbose_name='descanso')
-
-    #Campo que indica a que rutina pertenece esta rutina Personalizada
-    rutinaejercicio = models.ForeignKey(RutinaEjercicio, on_delete=models.CASCADE, verbose_name='rutinaEjercicio',null=True, blank=True)
-
-    class Meta:
-        db_table = 'rutinapersonalizada'
-        verbose_name = 'rutinapersonalizada'
-        verbose_name_plural = 'rutinapersonalizadas'
+        db_table = 'rutina'
+        verbose_name = 'rutina'
+        verbose_name_plural = 'rutinas'
         ordering = ['id']
     def toJSON(self):
         item = model_to_dict(self)
-        item['rutinaejercicio'] = self.dieta.toJSON()
         return item
+
+class Ejercicio(models.Model):
+    nombre = models.CharField(max_length=100, null=True, verbose_name='Nombre')
+    imagen = models.ImageField(upload_to='Ejercicio/%Y/%m/%d',null=True,blank=True)
+    links_video = models.CharField(max_length=50, null=False, verbose_name='Links_video')
+    musculo = models.PositiveIntegerField(blank=True, choices=opMusculo, verbose_name='Musculo')
+    detalle_ejercicio = models.CharField(max_length=100, null=True, verbose_name='Detalle_Ejercicio')
+    recomendacion = models.CharField(max_length=100, null=True, verbose_name='Recomendacion')
+    ###----- CLAVES FORANEAS --------
+    rutina = models.ForeignKey(Rutina, on_delete=models.PROTECT, verbose_name='Rutina', null=True, blank=True)
+    class Meta:
+        db_table = 'ejercicio'
+        verbose_name = 'ejercicio'
+        verbose_name_plural = 'ejercicios'
+        ordering = ['id']
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['rutina'] = self.rutina.toJSON()
+        return item
+
+class ListaDeRutinas(models.Model):
+    dia = models.PositiveIntegerField(choices=opDia, verbose_name='Dia')
+    ###----- CLAVES FORANEAS --------
+    miembro = models.ForeignKey(Miembro, on_delete=models.PROTECT, verbose_name='Miembro')
+    rutina = models.ForeignKey(Rutina, on_delete=models.PROTECT, verbose_name='Rutina')
+    fecha_created = models.DateTimeField(auto_now=True)
+    class Meta:
+        db_table = 'listarutinas'
+        verbose_name = 'listarutinas'
+        verbose_name_plural = 'listasrutinas'
+        ordering = ['id']
 
 
 
@@ -234,3 +219,14 @@ class Comida(models.Model):
         item = model_to_dict(self)
         item['dieta'] = self.dieta.toJSON()
         return item
+
+class ListaDietas(models.Model):
+    dieta = models.ForeignKey(Dieta, on_delete=models.PROTECT, verbose_name='Dieta')
+    miembro = models.ForeignKey(Miembro, on_delete=models.PROTECT, verbose_name='Miembro')
+    dia = models.PositiveIntegerField(choices=opDia, verbose_name='Dia')
+    fecha_created = models.DateTimeField(auto_now=True)
+    class Meta:
+        db_table = 'listadietas'
+        verbose_name = 'listadietas'
+        verbose_name_plural = 'listasdietas'
+        ordering = ['id']

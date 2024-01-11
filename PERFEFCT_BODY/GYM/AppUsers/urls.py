@@ -25,7 +25,7 @@ urlpatterns = [
     path('usuarios/baja/<int:pk>/',login_required(views.BajaUsuario), name='baja_usuario'),
     path('usuarios/papelera/alta/<int:pk>/',login_required(views.AltaUsuario), name='alta_usuario'),
     path('usuarios/papelera/',login_required(views.ListBajasUsuarios.as_view()), name='papelera_usuario'),
-    path('usuarios/primera-clave/',login_required(views.PrimeraClave.as_view()), name='primera_clave'),
+    path('usuarios/primera-clave/',login_required(views.CambioClave.as_view()), name='primera_clave'),
     path('usuarios/olvido-clave/',views.OlvidoClave.as_view(), name='olvido_clave'),
     
 

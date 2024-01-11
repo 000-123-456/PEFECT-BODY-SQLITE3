@@ -1,14 +1,17 @@
-/**
-* Template Name: OnePage
-* Updated: Sep 18 2023 with Bootstrap v5.3.2
-* Template URL: https://bootstrapmade.com/onepage-multipurpose-bootstrap-template/
-* Author: BootstrapMade.com
-* License: https://bootstrapmade.com/license/
-*/
 
-/*--------------------------------------------------------------
-# General
---------------------------------------------------------------*/
+:root {
+  --orange: #ffd200;
+  --darkorange: #ffc200;
+  --platinum: #1f2124;
+  --black: #2b2d42;
+  --white: #fff;
+  --thumb: #edf2f4;
+  --color-one: #1f2124;
+  --color-two: #383a3f;
+  --color-three: #f68657;
+  --color-four: #555049;
+  --amarillo-suave: #fff985;
+}
 body {
   font-family: "Open Sans", sans-serif;
   color: #fff;

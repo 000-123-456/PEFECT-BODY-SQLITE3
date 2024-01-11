@@ -6,7 +6,7 @@ from django.templatetags.static import static
 import os
 from django.db.models import Sum, Count
 from django.db.models.functions import ExtractMonth, ExtractYear
-from .models import Dieta, VentaMembresia
+from .models import Comida, Dieta, ListaDietas, VentaMembresia
 
 
 # Directorio que contiene las imágenes
@@ -282,6 +282,7 @@ def obtener_comidas_por_dieta(rango):
         comidas = dieta.comida_set.all().order_by('tiempo')  # Ordenar las comidas por el campo 'tiempo'
         comidas_dict = {
             'nombre': dieta.nombre,
+            'id': dieta.id,
             'comidas': [comida.toJSON() for comida in comidas]
         }
         comidas_por_dieta.append(comidas_dict)
@@ -289,6 +290,18 @@ def obtener_comidas_por_dieta(rango):
     # Devolver la respuesta en formato JSON
     return {'dietas': comidas_por_dieta, 'success': True}
 
+def mis_dietas(miembro):
+        # Obtener todas las dietas asociadas al miembro, ordenadas por el campo 'dia'
+        dietas_del_miembro = ListaDietas.objects.filter(miembro=miembro).order_by('dia')
+
+        # Crear un diccionario para almacenar las comidas por dieta
+        comidas_por_dieta = {}
+
+        # Iterar sobre cada dieta para obtener sus comidas, ordenadas por 'tiempo'
+        for dieta in dietas_del_miembro:
+            comidas_de_dieta = Comida.objects.filter(dieta_id=dieta.dieta.id).order_by('tiempo')
+            comidas_por_dieta[dieta] = comidas_de_dieta
+        return comidas_por_dieta
 
 
 

@@ -1,0 +1,269 @@
+{% load static %}
+<style>
+
+
+    .section-dietas {
+      font: 16px / 24px "Rubik", sans-serif;
+      color: var(--black);
+      background-image: url("{% static "assets/img/fondoCard.jpg" %}"); 
+      /*background-color: var(--black);*/
+      margin: 50px 0 10px 10px;
+      margin-right: 10px;
+      padding: 0.5rem;
+      border-radius: 20px;
+    }
+  
+    .container-dieta {
+      max-width: 1400px;
+      padding: 0 20px;
+      margin: 0 auto;
+      margin-bottom: 20px;
+   
+      
+     
+    }
+  
+    .container-dieta h2 {
+      font-size: 32px;
+      margin-bottom: 0.25em;
+      margin-top: 0.25em;
+      color: #fff;
+    }
+  
+    .cards-dieta {
+      display: grid;
+      grid-auto-columns: 100%;
+      grid-column-gap: 10px;
+      grid-auto-flow: column;
+      padding: 25px 0px;
+      list-style: none;
+      overflow-x: scroll;
+      -ms-scroll-snap-type: x mandatory;
+      scroll-snap-type: x mandatory;
+    }
+  
+    .card-dieta {
+      display: flex;
+          flex-direction: column;
+          padding: 20px;
+          background: var(--thumb);
+          border-radius: 12px;
+          box-shadow: 0 5px 15px rgba(0, 0, 0, 15%);
+          scroll-snap-align: start;
+          transition: all 0.2s;
+          color: var(--black);
+    }
+  
+    .card-dieta:hover {
+      color: var(--platinum);
+      background: var(--orange);
+    }
+  
+    .card-dieta .card-dieta-title {
+      font-size: 20px;
+    }
+  
+    .card-dieta .card-dieta-content {
+      margin: 20px 0;
+      max-width: 85%;
+    }
+  
+    .card-dieta .card-dieta-link-wrapper {
+      margin-top: auto;
+    }
+    .text-white {
+      color: #edf2f4;
+    }
+    .card-dieta .card-dieta-link {
+      display: inline-block;
+      text-decoration: none;
+      color: var(--platinum);
+      background: var(--orange);
+      padding: 6px 12px;
+      border-radius: 8px;
+      transition: background 0.2s;
+    }
+  
+    .card-dieta:hover .card-dieta-link {
+      background: var(--platinum);
+      color: var(--thumb);
+    }
+    .card-dieta:hover span{
+      
+      color: var(--black);
+    }
+  
+    .cards-dieta::-webkit-scrollbar {
+      height: 12px;
+    }
+  
+    .cards-dieta::-webkit-scrollbar-thumb,
+    .cards-dieta::-webkit-scrollbar-track {
+      border-radius: 92px;
+    }
+  
+    .cards-dieta::-webkit-scrollbar-thumb {
+      background: var(--darkorange);
+    }
+  
+    .cards-dieta::-webkit-scrollbar-track {
+      background: var(--thumb);
+    }
+  
+    @media (min-width: 500px) {
+      .cards-dieta {
+        grid-auto-columns: calc(50% - 10px);
+        grid-column-gap: 20px;
+      }
+    }
+  
+    @media (min-width: 700px) {
+      .cards-dieta {
+        grid-auto-columns: calc(calc(100% / 3) - 20px);
+        grid-column-gap: 30px;
+      }
+    }
+  
+    @media (min-width: 1100px) {
+      .cards-dieta {
+        grid-auto-columns: calc(25% - 30px);
+        grid-column-gap: 40px;
+      }
+    }
+    .bg-platinum {
+      background-color: var(--black);
+      border-radius: 30px;
+    }
+    .nav-pills .nav-link.active,
+    .nav-pills .show > .nav-link {
+      color: var(--black) !important;
+      background-color: var(--darkorange);
+    }
+    .nav-pills .nav-link {
+      border-radius: 0.25rem;
+      border-radius: 20px;
+      color: #ffc200 !important;
+    }
+    .nav-pills .nav-link a {
+      color: var(--darkorange) !important;
+      text-decoration: none;
+      background-color: transparent;
+      -webkit-text-decoration-skip: objects;
+    }
+    .nav-pills .nav-link a:hover {
+      color: #b48e0e;
+      text-decoration: none;
+      background-color: transparent;
+      -webkit-text-decoration-skip: objects;
+    }
+    
+    {% comment %} Estilos de carta de dietas {% endcomment %}
+    
+      .diet-card {
+        margin: 20px;
+        background-color: var(--thumb);
+      }
+  
+      .custom-header-1 {
+        background-color: var(--black);
+        color: #ffd200;
+        
+      }
+      .custom-header-1 a {
+        cursor: pointer;
+        color: #ffd200;
+      }
+      .custom-body-1 {
+        background-color: var(--thumb);
+        color: black;
+      }
+  
+      .custom-body-1 ul {
+        list-style: none; /* Elimina los puntos de la lista */
+      }
+      .custom-body-1 .icon-image {
+        width: 50px; /* Ajusta el ancho de la imagen según tus necesidades */
+        height: 50px; /* Ajusta la altura de la imagen según tus necesidades */
+        vertical-align: middle; /* Alinea la imagen verticalmente en el centro */
+        margin-right: 10px; /* Agrega un margen a la derecha de la imagen para separarla del texto */
+      }
+      .card-dieta .icon-image {
+          width: 50px; /* Ajusta el ancho de la imagen según tus necesidades */
+          height: 50px; /* Ajusta la altura de la imagen según tus necesidades */
+          vertical-align: middle; /* Alinea la imagen verticalmente en el centro */
+          margin-right: 10px; /* Agrega un margen a la derecha de la imagen para separarla del texto */
+        }
+  
+      .calories {
+        font-size: 12px;
+        color: gray;
+      }
+      .custom-rounded {
+    border-radius: 30px; /* Ajusta el valor del radio según tus preferencias */
+    overflow: hidden; /* Esto oculta el contenido que se desborde más allá de los bordes redondeados */
+    background-color: black; /* Color de fondo deseado */
+    color: #ffd200; /* Color de texto deseado */
+  }
+  
+  .custom-header-1 {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .custom-header-1 h3 {
+      margin: auto; /* Centra horizontalmente el texto del día de la dieta */
+    }
+    
+    #carouselExampleControls {
+      position: relative;
+      transition-duration: 0.2s; /* Ajusta la duración de la transición según tu preferencia */
+    }
+    .carousel-inner {
+      transition: transform 0.2s ease-in-out; /* Ajusta la duración y el efecto de la transición según tus preferencias */
+    }
+    .carousel-control-prev,
+    .carousel-control-next {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 1;
+    }
+    
+    .carousel-control-prev .carousel-control-prev-icon,
+    .carousel-control-next .carousel-control-next-icon {
+      color: #ffd200 !important;
+    }
+    
+    .card {
+      position: relative;
+      padding-top: 40px; /* Ajusta según sea necesario para dar espacio para los botones fijos */
+    }
+    .input-dietas input{
+      background: transparent !important;
+      color: var(--thumb) !important;
+      
+      
+    }
+    .input-dietas input::placeholder{
+      color: gray;
+    }
+    .input-dietas select {
+      background-color: transparent !important; /* Cambia el fondo del elemento select */
+      color: gray; /* Cambia el color del texto de las opciones */
+    }
+    
+    
+    .input-dietas select option {
+      background-color: #000 !important; /* Cambia el fondo de las opciones del select */
+      color: var(--thumb); /* Cambia el color del texto de las opciones */
+    }
+    .input-dietas select button {
+      width:100%;
+    }
+   
+    
+    
+    
+  </style>

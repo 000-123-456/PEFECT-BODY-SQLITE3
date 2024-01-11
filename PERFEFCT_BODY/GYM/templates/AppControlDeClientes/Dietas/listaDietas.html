@@ -1,292 +1,15 @@
-{% extends 'layout/userUI/index.html' %} {% load static %} {% block titulo %}
-{{titulo}} {% endblock titulo %} {% block lib %}
-<style>
-  :root {
-    --orange: #ffd200;
-    --darkorange: #ffc200;
-    --platinum: #1f2124;
-    --black: #2b2d42;
-    --white: #fff;
-    --thumb: #edf2f4;
-    --color-one: #1f2124;
-    --color-two: #383a3f;
-    --color-three: #f68657;
-    --color-four: #555049;
-    --amarillo-suave: #fff985;
-  }
-
-  .section-dietas {
-    font: 16px / 24px "Rubik", sans-serif;
-    color: var(--black);
-    background-image: url("{% static "assets/img/fondoCard.jpg" %}"); 
-    /*background-color: var(--black);*/
-    margin: 50px 0 10px 10px;
-    margin-right: 10px;
-    padding: 0.5rem;
-    border-radius: 20px;
-  }
-
-  .container-dieta {
-    max-width: 1400px;
-    padding: 0 20px;
-    margin: 0 auto;
-    margin-bottom: 20px;
- 
-    
-   
-  }
-
-  .container-dieta h2 {
-    font-size: 32px;
-    margin-bottom: 0.25em;
-    margin-top: 0.25em;
-    color: #fff;
-  }
-
-  .cards-dieta {
-    display: grid;
-    grid-auto-columns: 100%;
-    grid-column-gap: 10px;
-    grid-auto-flow: column;
-    padding: 25px 0px;
-    list-style: none;
-    overflow-x: scroll;
-    -ms-scroll-snap-type: x mandatory;
-    scroll-snap-type: x mandatory;
-  }
-
-  .card-dieta {
-    display: flex;
-        flex-direction: column;
-        padding: 20px;
-        background: var(--thumb);
-        border-radius: 12px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 15%);
-        scroll-snap-align: start;
-        transition: all 0.2s;
-        color: var(--black);
-  }
-
-  .card-dieta:hover {
-    color: var(--platinum);
-    background: var(--orange);
-  }
-
-  .card-dieta .card-dieta-title {
-    font-size: 20px;
-  }
-
-  .card-dieta .card-dieta-content {
-    margin: 20px 0;
-    max-width: 85%;
-  }
-
-  .card-dieta .card-dieta-link-wrapper {
-    margin-top: auto;
-  }
-  .text-white {
-    color: #edf2f4;
-  }
-  .card-dieta .card-dieta-link {
-    display: inline-block;
-    text-decoration: none;
-    color: var(--platinum);
-    background: var(--orange);
-    padding: 6px 12px;
-    border-radius: 8px;
-    transition: background 0.2s;
-  }
-
-  .card-dieta:hover .card-dieta-link {
-    background: var(--platinum);
-    color: var(--thumb);
-  }
-  .card-dieta:hover span{
-    
-    color: var(--black);
-  }
-
-  .cards-dieta::-webkit-scrollbar {
-    height: 12px;
-  }
-
-  .cards-dieta::-webkit-scrollbar-thumb,
-  .cards-dieta::-webkit-scrollbar-track {
-    border-radius: 92px;
-  }
-
-  .cards-dieta::-webkit-scrollbar-thumb {
-    background: var(--darkorange);
-  }
-
-  .cards-dieta::-webkit-scrollbar-track {
-    background: var(--thumb);
-  }
-
-  @media (min-width: 500px) {
-    .cards-dieta {
-      grid-auto-columns: calc(50% - 10px);
-      grid-column-gap: 20px;
-    }
-  }
-
-  @media (min-width: 700px) {
-    .cards-dieta {
-      grid-auto-columns: calc(calc(100% / 3) - 20px);
-      grid-column-gap: 30px;
-    }
-  }
-
-  @media (min-width: 1100px) {
-    .cards-dieta {
-      grid-auto-columns: calc(25% - 30px);
-      grid-column-gap: 40px;
-    }
-  }
-  .bg-platinum {
-    background-color: var(--black);
-    border-radius: 30px;
-  }
-  .nav-pills .nav-link.active,
-  .nav-pills .show > .nav-link {
-    color: var(--black) !important;
-    background-color: var(--darkorange);
-  }
-  .nav-pills .nav-link {
-    border-radius: 0.25rem;
-    border-radius: 20px;
-    color: #ffc200 !important;
-  }
-  .nav-pills .nav-link a {
-    color: var(--darkorange) !important;
-    text-decoration: none;
-    background-color: transparent;
-    -webkit-text-decoration-skip: objects;
-  }
-  .nav-pills .nav-link a:hover {
-    color: #b48e0e;
-    text-decoration: none;
-    background-color: transparent;
-    -webkit-text-decoration-skip: objects;
-  }
-  
-  {% comment %} Estilos de carta de dietas {% endcomment %}
-  
-    .diet-card {
-      margin: 20px;
-      background-color: var(--thumb);
-    }
-
-    .custom-header-1 {
-      background-color: var(--black);
-      color: #ffd200;
-      
-    }
-    .custom-header-1 a {
-      cursor: pointer;
-      color: #ffd200;
-    }
-    .custom-body-1 {
-      background-color: var(--thumb);
-      color: black;
-    }
-
-    .custom-body-1 ul {
-      list-style: none; /* Elimina los puntos de la lista */
-    }
-    .custom-body-1 .icon-image {
-      width: 50px; /* Ajusta el ancho de la imagen según tus necesidades */
-      height: 50px; /* Ajusta la altura de la imagen según tus necesidades */
-      vertical-align: middle; /* Alinea la imagen verticalmente en el centro */
-      margin-right: 10px; /* Agrega un margen a la derecha de la imagen para separarla del texto */
-    }
-    .card-dieta .icon-image {
-        width: 50px; /* Ajusta el ancho de la imagen según tus necesidades */
-        height: 50px; /* Ajusta la altura de la imagen según tus necesidades */
-        vertical-align: middle; /* Alinea la imagen verticalmente en el centro */
-        margin-right: 10px; /* Agrega un margen a la derecha de la imagen para separarla del texto */
-      }
-
-    .calories {
-      font-size: 12px;
-      color: gray;
-    }
-    .custom-rounded {
-  border-radius: 30px; /* Ajusta el valor del radio según tus preferencias */
-  overflow: hidden; /* Esto oculta el contenido que se desborde más allá de los bordes redondeados */
-  background-color: black; /* Color de fondo deseado */
-  color: #ffd200; /* Color de texto deseado */
-}
-
-.custom-header-1 {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  
-  .custom-header-1 h3 {
-    margin: auto; /* Centra horizontalmente el texto del día de la dieta */
-  }
-  
-  #carouselExampleControls {
-    position: relative;
-    transition-duration: 0.2s; /* Ajusta la duración de la transición según tu preferencia */
-  }
-  .carousel-inner {
-    transition: transform 0.2s ease-in-out; /* Ajusta la duración y el efecto de la transición según tus preferencias */
-  }
-  .carousel-control-prev,
-  .carousel-control-next {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 1;
-  }
-  
-  .carousel-control-prev .carousel-control-prev-icon,
-  .carousel-control-next .carousel-control-next-icon {
-    color: #ffd200 !important;
-  }
-  
-  .card {
-    position: relative;
-    padding-top: 40px; /* Ajusta según sea necesario para dar espacio para los botones fijos */
-  }
-  .input-dietas input{
-    background: transparent !important;
-    color: var(--thumb) !important;
-    
-    
-  }
-  .input-dietas input::placeholder{
-    color: gray;
-  }
-  .input-dietas select {
-    background-color: transparent !important; /* Cambia el fondo del elemento select */
-    color: gray; /* Cambia el color del texto de las opciones */
-  }
-  
-  
-  .input-dietas select option {
-    background-color: #000 !important; /* Cambia el fondo de las opciones del select */
-    color: var(--thumb); /* Cambia el color del texto de las opciones */
-  }
-  .input-dietas select button {
-    width:100%;
-  }
- 
-  
-  
-  
-</style>
+{% extends 'layout/userUI/index.html' %} 
+{% load static %} 
+{% load custom_filters %}
+{% block titulo %}{{titulo}} {% endblock titulo %} {% block lib %}
+{% include "AppControlDeClientes/Dietas/components/style.html" %}
 {% endblock lib %} {% block linkModulo %}
 <li><a href="{% url 'dietas' %}">{{modulo}}</a></li>
 {% endblock linkModulo %} {% block contenido %}
 
 <!-- ======= Contact Section ======= -->
 <div class="modal fade" id="guardar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header bg-warning">
         <h5 class="modal-title text-black" id="exampleModalLabel">Guardar dieta</h5>
@@ -295,10 +18,14 @@
         </button>
       </div>
       <div class="modal-body bg-dark">
-        <form>
+        
+        <form method="post" enctype="multipart/form-data" id='guardar'>
+          {% csrf_token %}
+          <input type="hidden" name="action" value="guardar">
+          <input type="hidden" name="idDieta" value="" id='idDieta'>
           <div class="form-group">
             <label for="recipient-name" class="col-form-label">Día:</label>
-            <select class="form-select">
+            <select class="form-select" name='dia'>
               <option value='1'>Lunes</option>
               <option value='2'>Martes</option>
               <option value='3'>Miercoles</option>
@@ -308,11 +35,12 @@
               <option value='7'>Domingo</option>
               </select>
           </div>
-        </form>
+       
       </div>
-      <div class="modal-footer bg-dark">
+      <div class="modal-footer bg-dark d-flex justify-content-center">
+        <button type="submit" class="btn btn-warning">Guardar</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-        <button type="button" class="btn btn-warning">Guardar</button>
+      </form>
       </div>
     </div>
   </div>
@@ -404,575 +132,29 @@
       aria-labelledby="pills-profile-tab"
     >
     <section class="testimonials">
-        <div class="container my-4">
-          <div
-            id="carouselExampleControls"
-            class="carousel slide no-autoplay"
-            data-ride="carousel"
-          >
-           
-  
-            <!-- Diapositivas -->
-            <div class="carousel-inner">
-              <!-- Diapositiva 1 -->
-              <div class="carousel-item active">
-                <!-- Contenido de la carta -->
-                <!-- Inicio carta -->
-                <div class="card custom-card-1 custom-rounded">
-                  <div class="card-header custom-header-1">
-                    <a
-                      class="carousel-control-prev"
-                      href="#carouselExampleControls"
-                      role="button"
-                      data-slide="prev"
-                    >
-                      <span
-                        class="carousel-control-prev-icon"
-                        aria-hidden="true"
-                      ></span>
-                      <span class="sr-only"></span>
-                    </a>
-                    <h3 class="text-center">Lunes</h3>
-                    <a
-                      class="carousel-control-next"
-                      href="#carouselExampleControls"
-                      role="button"
-                      data-slide="next"
-                    >
-                      <span
-                        class="carousel-control-next-icon"
-                        aria-hidden="true"
-                      ></span>
-                      <span class="sr-only"></span>
-                    </a>
-                  </div>
-                  <div class="card-body custom-body-1 diet-card-container">
-                    <div class="diet-card">
-                      <h4>
-                        <img
-                          src="{% static "assets/img/dietas/hora-de-comer.png" %}"
-                          alt="desayuno"
-                          class="icon-image"
-                        />
-                        Desayuno
-                      </h4>
-  
-                      <ul class="meal-list">
-                        <li>
-                          <span class="food-name">Manzana - </span>
-                          <span class="portion">Porción</span>
-                          <br />
-                          <span class="calories">100 calorías</span>
-                        </li>
-                        <li>
-                          <span class="food-name">Pan - </span>
-                          <span class="portion">Porción</span>
-                          <br />
-                          <span class="calories">50 calorías</span>
-                        </li>
-                        <!-- Agregar más alimentos aquí con las calorías correspondientes -->
-                      </ul>
-                      <h4>
-                        <img
-                          src="{% static "assets/img/dietas/hora-de-la-merienda.png" %}"
-                          alt="desayuno"
-                          class="icon-image"
-                        />
-                        Merienda
-                      </h4>
-  
-                      <ul class="meal-list">
-                        <li>
-                          <span class="food-name">Manzana - </span>
-                          <span class="portion">Porción</span>
-                          <br />
-                          <span class="calories">100 calorías</span>
-                        </li>
-                        <li>
-                          <span class="food-name">Pan - </span>
-                          <span class="portion">Porción</span>
-                          <br />
-                          <span class="calories">50 calorías</span>
-                        </li>
-                        <!-- Agregar más alimentos aquí con las calorías correspondientes -->
-                      </ul>
-                      <h4>
-                        <img
-                          src="{% static "assets/img/dietas/Pollo.png" %}"
-                          alt="desayuno"
-                          class="icon-image"
-                        />
-                        Almuerzo
-                      </h4>
-  
-                      <ul class="meal-list">
-                        <li>
-                          <span class="food-name">Manzana - </span>
-                          <span class="portion">Porción</span>
-                          <br />
-                          <span class="calories">100 calorías</span>
-                        </li>
-                        <li>
-                          <span class="food-name">Pan - </span>
-                          <span class="portion">Porción</span>
-                          <br />
-                          <span class="calories">50 calorías</span>
-                        </li>
-                        <!-- Agregar más alimentos aquí con las calorías correspondientes -->
-                      </ul>
-                      <h4>
-                        <img
-                          src="{% static "assets/img/dietas/hora-de-la-merienda.png" %}"
-                          alt="desayuno"
-                          class="icon-image"
-                        />
-                        Merienda
-                      </h4>
-  
-                      <ul class="meal-list">
-                        <li>
-                          <span class="food-name">Manzana - </span>
-                          <span class="portion">Porción</span>
-                          <br />
-                          <span class="calories">100 calorías</span>
-                        </li>
-                        <li>
-                          <span class="food-name">Pan - </span>
-                          <span class="portion">Porción</span>
-                          <br />
-                          <span class="calories">50 calorías</span>
-                        </li>
-                        <!-- Agregar más alimentos aquí con las calorías correspondientes -->
-                      </ul>
-                      <h4>
-                        <img
-                          src="{% static "assets/img/dietas/cena.png" %}"
-                          alt="desayuno"
-                          class="icon-image"
-                        />
-                        Cena
-                      </h4>
-  
-                      <ul class="meal-list">
-                        <li>
-                          <span class="food-name">Manzana - </span>
-                          <span class="portion">Porción</span>
-                          <br />
-                          <span class="calories">100 calorías</span>
-                        </li>
-                        <li>
-                          <span class="food-name">Pan - </span>
-                          <span class="portion">Porción</span>
-                          <br />
-                          <span class="calories">50 calorías</span>
-                        </li>
-                        <!-- Agregar más alimentos aquí con las calorías correspondientes -->
-                      </ul>
-                      <h4>
-                        <img
-                          src="{% static "assets/img/dietas/hora-de-la-merienda.png" %}"
-                          alt="desayuno"
-                          class="icon-image"
-                        />
-                        Merienda
-                      </h4>
-  
-                      <ul class="meal-list">
-                        <li>
-                          <span class="food-name">Manzana - </span>
-                          <span class="portion">Porción</span>
-                          <br />
-                          <span class="calories">100 calorías</span>
-                        </li>
-                        <li>
-                          <span class="food-name">Pan - </span>
-                          <span class="portion">Porción</span>
-                          <br />
-                          <span class="calories">50 calorías</span>
-                        </li>
-                        <!-- Agregar más alimentos aquí con las calorías correspondientes -->
-                      </ul>
-                    </div>
-                  </div>
-  
-                  <!-- Contenido de la carta aquí -->
-                </div>
-                <!-- Fin carta -->
+       
+        <!--Inicio de carrusel de cartas-->
+        {% for dieta, comidas in dietas_y_comidas_del_miembro.items %}
+        <div class="section-dietas mx-1"><div class="container-dieta"><div class="d-flex justify-content-between"><h3 class="text-warning">{{dieta.get_dia_display}}</h3></div><ul class="cards-dieta">
+          {% for comida in comidas %}
+          <li class="card-dieta">
+          
+          <div>
+              <h3 class="card-dieta-title">
+                  <img src="{% get_comida_image comida.tiempo %}" alt="4" class="icon-image img-fluid">
+                  {{ comida.get_tiempo_display }}
+              </h3>
+              <div class="card-dieta-content">
+                  <p>{{comida.detalle}}</p><br>
               </div>
-              <!-- Diapositiva 2 -->
-              <div class="carousel-item">
-                <!-- Contenido de la carta -->
-                <!-- Inicio carta -->
-                <div class="card custom-card-1 custom-rounded">
-                  <div class="card-header custom-header-1">
-                    <a
-                      class="carousel-control-prev"
-                      href="#carouselExampleControls"
-                      role="button"
-                      data-slide="prev"
-                    >
-                      <span
-                        class="carousel-control-prev-icon"
-                        aria-hidden="true"
-                      ></span>
-                      <span class="sr-only"></span>
-                    </a>
-                    <h3 class="text-center">Martes</h3>
-                    <a
-                      class="carousel-control-next"
-                      href="#carouselExampleControls"
-                      role="button"
-                      data-slide="next"
-                    >
-                      <span
-                        class="carousel-control-next-icon"
-                        aria-hidden="true"
-                      ></span>
-                      <span class="sr-only"></span>
-                    </a>
-                  </div>
-                  <div class="card-body custom-body-1 diet-card-container">
-                    <div class="diet-card">
-                        <h4>
-                            <img
-                              src="{% static "assets/img/dietas/hora-de-comer.png" %}"
-                              alt="desayuno"
-                              class="icon-image"
-                            />
-                            Desayuno
-                          </h4>
-      
-                          <ul class="meal-list">
-                            <li>
-                              <span class="food-name">Manzana - </span>
-                              <span class="portion">Porción</span>
-                              <br />
-                              <span class="calories">100 calorías</span>
-                            </li>
-                            <li>
-                              <span class="food-name">Pan - </span>
-                              <span class="portion">Porción</span>
-                              <br />
-                              <span class="calories">50 calorías</span>
-                            </li>
-                            <!-- Agregar más alimentos aquí con las calorías correspondientes -->
-                          </ul>
-                          <h4>
-                            <img
-                              src="{% static "assets/img/dietas/hora-de-la-merienda.png" %}"
-                              alt="desayuno"
-                              class="icon-image"
-                            />
-                            Merienda
-                          </h4>
-      
-                          <ul class="meal-list">
-                            <li>
-                              <span class="food-name">Manzana - </span>
-                              <span class="portion">Porción</span>
-                              <br />
-                              <span class="calories">100 calorías</span>
-                            </li>
-                            <li>
-                              <span class="food-name">Pan - </span>
-                              <span class="portion">Porción</span>
-                              <br />
-                              <span class="calories">50 calorías</span>
-                            </li>
-                            <!-- Agregar más alimentos aquí con las calorías correspondientes -->
-                          </ul>
-                          <h4>
-                            <img
-                              src="{% static "assets/img/dietas/Pollo.png" %}"
-                              alt="desayuno"
-                              class="icon-image"
-                            />
-                            Almuerzo
-                          </h4>
-      
-                          <ul class="meal-list">
-                            <li>
-                              <span class="food-name">Manzana - </span>
-                              <span class="portion">Porción</span>
-                              <br />
-                              <span class="calories">100 calorías</span>
-                            </li>
-                            <li>
-                              <span class="food-name">Pan - </span>
-                              <span class="portion">Porción</span>
-                              <br />
-                              <span class="calories">50 calorías</span>
-                            </li>
-                            <!-- Agregar más alimentos aquí con las calorías correspondientes -->
-                          </ul>
-                          <h4>
-                            <img
-                              src="{% static "assets/img/dietas/hora-de-la-merienda.png" %}"
-                              alt="desayuno"
-                              class="icon-image"
-                            />
-                            Merienda
-                          </h4>
-      
-                          <ul class="meal-list">
-                            <li>
-                              <span class="food-name">Manzana - </span>
-                              <span class="portion">Porción</span>
-                              <br />
-                              <span class="calories">100 calorías</span>
-                            </li>
-                            <li>
-                              <span class="food-name">Pan - </span>
-                              <span class="portion">Porción</span>
-                              <br />
-                              <span class="calories">50 calorías</span>
-                            </li>
-                            <!-- Agregar más alimentos aquí con las calorías correspondientes -->
-                          </ul>
-                          <h4>
-                            <img
-                              src="{% static "assets/img/dietas/cena.png" %}"
-                              alt="desayuno"
-                              class="icon-image"
-                            />
-                            Cena
-                          </h4>
-      
-                          <ul class="meal-list">
-                            <li>
-                              <span class="food-name">Manzana - </span>
-                              <span class="portion">Porción</span>
-                              <br />
-                              <span class="calories">100 calorías</span>
-                            </li>
-                            <li>
-                              <span class="food-name">Pan - </span>
-                              <span class="portion">Porción</span>
-                              <br />
-                              <span class="calories">50 calorías</span>
-                            </li>
-                            <!-- Agregar más alimentos aquí con las calorías correspondientes -->
-                          </ul>
-                          <h4>
-                            <img
-                              src="{% static "assets/img/dietas/hora-de-la-merienda.png" %}"
-                              alt="desayuno"
-                              class="icon-image"
-                            />
-                            Merienda
-                          </h4>
-      
-                          <ul class="meal-list">
-                            <li>
-                              <span class="food-name">Manzana - </span>
-                              <span class="portion">Porción</span>
-                              <br />
-                              <span class="calories">100 calorías</span>
-                            </li>
-                            <li>
-                              <span class="food-name">Pan - </span>
-                              <span class="portion">Porción</span>
-                              <br />
-                              <span class="calories">50 calorías</span>
-                            </li>
-                            <!-- Agregar más alimentos aquí con las calorías correspondientes -->
-                          </ul>
-                    </div>
-                  </div>
-  
-                  <!-- Contenido de la carta aquí -->
-                </div>
-                <!-- Fin carta -->
-              </div>
-              <!-- Diapositiva 3 -->
-              <div class="carousel-item">
-                <!-- Contenido de la carta -->
-                <!-- Inicio carta -->
-                <div class="card custom-card-1 custom-rounded">
-                  <div class="card-header custom-header-1">
-                    <a
-                      class="carousel-control-prev"
-                      href="#carouselExampleControls"
-                      role="button"
-                      data-slide="prev"
-                    >
-                      <span
-                        class="carousel-control-prev-icon"
-                        aria-hidden="true"
-                      ></span>
-                      <span class="sr-only"></span>
-                    </a>
-                    <h3 class="text-center">Miercoles</h3>
-                    <a
-                      class="carousel-control-next"
-                      href="#carouselExampleControls"
-                      role="button"
-                      data-slide="next"
-                    >
-                      <span
-                        class="carousel-control-next-icon"
-                        aria-hidden="true"
-                      ></span>
-                      <span class="sr-only"></span>
-                    </a>
-                  </div>
-                  <div class="card-body custom-body-1 diet-card-container">
-                    <div class="diet-card">
-                        <h4>
-                            <img
-                              src="{% static "assets/img/dietas/hora-de-comer.png" %}"
-                              alt="desayuno"
-                              class="icon-image"
-                            />
-                            Desayuno
-                          </h4>
-      
-                          <ul class="meal-list">
-                            <li>
-                              <span class="food-name">Manzana - </span>
-                              <span class="portion">Porción</span>
-                              <br />
-                              <span class="calories">100 calorías</span>
-                            </li>
-                            <li>
-                              <span class="food-name">Pan - </span>
-                              <span class="portion">Porción</span>
-                              <br />
-                              <span class="calories">50 calorías</span>
-                            </li>
-                            <!-- Agregar más alimentos aquí con las calorías correspondientes -->
-                          </ul>
-                          <h4>
-                            <img
-                              src="{% static "assets/img/dietas/hora-de-la-merienda.png" %}"
-                              alt="desayuno"
-                              class="icon-image"
-                            />
-                            Merienda
-                          </h4>
-      
-                          <ul class="meal-list">
-                            <li>
-                              <span class="food-name">Manzana - </span>
-                              <span class="portion">Porción</span>
-                              <br />
-                              <span class="calories">100 calorías</span>
-                            </li>
-                            <li>
-                              <span class="food-name">Pan - </span>
-                              <span class="portion">Porción</span>
-                              <br />
-                              <span class="calories">50 calorías</span>
-                            </li>
-                            <!-- Agregar más alimentos aquí con las calorías correspondientes -->
-                          </ul>
-                          <h4>
-                            <img
-                              src="{% static "assets/img/dietas/Pollo.png" %}"
-                              alt="desayuno"
-                              class="icon-image"
-                            />
-                            Almuerzo
-                          </h4>
-      
-                          <ul class="meal-list">
-                            <li>
-                              <span class="food-name">Manzana - </span>
-                              <span class="portion">Porción</span>
-                              <br />
-                              <span class="calories">100 calorías</span>
-                            </li>
-                            <li>
-                              <span class="food-name">Pan - </span>
-                              <span class="portion">Porción</span>
-                              <br />
-                              <span class="calories">50 calorías</span>
-                            </li>
-                            <!-- Agregar más alimentos aquí con las calorías correspondientes -->
-                          </ul>
-                          <h4>
-                            <img
-                              src="{% static "assets/img/dietas/hora-de-la-merienda.png" %}"
-                              alt="desayuno"
-                              class="icon-image"
-                            />
-                            Merienda
-                          </h4>
-      
-                          <ul class="meal-list">
-                            <li>
-                              <span class="food-name">Manzana - </span>
-                              <span class="portion">Porción</span>
-                              <br />
-                              <span class="calories">100 calorías</span>
-                            </li>
-                            <li>
-                              <span class="food-name">Pan - </span>
-                              <span class="portion">Porción</span>
-                              <br />
-                              <span class="calories">50 calorías</span>
-                            </li>
-                            <!-- Agregar más alimentos aquí con las calorías correspondientes -->
-                          </ul>
-                          <h4>
-                            <img
-                              src="{% static "assets/img/dietas/cena.png" %}"
-                              alt="desayuno"
-                              class="icon-image"
-                            />
-                            Cena
-                          </h4>
-      
-                          <ul class="meal-list">
-                            <li>
-                              <span class="food-name">Manzana - </span>
-                              <span class="portion">Porción</span>
-                              <br />
-                              <span class="calories">100 calorías</span>
-                            </li>
-                            <li>
-                              <span class="food-name">Pan - </span>
-                              <span class="portion">Porción</span>
-                              <br />
-                              <span class="calories">50 calorías</span>
-                            </li>
-                            <!-- Agregar más alimentos aquí con las calorías correspondientes -->
-                          </ul>
-                          <h4>
-                            <img
-                              src="{% static "assets/img/dietas/hora-de-la-merienda.png" %}"
-                              alt="desayuno"
-                              class="icon-image"
-                            />
-                            Merienda
-                          </h4>
-      
-                          <ul class="meal-list">
-                            <li>
-                              <span class="food-name">Manzana - </span>
-                              <span class="portion">Porción</span>
-                              <br />
-                              <span class="calories">100 calorías</span>
-                            </li>
-                            <li>
-                              <span class="food-name">Pan - </span>
-                              <span class="portion">Porción</span>
-                              <br />
-                              <span class="calories">50 calorías</span>
-                            </li>
-                            <!-- Agregar más alimentos aquí con las calorías correspondientes -->
-                          </ul>
-                    </div>
-                  </div>
-  
-                  <!-- Contenido de la carta aquí -->
-                </div>
-                <!-- Fin carta -->
-              </div>
-            </div>
           </div>
-        </div>
-        <!--//container-->
+          
+          
+      </li>
+      {% endfor %}
+    </ul></div></div>
+       <!--Inicio de carrusel de cartas-->
+       {% endfor %}
       </section>
     </div>
     <div
@@ -1098,7 +280,7 @@
                 default:
                     return '{% static "assets/img/dietas/rotura.png" %}';
             }
-        }
+        }       
                 data.dietas.forEach(dieta => {
                     const sectionDieta = document.createElement('div');
                     sectionDieta.classList.add('section-dietas', 'mx-1');
@@ -1113,13 +295,35 @@
                     tituloElement.classList.add('text-warning');
                     tituloElement.textContent = dieta.nombre;
 
+                    const inputID = document.createElement('input');
+                    inputID.type = 'hidden';  // Establecer el tipo de entrada como oculto
+                    inputID.value = dieta.id;  // Asignar el valor deseado
+
+
                     const guardarBtn = document.createElement('button');
                     guardarBtn.setAttribute('data-toggle', 'modal')
                     guardarBtn.setAttribute('data-target', '#guardar');
                     guardarBtn.classList.add('btn', 'btn-warning');
                     guardarBtn.innerHTML = '<i class="bi bi-bookmark-plus"></i> Guardar';
+                    // Obtener referencia al segundo input
 
+    // Obtener referencia al segundo input
+    const inputIDdieta = document.getElementById('idDieta');
+
+ 
+    // Asignar el evento de clic al botón (fuera del bloque anterior)
+    guardarBtn.addEventListener('click', function() {
+        // Obtener el valor del primer input
+        const valorInput = inputID.value;
+
+        // Asignar el valor al segundo input
+        inputIDdieta.value = valorInput;
+
+        // Hacer algo más con el valor si es necesario
+        console.log('Valor asignado a inputIDdieta:', inputIDdieta.value);
+    });
                     dFlexElement.appendChild(tituloElement);
+                    dFlexElement.appendChild(inputID);
                     dFlexElement.appendChild(guardarBtn);
 
                     containerDieta.appendChild(dFlexElement);
@@ -1161,6 +365,8 @@
           }
       });
   });
+
+  
 </script>
 
 

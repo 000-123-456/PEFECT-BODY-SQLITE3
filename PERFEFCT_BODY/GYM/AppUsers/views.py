@@ -131,7 +131,7 @@ class LoginFormView(LoginView):
             return redirect('lista_Rutina_Ejercicio')  # Reemplaza 'otra_vista' con el nombre de la vista a la que deseas redirigir a otros usuarios autenticados
         else:
             return redirect('prueba') 
-class PrimeraClave(UpdateView):
+class CambioClave(UpdateView):
     model = User
     template_name = "AppUsers/User/primeraClave.html"
     form_class = RegistroUsuarioForm

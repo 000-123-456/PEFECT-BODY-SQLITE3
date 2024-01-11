@@ -9,7 +9,7 @@ from AppControlDeClientes.forms import FormComida, FormDieta, FormMiembro,FormMe
 from django.contrib import messages
 from AppUsers.models import Empresa,User
 from AppUsers.forms import RegistroUsuarioForm
-from AppControlDeClientes.mixins import isAdministradorMixin,isAdministradorOrEmpleadoMixin,isEmpleadoMixin, isMiembroMixin,isEntrenadorMixin
+from AppControlDeClientes.mixins import isAdministradorMixin,isAdministradorOrEmpleadoMixin,isEmpleadoMixin, isMiembroMixin,isEntrenadorMixin, isNutricionistaMixin
 from .op import generar_clave_temporal_segura,rango
 from django.core.mail import send_mail
 from GYM.settings import EMAIL_HOST_USER
@@ -930,7 +930,7 @@ class ListDietas(isMiembroMixin,ListView):
         return redirect('dietas')
     
 #-----------RECOMENDACIONES DE DIETAS --------------------------------------------
-class CreateRecomendacionDieta(isAdministradorMixin,CreateView):
+class CreateRecomendacionDieta(isNutricionistaMixin,CreateView):
     template_name = 'AppControlDeClientes/RecomendacionesDietas/createRecomendacion.html'
     form_class = FormDieta
     success_url = reverse_lazy('lista_recomendaciones_dieta')
@@ -948,7 +948,7 @@ class CreateRecomendacionDieta(isAdministradorMixin,CreateView):
         messages.error(self.request, format(form.errors.as_text()))
         return super().form_invalid(form)
 
-class ListRecomendacionDieta(isAdministradorMixin,ListView):
+class ListRecomendacionDieta(isNutricionistaMixin,ListView):
     model = Dieta
     template_name = 'AppControlDeClientes/RecomendacionesDietas/listRecomendacion.html'
     def get_context_data(self, **kwargs):
@@ -970,7 +970,7 @@ class ListRecomendacionDieta(isAdministradorMixin,ListView):
 
 
 
-class ListRecomendacionComida(isAdministradorMixin,ListView):
+class ListRecomendacionComida(isNutricionistaMixin,ListView):
     model = Comida
     template_name = 'AppControlDeClientes/RecomendacionesDietas/RecomendacionesComida/listComida.html'
     def get_context_data(self, **kwargs):
@@ -986,7 +986,7 @@ class ListRecomendacionComida(isAdministradorMixin,ListView):
         data['comidas'] = Comida.objects.filter(dieta=id_dieta).reverse()
         return data
 
-class CreateRecomendacionComida(isAdministradorMixin,CreateView):
+class CreateRecomendacionComida(isNutricionistaMixin,CreateView):
     template_name = 'AppControlDeClientes/RecomendacionesDietas/RecomendacionesComida/createComida.html'
     form_class = FormComida
     success_url = reverse_lazy('registro_recomendaciones_dieta')
