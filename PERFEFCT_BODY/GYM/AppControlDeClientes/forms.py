@@ -1,5 +1,5 @@
 from django.forms import  ChoiceField, ModelForm, Select, TextInput,Textarea,DateInput,NumberInput,CharField,ClearableFileInput
-from AppControlDeClientes.models import Miembro,Membresia,HistorialMiembro,Asistencia,RutinaEjercicio,RutinaPersonalizada
+from AppControlDeClientes.models import Miembro,Membresia,HistorialMiembro,Asistencia,Rutina,Ejercicio
 from .op import opGenero
 from AppControlDeClientes import op
 class FormMiembro(ModelForm):
@@ -312,53 +312,100 @@ FormComida.field_order = [
 
         ]
         
-##----------------------Rutinas de ejercicios------------------------------------------
-class FormRutinaEjercicio(ModelForm):
-    
+#*********************************************************RUTINA***************************************************************
+class FormRutina(ModelForm):
+    experiencia = ChoiceField(choices=op.opExperiencia, widget=Select(
+        attrs={
+            'class': 'form-control',
+            'placeholder': 'Ingrese la experiencia que usted tiene ',
+            'autocomplete': 'off',
+        }
+    ))
+    tipo_ejercicio = ChoiceField(choices=op.opTipoEjercicio, widget=Select(
+        attrs={
+            'class': 'form-control',
+            'placeholder': 'Ingrese tipo ejercicio ',
+            'autocomplete': 'off',
+        }
+    ))
+
+
     class Meta:
-        model=RutinaEjercicio
+        model=Rutina
         fields = {
-          #  'dia',
-            'imagen',
+            'experiencia',
             'tipo_ejercicio',
+            'nombre'
+        }
+        labels={
+            'experiencia': 'Experiencia',
+            'tipo_ejercicio': 'Tipo de Ejercicio',
+            'nombre': 'Nombre Rutina',     
+        }
+        
+        widgets={
+                'nombre': TextInput(
+                    attrs={
+                        'class': 'form-control',
+                        'placeholder': 'Ingrese nombre completo',
+                        'autocomplete':"off",
+                        
+                    }
+                ),                       
+         
+        }
+
+FormRutina.field_order = [
+            'experiencia',
+            'tipo_ejercicio',
+            'nombre',
+
+        ]
+
+#////////////////////////////////////Ejercicio
+class FormEjercicio(ModelForm):
+    musculo = ChoiceField(choices=op.opMusculo, widget=Select(
+        attrs={
+            'class': 'form-control',
+            'placeholder': 'Ingrese el musculo que desea hacer ejercicio en especifico ',
+            'autocomplete': 'off',
+        }
+    ))  
+    class Meta:
+        model=Ejercicio
+        fields = {
+            'nombre',
+            'imagen',
+            'musculo',
             'detalle_ejercicio',
             'recomendacion',
             
         }
         labels={
-           # 'dia': 'Dia',
+            'nombre': 'nombre',
             'imagen': 'Imagen ',
-            'tipo_ejercicio': 'Tipo de ejercicio',
+            'musculo': 'Musculo en especifico que desea trabajar',
             'detalle_ejercicio': 'Series',
             'recomendacion':'Recomendacion',
           
         }
         
         widgets={
-              #  'dia':  TextInput(
-               #     attrs={
-                
-                #        'class': 'form-control',
-                #        'placeholder': 'Ingrese nombre completo',
-                #        'autocomplete':'off',
+                'nombre': TextInput(
+                    attrs={
+                        
+                        'class': 'form-control',
+                        'placeholder': 'Ingrese nombre completo',
+                         'autocomplete':'off',
                        
-                #    }
-                #),
+                    }
+                ),
+    
                 'imagen': ClearableFileInput(  
                 attrs={
                     'class': 'form-control',
                      }
                 ),
-                'tipo_ejercicio':  TextInput(
-                        attrs={
-                    
-                            'class': 'form-control',
-                            'placeholder': 'Ingrese nombre completo',
-                            'autocomplete':'off',
-                        
-                        }
-                    ),
-               
                 'detalle_ejercicio': TextInput(
                     attrs={
                         
@@ -380,108 +427,10 @@ class FormRutinaEjercicio(ModelForm):
                
         }
 
-FormRutinaEjercicio.field_order = [
-            'dia',
-            'tipo_ejercicio',
+FormEjercicio.field_order = [
+            'nombre',
             'imagen',
+            'musculo',
             'detalle_ejercicio',
-            'recomendacion',                     
+            'recomendacion',                  
         ]
-##----------------------Rutinas de ejercicios Personalizadas------------------------------------------
-'''class FormRutinaPersonalizada(ModelForm):
-    intensidad = ChoiceField(choices=op.opIntensidad, widget=Select(
-        attrs={
-            'class': 'form-control',
-            'placeholder': 'Ingrese  Intensidad de la Rutina',
-            'autocomplete': 'off',
-        }
-    ))
-    
-    class Meta:
-        model=RutinaPersonalizada
-        fields = {
-            'ejercicio',
-            'intensidad',
-            'duracionejer',
-            'descanso',
-            
-        }
-        labels={
-            'ejercicio': 'ejercicio',
-            'intensidad': '',
-            'duracionejer': 'Series',
-            'descanso':'Descanso entre series',
-          
-        }
-        
-        widgets={                      
-                'ejercicio':  TextInput(
-                        attrs={
-                    
-                            'class': 'form-control',
-                            'placeholder': 'Ingrese nombre completo',
-                            'autocomplete':'off',
-                        
-                        }
-                    ),
-               
-                'duracionejer': TextInput(
-                    attrs={
-                        
-                        'class': 'form-control',
-                        'placeholder': 'Ingrese nombre completo',
-                         'autocomplete':'off',
-                       
-                    }
-                ),
-                'descanso': TextInput(
-                    attrs={
-                        
-                        'class': 'form-control',
-                        'placeholder': 'Ingrese nombre completo',
-                         'autocomplete':'off',
-                       
-                    }
-                )
-               
-        }
-
-FormRutinaPersonalizada.field_order = [
-            'ejercicio',
-            'intensidad',
-            'duracionejer',
-            'descanso',                     
-        ]'''
-
-from django import forms
-from django.forms import ModelForm, TextInput, ChoiceField, Select
-from .models import RutinaPersonalizada
-
-class FormRutinaPersonalizada(ModelForm):
-    intensidad = ChoiceField(
-        choices=op.opIntensidad,
-        widget=Select(
-            attrs={
-                'class': 'form-control',
-                'placeholder': 'Seleccione Intensidad de la Rutina',
-                'autocomplete': 'off',
-                'required': 'required',  # Agregamos este atributo
-            }
-        )
-    )
-    
-    class Meta:
-        model = RutinaPersonalizada
-        fields = ['ejercicio', 'intensidad', 'duracionejer', 'descanso']
-        labels = {
-            'ejercicio': 'Ejercicio',
-            'intensidad': 'Intensidad',
-            'duracionejer': 'Series',
-            'descanso': 'Minutos entre series',
-        }
-        
-        widgets = {
-            'ejercicio': TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese nombre completo', 'autocomplete': 'off'}),
-            'duracionejer': TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese nombre completo', 'autocomplete': 'off'}),
-            'descanso': TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese nombre completo', 'autocomplete': 'off'}),
-        }

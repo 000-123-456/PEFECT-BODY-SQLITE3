@@ -16,7 +16,7 @@
             <a href="{% url 'bajas_miembros' %}" class="btn btn-danger mx-1" id='papelera'>
               <b><i class="bi bi-trash"></i> Papelera</b>
             </a>
-            <a href="{% url 'registro_Rutina_Ejercicio' %}" class="btn btn-primary mx-1" id='nuevo'>
+            <a href="{% url 'registro_Rutina' %}" class="btn btn-primary mx-1" id='nuevo'>
               <b><i class="bi bi-plus-lg"></i> Nueva Rutina</b>
             </a>
             
@@ -48,11 +48,10 @@
                     <thead class="bg-warning text-black">
                       <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Ejercicio</th>
-                        <th scope="col">Imagen</th>
-                        <th scope="col">Detalle Ejercicio</th>
-                        <th scope="col">Recomendacion</th>
-
+                        <th scope="col">Experiencia</th>
+                        <th scope="col">Tipo de Ejercicio</th>
+                        <th scope="col">Nombre</th>
+                        
                         <th scope="col">Opciones</th>
                       </tr>
                     </thead>
@@ -60,16 +59,9 @@
                       {% if rutinas %} {% for d in rutinas %}
                       <tr>
                         <td>{{forloop.counter}}</td>
+                        <td>{{ d.experiencia }}</td>
                         <td>{{ d.tipo_ejercicio }}</td>
-                        <td>
-                          {% if d.imagen %}
-                            <img src="{{ d.imagen.url }}" alt="Imagen de ejercicio" style="max-width: 100px; max-height: 100px;">
-                          {% else %}
-                            No hay imagen disponible
-                          {% endif %}
-                        </td>
-                        <td>{{ d.detalle_ejercicio }}</td>
-                        <td>{{ d.recomendacion }}</td>
+                        <td>{{ d.nombre }}</td>
                         
                        
                         <td>
@@ -78,8 +70,8 @@
                           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" style="">
                             <li id='actualizar'><a class="dropdown-item" href="{% url "actualizar_miembro" d.id %}"><strong><i class="bi bi-pencil-square"></i> Actualizar Rutina</a></strong></li>
                             <li><a class="dropdown-item text-danger" href="#" onclick="eliminarMiembro({{d.id}},'{{m.user.first_name}}')"><strong><i class="bi bi-trash btnUM"></i> Eliminar Rutina</a></strong></li>
-                            <li><a class="dropdown-item" href="{% url "registro_RutinaPersonalizada" d.id %}"><strong class="btnAM"> <b><i class="bi bi-plus-lg"></i> Agregar Rutina Personalizada</a></strong></li>
-                            <li><a class="dropdown-item" href="{% url "lista_RutinaPersonalizada" d.id %}"><strong class="btnAM"> <b><i class='bx bxs-bowl-hot'></i> Ver Rutinas Personalizadas</a></strong></li>
+                            <li><a class="dropdown-item" href="{% url "registro_Ejercicio" d.id %}"><strong class="btnAM"> <b><i class="bi bi-plus-lg"></i> Agregar Ejercicio</a></strong></li>
+                            <li><a class="dropdown-item" href="{% url "lista_Ejercicio" d.id %}"><strong class="btnAM"> <b><i class='bx bxs-bowl-hot'></i> Ver Ejercicios</a></strong></li>
 
                           </ul>
                           

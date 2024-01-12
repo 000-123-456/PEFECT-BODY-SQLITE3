@@ -50,21 +50,33 @@ factor_mujeres = [
 
 
 #***************************************************************************
-experiencia_hombres = [
-    [16, 'Principiante'],
-    [21, 'Intermedio'],
-    [26, 'Avanzado'],  
-]
-experiencia_mujeres = [
-    [14, 'Sedentario'],
-    [18, 'Moderado'],
-    [22, 'Muy activa'],  
+opExperiencia = [
+    [0,'----------'],
+    [1, 'Principiante'],
+    [2, 'Intermedio'],
+    [3, 'Avanzado'],  
 ]
 
-opIntensidad = [
-    (1, 'Baja'),
-    (2, 'Media'),
-    (3, 'Alta'),
+opTipoEjercicio = [
+    [0,'----------'],
+    [1, 'Abdomen'],
+    [2, 'Biceps'],
+    [3, 'Espalda'],
+    [4, 'Hombros'],
+    [5, 'Pectorales'],  
+    [6, 'Piernas'],  
+
+]
+
+opMusculo = [
+   
+    [1, 'Abdomen'],
+    [2, 'Biceps'],
+    [3, 'Espalda'],
+    [4, 'Hombros'],
+    [5, 'Pectorales'],  
+    [6, 'Piernas'],  
+
 ]
 
 

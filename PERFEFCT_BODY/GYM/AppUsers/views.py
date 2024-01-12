@@ -128,7 +128,7 @@ class LoginFormView(LoginView):
         elif self.user.rol == 4:
             return redirect('lista_recomendaciones_dieta')  # Reemplaza 'otra_vista' con el nombre de la vista a la que deseas redirigir a otros usuarios autenticados
         elif self.user.rol == 5:
-            return redirect('lista_Rutina_Ejercicio')  # Reemplaza 'otra_vista' con el nombre de la vista a la que deseas redirigir a otros usuarios autenticados
+            return redirect('lista_Rutina')  # Reemplaza 'otra_vista' con el nombre de la vista a la que deseas redirigir a otros usuarios autenticados
         else:
             return redirect('prueba') 
 class CambioClave(UpdateView):
@@ -144,7 +144,7 @@ class CambioClave(UpdateView):
             elif request.user.rol == 4:
                 return redirect('lista_recomendaciones_dieta')
             elif request.user.rol == 5:
-                return redirect('lista_Rutina_Ejercicio')
+                return redirect('lista_Rutina')
             else:
                 return redirect('prueba')
         return super().dispatch(request, *args, **kwargs)
@@ -179,7 +179,7 @@ class CambioClave(UpdateView):
         elif user_current.rol == 4:
             return redirect('lista_recomendaciones_dieta')  # Reemplaza 'otra_vista' con el nombre de la vista a la que deseas redirigir a otros usuarios autenticados
         elif user_current.rol == 5:
-            return redirect('lista_Rutina_Ejercicio')  # Reemplaza 'otra_vista' con el nombre de la vista a la que deseas redirigir a otros usuarios autenticados
+            return redirect('lista_Rutina')  # Reemplaza 'otra_vista' con el nombre de la vista a la que deseas redirigir a otros usuarios autenticados
         else:
              return redirect('prueba')
 

@@ -4,8 +4,9 @@ from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, TemplateView
-from AppControlDeClientes.models import Comida, Dieta, HistorialMiembro, Miembro,Membresia,VentaMembresia, Asistencia,RutinaEjercicio,RutinaPersonalizada
-from AppControlDeClientes.forms import FormComida, FormDieta, FormMiembro,FormMembresia, FormHistorialMiembro, FormAsistenciaMiembro,FormRutinaEjercicio,FormRutinaPersonalizada
+from AppControlDeClientes.models import Comida, Dieta, HistorialMiembro, Miembro,Membresia,VentaMembresia, Asistencia,Rutina,Ejercicio
+from AppControlDeClientes.forms import FormComida, FormDieta, FormMiembro,FormMembresia, FormHistorialMiembro, FormAsistenciaMiembro,FormRutina,FormEjercicio
+
 from django.contrib import messages
 from AppUsers.models import Empresa,User
 from AppUsers.forms import RegistroUsuarioForm
@@ -1022,93 +1023,11 @@ class CreateRecomendacionComida(isNutricionistaMixin,CreateView):
         return super().form_invalid(form)    
     
 
-
-
-
-
-#-----------RUTINAS DE EJERCICIO --------------------------------------------
-#VISTA DE MIEMBRO
-    
-class ListRutinas(isMiembroMixin,ListView):
-    model = Dieta
-    template_name = 'AppControlDeClientes/Rutinas/listaRutina.html'
-    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        data = super().get_context_data(**kwargs)
-        try:
-            data['empresa'] = Empresa.objects.first()
-        except:
-            data['empresa'] = 'Error'
-        data['titulo'] = 'Menú de Rutinas'
-        data['modulo'] = 'Rutinas'
-        return data
-    def post(self, request: HttpRequest, *args: str, **kwargs: Any):
-        data = {}
-        try:
-            #Si el parametro action es recomendaciones quiere decir se esta pidiendo recomendaciones de dietas
-            action= request.POST['action']
-            if action == 'recomendaciones':
-                #obtenemos el miembro que ha iniciado sesion
-                miembro = Miembro.objects.get(user = request.user.pk)
-                #Verificamos si es hombre o mujer para definir el peso ideal y factor de actividad
-                if miembro.genero == 1:
-                    peso_ideal = int(request.POST['altura'])-100+3
-                    factor_actividad = op.experiencia_hombres[int(request.POST['actividad_fisica'])-1][0]
-                else:
-                    peso_ideal = int(request.POST['altura'])-100-3
-                    factor_actividad = op.experiencia_hombres[int(request.POST['actividad_fisica'])-1][0]
-                peso_ideal*=2.2
-                calorias = peso_ideal*factor_actividad
-                print(f'Peso ideal: {peso_ideal}')
-                print(f'Factor de actividad: {factor_actividad}')
-                print(f'Calorias necesarias: {calorias}')
-                if int(request.POST['objetivo']) == 1:
-                    calorias -=500
-                else:
-                    calorias +=500
-                print(f'Calorias necesarias para el objetivo: {calorias}')
-                rango_dietas = encontrar_posicion_mas_cercana(rango, int(request.POST['objetivo']),calorias)
-                print(rango_dietas)
-                data = obtener_comidas_por_dieta(rango_dietas)
-                print(data)
-                return JsonResponse(data, safe=False)
-    
-        except Exception as e:
-            data['error']= str(e)
-        return redirect('Rutinas')
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-#-----------VISTA DE ADMINISTRADOR --------------------------------------------
-class CreateRutinaEjercicio(isEntrenadorMixin,CreateView):
-    template_name = 'AppControlDeClientes/RutinaEjercicio/createRutinaEjercicio.html'
-    form_class = FormRutinaEjercicio
-    success_url = reverse_lazy('lista_Rutina_Ejercicio')
+#****************************************vistas de rutinas
+class CreateRutina(isEntrenadorMixin,CreateView):
+    template_name = 'AppControlDeClientes/RutinaEjercicio/createRutina.html'
+    form_class = FormRutina
+    success_url = reverse_lazy('lista_Rutina')
     
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
@@ -1125,9 +1044,9 @@ class CreateRutinaEjercicio(isEntrenadorMixin,CreateView):
 
 
 
-class ListRutinaEjercicio(isEntrenadorMixin,ListView):
-    model = RutinaEjercicio
-    template_name = 'AppControlDeClientes/RutinaEjercicio/listRutinas.html'
+class ListRutina(isEntrenadorMixin,ListView):
+    model = Rutina
+    template_name = 'AppControlDeClientes/RutinaEjercicio/listRutina.html'
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
         try:
@@ -1136,48 +1055,40 @@ class ListRutinaEjercicio(isEntrenadorMixin,ListView):
              data['empresa'] = 'Error'
         data['titulo'] = 'Listado de Rutinas de Ejercicio'
         data['modulo'] = 'Rutinas'
-        data['rutinas'] = RutinaEjercicio.objects.all().reverse()
+        data['rutinas'] = Rutina.objects.all().reverse()
         return data
 
 
+#***********************Ejercicios******************************
 
-#-------------------------Rutinas  Personalizadas-----------------------------------
-
-from django.shortcuts import get_object_or_404
-
-class ListRutinaPersonalizada(isEntrenadorMixin, ListView):
-    model = RutinaPersonalizada
-    template_name = 'AppControlDeClientes/RutinaEjercicio/RutinaPersonalizada/listPersonalizadas.html'
-
+class ListEjercicio(isEntrenadorMixin,ListView):
+    model = Ejercicio
+    template_name = 'AppControlDeClientes/RutinaEjercicio/Ejercicio/listEjercicio.html'
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        id_rutinaejercicio = self.kwargs.get('pk', None)
-
+        # Obtengo el id de la rutina que paso por la URL
+        id_rutina = self.kwargs.get('pk', None)
         try:
-            data['empresa'] = Empresa.objects.first()
+             data['empresa'] = Empresa.objects.first()
         except:
-            data['empresa'] = 'Error'
-
-        # Manejar el caso cuando no se encuentra RutinaEjercicio
-        data['rutinaejercicio'] = get_object_or_404(RutinaEjercicio, pk=id_rutinaejercicio)
-
-        data['titulo'] = 'Listado de Rutinas Personalizadas'
+             data['empresa'] = 'Error'
+        data['titulo'] = 'Listado de Ejercicios'
         data['modulo'] = 'Rutinas'
-        data['rutinapersonalizadas'] = RutinaPersonalizada.objects.filter(rutinaejercicio=id_rutinaejercicio).reverse()
+        data['ejercicios'] = Ejercicio.objects.filter(rutina=id_rutina).reverse()
         return data
 
 
-from django.shortcuts import redirect
-class CreateRutinaPersonalizada(isEntrenadorMixin,CreateView):
-    template_name = 'AppControlDeClientes/RutinaEjercicio/RutinaPersonalizada/createPersonalizadas.html'
-    form_class = FormRutinaPersonalizada
 
-    success_url = reverse_lazy('registro_Rutina_Ejercicio')
+
+class CreateEjercicio(isEntrenadorMixin,CreateView):
+    template_name = 'AppControlDeClientes/RutinaEjercicio/Ejercicio/createEjercicio.html'
+    form_class = FormEjercicio
+    success_url = reverse_lazy('registro_Rutina')
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
         
         # Agrega una opción adicional al campo 'tiempo'
-        form.fields['intensidad'].choices += [('', 'Seleccione una opción')]
+        form.fields['musculo'].choices += [('', 'Seleccione El musculo que en especifico desea Trabajar ')]
 
         return form
     def get_context_data(self, **kwargs):
@@ -1186,23 +1097,28 @@ class CreateRutinaPersonalizada(isEntrenadorMixin,CreateView):
              data['empresa'] = Empresa.objects.first()
         except:
              data['empresa'] = 'Error'
-        data['titulo'] = 'Registro de comida'
-        data['modulo'] = 'rutinas'
+        data['titulo'] = 'Registro de Ejercicios'
+        data['modulo'] = 'Rutinas'
         return data
     def form_valid(self, form):
-
-
         #Obtengo el id de la dieta que paso por url
-        id_rutinaejercicio = self.kwargs.get('pk', None)
+        id_rutina = self.kwargs.get('pk', None)
 
         # Se lo asigno al campo del modelo antes de guardarlo para crear la relacion
         # Obtengo el objeto Dieta correspondiente al ID
-        rutinaejercicio = RutinaEjercicio.objects.get(id=id_rutinaejercicio)
-        form.instance.rutinaejercicio = rutinaejercicio
-        messages.success(self.request, "Rutina registrada correctamente")
+        rutina = Rutina.objects.get(id=id_rutina)
+        form.instance.rutina = rutina
+        messages.success(self.request, "rutina registrada correctamente")
         return super().form_valid(form)
 
     def form_invalid(self, form):
         messages.error(self.request, format(form.errors.as_text()))
         return super().form_invalid(form)    
     
+
+
+
+
+
+
+

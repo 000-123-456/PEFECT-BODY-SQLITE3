@@ -67,18 +67,15 @@ urlpatterns = [
     path('Recomendaciones/Dietas/comida/registro/<int:pk>/',login_required(views.CreateRecomendacionComida.as_view()), name='registro_recomendaciones_comida'),
     path('Recomendaciones/Dietas/comida/lista/<int:pk>/',login_required(views.ListRecomendacionComida.as_view()), name='lista_recomendaciones_comida'),       
     
-
-       #--------------------------------------------DIETAS DE MIEMBRO-------------------------------------------------------
-    #path('Rutinas',login_required(views.ListDietas.as_view()), name='rutinas'),    
-
-     #--------------------------------------------RECOMENDACIONES RUTINAS-------------------------------------------------------
-    path('Recomendaciones/Rutinas/registro/',login_required(views.CreateRutinaEjercicio.as_view()), name='registro_Rutina_Ejercicio'),
-    path('Recomendaciones/Rutinas/',login_required(views.ListRutinaEjercicio.as_view()), name='lista_Rutina_Ejercicio'),
     
+     #--------------------------------------------RECOMENDACIONES RUTINAS-------------------------------------------------------
+    path('Recomendaciones/Rutinas/registro/',login_required(views.CreateRutina.as_view()), name='registro_Rutina'),
+    path('Recomendaciones/Rutinas/',login_required(views.ListRutina.as_view()), name='lista_Rutina'),
 
-        #--------------------------------------------RUTINAS PERSONALIZADAS-------------------------------------------------------
-    path('Recomendaciones/RutinaEjercicio/Personalizadas/registro/<int:pk>/', login_required(views.CreateRutinaPersonalizada.as_view()), name='registro_RutinaPersonalizada'),
+    #--------------------------------------------EJERCICOS----------------------------------------------------------------------
+   
+     path('Recomendaciones/Rutinas/Ejercicio/registro/<int:pk>/',login_required(views.CreateEjercicio.as_view()), name='registro_Ejercicio'),
+    path('Recomendaciones/Rutinas/Ejercicio/lista/<int:pk>/',login_required(views.ListEjercicio.as_view()), name='lista_Ejercicio'),       
 
-    path('Recomendaciones/RutinaEjercicio/Personalizadas/lista/<int:pk>/',login_required(views.ListRutinaPersonalizada.as_view()), name='lista_RutinaPersonalizada'),       
-    #path('Recomendaciones/RutinaEjercicio/Personalizadas/lista/<int:pk>/', views.ListRutinaPersonalizada.as_view(), name='lista_RutinaPersonalizada'),
-]
+
+    ]

@@ -16,10 +16,9 @@
             <a href="{% url 'bajas_miembros' %}" class="btn btn-danger mx-1" id='papelera'>
               <b><i class="bi bi-trash"></i> Papelera</b>
             </a>
-            <a href="{% url 'registro_RutinaPersonalizada' pk=rutinaejercicio.id %}" class="btn btn-primary mx-1" id='nuevo'>
-                <b><i class="bi bi-plus-lg"></i> Nueva Rutina Personalizada</b>
+            <a href="{% url 'registro_Rutina' %}" class="btn btn-primary mx-1" id='nuevo'>
+              <b><i class="bi bi-plus-lg"></i> Nuevo Ejercicio</b>
             </a>
-            
             
         </div>
           <br>
@@ -47,31 +46,42 @@
                 
                 <table class="table bg-black text-white strip rounded mb-4" style="text-align: center" id="data">
                     <thead class="bg-warning text-black">
-                      <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Ejercicio</th>
-                        <th scope="col">Intensidad</th>
-                        <th scope="col">Series</th> 
-                        <th scope="col">Descanso</th>            
-                        <th scope="col">Opciones</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% if rutinapersonalizadas %} {% for c in rutinapersonalizadas %}
-                      <tr>
-                        <td class="text-nowrap">{{forloop.counter}}</td>
-                        <td class="text-nowrap">{{ c.ejercicio }}</td>
-                        <td class="text-nowrap">{{ c.intensidad  }}</td>
-                        <td class="text-nowrap">{{ c.duracionejer  }}</td>
-                        <td class="text-nowrap">{{ c.descanso  }}</td>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Imagen</th>
+                            <th scope="col">Musculo</th>
+                            <th scope="col">Detalle Ejercicio</th>
+                            <th scope="col">Recomendacion</th>
+    
+                            <th scope="col">Opciones</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% if ejercicios %} {% for c in ejercicios %}
+                          <tr>
+                            <td>{{forloop.counter}}</td>
+                            
+                            <td>{{ c.nombre }}</td>
+                            <td>
+                              {% if c.imagen %}
+                                <img src="{{ c.imagen.url }}" alt="Imagen de ejercicio" style="max-width: 100px; max-height: 100px;">
+                              {% else %}
+                                No hay imagen disponible
+                              {% endif %}
+                            </td>
+                            <td>{{ c.musculo }}</td>
+                            <td>{{ c.detalle_ejercicio }}</td>
+                            <td>{{ c.recomendacion }}</td>
+
                         <td class="text-nowrap">
                           <a class="btn btn-dark" href="#" data-bs-toggle="dropdown" id='menu-opciones' aria-expanded="false"><i class="bi bi-card-checklist"></i>
                             <i class="dropdown-toggle"></i></a>
                           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" style="">
-                            <li id='actualizar'><a class="dropdown-item" href="{% url "actualizar_miembro" c.id %}"><strong><i class="bi bi-pencil-square"></i> Actualizar dieta</a></strong></li>
-                            <li><a class="dropdown-item text-danger" href="#" onclick="eliminarMiembro({{c.id}},'{{m.user.first_name}}')"><strong><i class="bi bi-trash btnUM"></i> Eliminar Rutina</a></strong></li>
-                            <li><a class="dropdown-item" href="#"><strong class="btnAM"> <b><i class="bi bi-plus-lg"></i> Agregar Rutina Personalizada</a></strong></li>
-                              <li><a class="dropdown-item" href="#"><strong class="btnAM"> <b><i class='bx bxs-bowl-hot'></i> Ver Rutina Personalizada</a></strong></li>
+                            <li id='actualizar'><a class="dropdown-item" href="{% url "actualizar_miembro" c.id %}"><strong><i class="bi bi-pencil-square"></i> Actualizar rutina</a></strong></li>
+                            <li><a class="dropdown-item text-danger" href="#" onclick="eliminarMiembro({{c.id}},'{{m.user.first_name}}')"><strong><i class="bi bi-trash btnUM"></i> Eliminar rutina</a></strong></li>
+                            <li><a class="dropdown-item" href="#"><strong class="btnAM"> <b><i class="bi bi-plus-lg"></i> Agregar Ejercicio</a></strong></li>
+                              <li><a class="dropdown-item" href="#"><strong class="btnAM"> <b><i class='bx bxs-bowl-hot'></i> Ver Ejercicios</a></strong></li>
                           </ul>
                           
                        
