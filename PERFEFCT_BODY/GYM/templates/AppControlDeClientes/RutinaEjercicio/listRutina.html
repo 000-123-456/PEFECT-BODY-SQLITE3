@@ -59,8 +59,8 @@
                       {% if rutinas %} {% for d in rutinas %}
                       <tr>
                         <td>{{forloop.counter}}</td>
-                        <td>{{ d.experiencia }}</td>
-                        <td>{{ d.tipo_ejercicio }}</td>
+                        <td>{{ d.get_experiencia_display }}</td>
+                        <td>{{ d.get_tipo_ejercicio_display }}</td>
                         <td>{{ d.nombre }}</td>
                         
                        
@@ -70,8 +70,8 @@
                           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" style="">
                             <li id='actualizar'><a class="dropdown-item" href="{% url "actualizar_miembro" d.id %}"><strong><i class="bi bi-pencil-square"></i> Actualizar Rutina</a></strong></li>
                             <li><a class="dropdown-item text-danger" href="#" onclick="eliminarMiembro({{d.id}},'{{m.user.first_name}}')"><strong><i class="bi bi-trash btnUM"></i> Eliminar Rutina</a></strong></li>
-                            <li><a class="dropdown-item" href="{% url "registro_Ejercicio" d.id %}"><strong class="btnAM"> <b><i class="bi bi-plus-lg"></i> Agregar Ejercicio</a></strong></li>
-                            <li><a class="dropdown-item" href="{% url "lista_Ejercicio" d.id %}"><strong class="btnAM"> <b><i class='bx bxs-bowl-hot'></i> Ver Ejercicios</a></strong></li>
+                            <li><a class="dropdown-item" href="{% url "registro_Ejercicio" d.id %}"><strong class="btnAM"> <b><i class="bi bi-plus-lg"></i> Agregar comida</a></strong></li>
+                             <li><a class="dropdown-item" href="{% url "lista_Ejercicio" d.id %}"><strong class="btnAM"> <b><i class='bx bxs-bowl-hot'></i> Ver Ejercicios</a></strong></li>
 
                           </ul>
                           
