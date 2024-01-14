@@ -72,9 +72,15 @@ class ListDietas(isMiembroMixin,ListView):
                 print(f"ID Dieta: {id_dieta}")
                 print(f"Día: {dia}")
             # Crea y guarda la instancia de ListaDietas
-                nueva_dieta = ListaDietas(miembro=miembro, dieta_id=id_dieta, dia=dia)
-                nueva_dieta.save()
-                messages.success(request, 'Dieta guardada')
+                if not ListaDietas.objects.filter(miembro=miembro, dia=dia).exists():
+                    nueva_dieta = ListaDietas(miembro=miembro, dieta_id=id_dieta, dia=dia)
+                    nueva_dieta.save()
+                    messages.success(request, 'Dieta guardada')
+                else:
+                   mi_dieta = ListaDietas.objects.get(miembro=miembro, dia=dia)
+                   mi_dieta.dieta_id = id_dieta
+                   mi_dieta.save()
+                   messages.success(request, 'Dieta guardada')
 
 
         except Exception as e:
@@ -160,3 +166,10 @@ class CreateRecomendacionComida(isAdministradorMixin,CreateView):
     def form_invalid(self, form):
         messages.error(self.request, format(form.errors.as_text()))
         return super().form_invalid(form)    
+    
+def eliminar_mi_dieta(request, pk):
+    mi_dieta = ListaDietas.objects.get(id=pk)
+    mi_dieta.delete()
+    messages.success(request,f'La dieta fue eliminada de su lista.')
+    return redirect(to='dietas')
+

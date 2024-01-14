@@ -1,7 +1,7 @@
 from . import views
 from django.urls import path
 from django.contrib.auth.decorators import login_required
-from AppControlDeClientes.views_dietas.Dietas.views import ListDietas
+from AppControlDeClientes.views_dietas.Dietas.views import ListDietas, eliminar_mi_dieta
 
 
 urlpatterns = [
@@ -57,7 +57,9 @@ urlpatterns = [
 
 
      #--------------------------------------------DIETAS DE MIEMBRO-------------------------------------------------------
-    path('Dietas',login_required(ListDietas.as_view()), name='dietas'),    
+    path('Dietas',login_required(ListDietas.as_view()), name='dietas'),  
+    path('Dietas/eliminar/<int:pk>/',login_required(eliminar_mi_dieta), name='eliminar_mi_dieta'),    
+  
 
      #--------------------------------------------RECOMENDACIONES DIETAS-------------------------------------------------------
     path('Recomendaciones/Dietas/registro/',login_required(views.CreateRecomendacionDieta.as_view()), name='registro_recomendaciones_dieta'),
