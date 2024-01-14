@@ -173,6 +173,12 @@ class Ejercicio(models.Model):
         item = model_to_dict(self)
         item['rutina'] = self.rutina.toJSON()
         return item
+    
+    def get_image(self):
+        if self.imagen:
+            return '{}{}'.format(MEDIA_URL,self.imagen)
+        return '{}{}'.format(STATIC_URL,'assets/img/no-photo.jpg')
+    
 
 class ListaDeRutinas(models.Model):
     dia = models.PositiveIntegerField(choices=opDia, verbose_name='Dia')

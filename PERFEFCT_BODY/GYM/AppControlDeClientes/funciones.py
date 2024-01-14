@@ -6,7 +6,7 @@ from django.templatetags.static import static
 import os
 from django.db.models import Sum, Count
 from django.db.models.functions import ExtractMonth, ExtractYear
-from .models import Comida, Dieta, ListaDietas, VentaMembresia
+from .models import Comida, Dieta, ListaDietas, VentaMembresia,Rutina
 
 
 # Directorio que contiene las imágenes
@@ -304,4 +304,24 @@ def mis_dietas(miembro):
         return comidas_por_dieta
 
 
+#*******************rutina*************************
+def obtener_ejercicio_por_rutina(experiencia,tipo_ejercicio):
+    # Filtrar las dietas por el rango proporcionado
+      
+    rutinas = Rutina.objects.filter(experiencia=experiencia, tipo_ejercicio=tipo_ejercicio)
+
+    # Obtener todas las comidas relacionadas con esas dietas y convertirlas a diccionarios
+    ejercicio_por_rutina = []
+
+    for rutina in rutinas:
+        ejercicios = rutina.ejercicio_set.all().order_by('-id')  # Ordenar las comidas por el campo 'tiempo'
+        ejercicios_dict = {
+            'nombre': rutina.nombre,
+            'id': rutina.id,
+            'ejercicios': [ejercicio.toJSON() for ejercicio in ejercicios]
+        }
+        ejercicio_por_rutina.append(ejercicios_dict)
+
+    # Devolver la respuesta en formato JSON
+    return {'rutinas': ejercicios_dict, 'success': True}
 

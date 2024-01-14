@@ -17,7 +17,7 @@ from GYM.settings import EMAIL_HOST_USER
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.utils import timezone
-from .funciones import calcular_edad, calcular_fecha_final, encontrar_posicion_mas_cercana, getCantidadVentas, obtener_comidas_por_dieta, obtener_url_imagen,vencimientoMembresias,getVentasMensuales, jsonPruebas
+from .funciones import calcular_edad, calcular_fecha_final, encontrar_posicion_mas_cercana, getCantidadVentas, obtener_comidas_por_dieta, obtener_url_imagen,vencimientoMembresias,getVentasMensuales, jsonPruebas,obtener_ejercicio_por_rutina
 import locale
 from django.db.models import Sum, Count
 from datetime import date
@@ -1117,8 +1117,38 @@ class CreateEjercicio(isEntrenadorMixin,CreateView):
     
 
 
+#*************************************************listaRutina
+class ListaDeRutinas(isMiembroMixin,ListView):
+    model = Rutina
+    template_name = 'AppControlDeClientes/Rutinas/listaRutina.html'
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        data = super().get_context_data(**kwargs)
+        try:
+            data['empresa'] = Empresa.objects.first()
+        except:
+            data['empresa'] = 'Error'
+        data['titulo'] = 'Menú de rutinas'
+        data['modulo'] = 'Rutinas'
+        return data
+    def post(self, request: HttpRequest, *args: str, **kwargs: Any):
+        data = {}
+        try:
+            #Si el parametro action es recomendaciones quiere decir se esta pidiendo recomendaciones de dietas
+            action= request.POST['action']
+            if action == 'recomendaciones':
+                #obtenemos el miembro que ha iniciado sesion
+                miembro = Miembro.objects.get(user = request.user.pk)
+                    
+                
+            data = obtener_ejercicio_por_rutina(request.POST['nivel_experiencia'], request.POST['tipo_ejercicio'])
+
+            
+           
 
 
+        except Exception as e:
+            data['error']= str(e)
+        return redirect('rutinas')
 
 
 
