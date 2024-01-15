@@ -117,7 +117,7 @@ class UpdateRecomendacionDieta(isNutricionistaMixin,UpdateView):
     
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        data['titulo'] = 'Actulizar dieta'
+        data['titulo'] = 'Actualizar dieta'
         data['modulo'] = 'Dietas'
         data['url_modulo'] = reverse_lazy('lista_recomendaciones_dieta')
         data['icono'] = "bi bi-pencil-square"
