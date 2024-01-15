@@ -49,16 +49,13 @@
 
       <nav id="navbar" class="navbar">
         <ul>
-          <li><a class="nav-link scrollto active" href="#hero">Inico</a></li>
+          <li><a class="nav-link scrollto active" href="{% url "inicio_miembro" %}">Inico</a></li>
           <li><a class="nav-link scrollto" href="{% url "dietas" %}">Dietas</a></li>
           <li><a class="nav-link scrollto" href="{% url "rutinas" %}">Rutinas</a></li>
           <li><a class="nav-link scrollto o" href="{% url "crear_historialmiembro" %}">Bitacora</a></li>
           <li class="dropdown"><a href="#"><span>{{user.first_name}}</span><i class="bi bi-chevron-down"></i></a>
             <ul>
-              <li><a href="#">Configuración</a></li>
-              <li><a href="#">Información</a></li>
-              <li><a href="{% url "logout" %}">Cerrar sesión</a></li>
-              <li><a href="#">Contacto</a></li>
+              <li><a href="{% url "logout" %}"><i class="bi bi-box-arrow-right"> Cerrar sesión</i></a></li>
             </ul>
           </li>
         
@@ -113,7 +110,7 @@
                 <i class="bx bxl-dribbble"></i>
               </div>
               <h4>Rutinas</h4>
-              <p>Puedes recibir recomendaciones de rutinas o crear las tuyas.</p>
+              <p>Puedes recibir recomendaciones de rutinas creados por tus entrenadores</p>
             </div>
           </a>
           </div>
@@ -128,7 +125,7 @@
                 <i class='bx bx-fork' ></i>
               </div>
               <h4>Dietas</h4>
-              <p>Puedes obtener recomendaciones de dietas basadas en profesionales o crear las tuyas para la semana.</p>
+              <p>Puedes obtener recomendaciones de dietas basadas en profesionales.</p>
             </div>
           </a>
           </div>
@@ -153,7 +150,7 @@
 
       </div>
     </section><!-- End Sevices Section -->
-    <section id="counts" class="counts section-bg">
+    <section id="counts" class="counts section-bg my-5">
       <div class="container">
 
         <div class="row justify-content-end">
@@ -185,7 +182,7 @@
 
           <div class="col-lg-3 col-md-5 col-6 d-md-flex align-items-md-stretch">
             <div class="count-box">
-              <span>{{venta_membresia.membresia.nombre}}</span>
+              <span class='text-primary'>{{venta_membresia.membresia.nombre}}</span>
               <p>Membresía</p>
             </div>
           </div>
