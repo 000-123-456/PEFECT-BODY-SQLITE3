@@ -1,304 +1,31 @@
-{% extends 'layout/userUI/index.html' %} {% load static %} {% block titulo %}
-{{titulo}} {% endblock titulo %} {% block lib %}
-<style>
-  :root {
-    --orange: #ffd200;
-    --darkorange: #ffc200;
-    --platinum: #1f2124;
-    --black: #2b2d42;
-    --white: #fff;
-    --thumb: #edf2f4;
-    --color-one: #1f2124;
-    --color-two: #383a3f;
-    --color-three: #f68657;
-    --color-four: #555049;
-    --amarillo-suave: #fff985;
-  }
-
-  .section-dietas {
-    font: 16px / 24px "Rubik", sans-serif;
-    color: var(--black);
-    background-image: url("{% static "assets/img/fondoCard.jpg" %}"); 
-    /*background-color: var(--black);*/
-    margin: 50px 0 10px 10px;
-    margin-right: 10px;
-    padding: 0.5rem;
-    border-radius: 20px;
-  }
-
-  .container-dieta {
-    max-width: 1400px;
-    padding: 0 20px;
-    margin: 0 auto;
-    margin-bottom: 20px;
- 
-    
-   
-  }
-
-  .container-dieta h2 {
-    font-size: 32px;
-    margin-bottom: 0.25em;
-    margin-top: 0.25em;
-    color: #fff;
-  }
-
-  .cards-dieta {
-    display: grid;
-    grid-auto-columns: 100%;
-    grid-column-gap: 10px;
-    grid-auto-flow: column;
-    padding: 25px 0px;
-    list-style: none;
-    overflow-x: scroll;
-    -ms-scroll-snap-type: x mandatory;
-    scroll-snap-type: x mandatory;
-  }
-
-  .card-dieta {
-    display: flex;
-        flex-direction: column;
-        padding: 20px;
-        background: var(--thumb);
-        border-radius: 12px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 15%);
-        scroll-snap-align: start;
-        transition: all 0.2s;
-        color: var(--black);
-  }
-
-  .card-dieta:hover {
-    color: var(--platinum);
-    background: var(--orange);
-  }
-
-  .card-dieta .card-dieta-title {
-    font-size: 20px;
-  }
-
-  .card-dieta .card-dieta-content {
-    margin: 20px 0;
-    max-width: 85%;
-  }
-
-  .card-dieta .card-dieta-link-wrapper {
-    margin-top: auto;
-  }
-  .text-white {
-    color: #edf2f4;
-  }
-  .card-dieta .card-dieta-link {
-    display: inline-block;
-    text-decoration: none;
-    color: var(--platinum);
-    background: var(--orange);
-    padding: 6px 12px;
-    border-radius: 8px;
-    transition: background 0.2s;
-  }
-
-  .card-dieta:hover .card-dieta-link {
-    background: var(--platinum);
-    color: var(--thumb);
-  }
-  .card-dieta:hover span{
-    
-    color: var(--black);
-  }
-
-  .cards-dieta::-webkit-scrollbar {
-    height: 12px;
-  }
-
-  .cards-dieta::-webkit-scrollbar-thumb,
-  .cards-dieta::-webkit-scrollbar-track {
-    border-radius: 92px;
-  }
-
-  .cards-dieta::-webkit-scrollbar-thumb {
-    background: var(--darkorange);
-  }
-
-  .cards-dieta::-webkit-scrollbar-track {
-    background: var(--thumb);
-  }
-
-  @media (min-width: 500px) {
-    .cards-dieta {
-      grid-auto-columns: calc(50% - 10px);
-      grid-column-gap: 20px;
-    }
-  }
-
-  @media (min-width: 700px) {
-    .cards-dieta {
-      grid-auto-columns: calc(calc(100% / 3) - 20px);
-      grid-column-gap: 30px;
-    }
-  }
-
-  @media (min-width: 1100px) {
-    .cards-dieta {
-      grid-auto-columns: calc(25% - 30px);
-      grid-column-gap: 40px;
-    }
-  }
-  .bg-platinum {
-    background-color: var(--black);
-    border-radius: 30px;
-  }
-  .nav-pills .nav-link.active,
-  .nav-pills .show > .nav-link {
-    color: var(--black) !important;
-    background-color: var(--darkorange);
-  }
-  .nav-pills .nav-link {
-    border-radius: 0.25rem;
-    border-radius: 20px;
-    color: #ffc200 !important;
-  }
-  .nav-pills .nav-link a {
-    color: var(--darkorange) !important;
-    text-decoration: none;
-    background-color: transparent;
-    -webkit-text-decoration-skip: objects;
-  }
-  .nav-pills .nav-link a:hover {
-    color: #b48e0e;
-    text-decoration: none;
-    background-color: transparent;
-    -webkit-text-decoration-skip: objects;
-  }
-  
-  {% comment %} Estilos de carta de dietas {% endcomment %}
-  
-    .diet-card {
-      margin: 20px;
-      background-color: var(--thumb);
-    }
-
-    .custom-header-1 {
-      background-color: var(--black);
-      color: #ffd200;
-      
-    }
-    .custom-header-1 a {
-      cursor: pointer;
-      color: #ffd200;
-    }
-    .custom-body-1 {
-      background-color: var(--thumb);
-      color: black;
-    }
-
-    .custom-body-1 ul {
-      list-style: none; /* Elimina los puntos de la lista */
-    }
-    .custom-body-1 .icon-image {
-      width: 50px; /* Ajusta el ancho de la imagen según tus necesidades */
-      height: 50px; /* Ajusta la altura de la imagen según tus necesidades */
-      vertical-align: middle; /* Alinea la imagen verticalmente en el centro */
-      margin-right: 10px; /* Agrega un margen a la derecha de la imagen para separarla del texto */
-    }
-    .card-dieta .icon-image {
-        width: 50px; /* Ajusta el ancho de la imagen según tus necesidades */
-        height: 50px; /* Ajusta la altura de la imagen según tus necesidades */
-        vertical-align: middle; /* Alinea la imagen verticalmente en el centro */
-        margin-right: 10px; /* Agrega un margen a la derecha de la imagen para separarla del texto */
-      }
-
-    .calories {
-      font-size: 12px;
-      color: gray;
-    }
-    .custom-rounded {
-  border-radius: 30px; /* Ajusta el valor del radio según tus preferencias */
-  overflow: hidden; /* Esto oculta el contenido que se desborde más allá de los bordes redondeados */
-  background-color: black; /* Color de fondo deseado */
-  color: #ffd200; /* Color de texto deseado */
-}
-
-.custom-header-1 {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  
-  .custom-header-1 h3 {
-    margin: auto; /* Centra horizontalmente el texto del día de la dieta */
-  }
-  
-  #carouselExampleControls {
-    position: relative;
-    transition-duration: 0.2s; /* Ajusta la duración de la transición según tu preferencia */
-  }
-  .carousel-inner {
-    transition: transform 0.2s ease-in-out; /* Ajusta la duración y el efecto de la transición según tus preferencias */
-  }
-  .carousel-control-prev,
-  .carousel-control-next {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 1;
-  }
-  
-  .carousel-control-prev .carousel-control-prev-icon,
-  .carousel-control-next .carousel-control-next-icon {
-    color: #ffd200 !important;
-  }
-  
-  .card {
-    position: relative;
-    padding-top: 40px; /* Ajusta según sea necesario para dar espacio para los botones fijos */
-  }
-  .input-dietas input{
-    background: transparent !important;
-    color: var(--thumb) !important;
-    
-    
-  }
-  .input-dietas input::placeholder{
-    color: gray;
-  }
-  .input-dietas select {
-    background-color: transparent !important; /* Cambia el fondo del elemento select */
-    color: gray; /* Cambia el color del texto de las opciones */
-  }
-  
-  
-  .input-dietas select option {
-    background-color: #000 !important; /* Cambia el fondo de las opciones del select */
-    color: var(--thumb); /* Cambia el color del texto de las opciones */
-  }
-  .input-dietas select button {
-    width:100%;
-  }
- 
-  
-  
-  
-</style>
+{% extends 'layout/userUI/index.html' %} 
+{% load static %} 
+{% load custom_filters %}
+{% block titulo %}{{titulo}} {% endblock titulo %} {% block lib %}
+{% include "AppControlDeClientes/Dietas/components/style.html" %}
 {% endblock lib %} {% block linkModulo %}
 <li><a href="{% url 'dietas' %}">{{modulo}}</a></li>
 {% endblock linkModulo %} {% block contenido %}
 
 <!-- ======= Contact Section ======= -->
 <div class="modal fade" id="guardar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header bg-warning">
-        <h5 class="modal-title text-black" id="exampleModalLabel">Guardar Rutina</h5>
+        <h5 class="modal-title text-black" id="exampleModalLabel">Guardar dieta</h5>
         <button type="button" class="close bg-warning" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body bg-dark">
-        <form>
+        
+        <form method="post" enctype="multipart/form-data" id='guardarForm'>
+          {% csrf_token %}
+          <input type="hidden" name="action" value="guardar">
+          <input type="hidden" name="idDieta" value="" id='idDieta'>
           <div class="form-group">
             <label for="recipient-name" class="col-form-label">Día:</label>
-            <select class="form-select">
+            <select class="form-select" name='dia'>
               <option value='1'>Lunes</option>
               <option value='2'>Martes</option>
               <option value='3'>Miercoles</option>
@@ -308,11 +35,12 @@
               <option value='7'>Domingo</option>
               </select>
           </div>
-        </form>
+       
       </div>
-      <div class="modal-footer bg-dark">
+      <div class="modal-footer bg-dark d-flex justify-content-center">
+        <button type="button" class="btn btn-warning" onclick="mostrarAlerta()">Guardar</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-        <button type="button" class="btn btn-warning">Guardar</button>
+      </form>
       </div>
     </div>
   </div>
@@ -340,7 +68,7 @@
           role="tab"
           aria-controls="pills-profile"
           aria-selected="false"
-          >Mis Rutinas</a
+          >Mis dietas</a
         >
       </li>
     </ul>
@@ -354,8 +82,9 @@
     >
     <div class="container">
     <div class="row">
-        <div class="col-md-12">
-            <h3 class="text-warning">Informacion</h3>
+        <div class="col-md-12 d-flex justify-content-between">
+            <h3 class="text-warning">Datos</h3>
+            <button type="button" class='btn btn-outline-info my-2' onclick="ayudaRecomendacion()">Ayuda</button>
         </div>
 
 
@@ -364,18 +93,26 @@
           {% csrf_token %}
         <div class="row gy-2 gx-md-3">
           <input type="hidden" name="action" value="recomendaciones">
+          
             <div class="col-6 form-group input-dietas">
-              <input type="text" name="altura" class="form-control" id="altura" placeholder="Altura(cm)" required="" autocomplete='none'>
-            </div>
-            <div class="col-6 form-group input-dietas">
-                <select class="form-select" aria-label="Default select example" name='actividad_fisica'>
-                    <option selected="">Nivel de Experiencia</option>
-                    <option value="1">Principiante</option>
-                    <option value="2">Intermedio</option>
-                    <option value="3">Avanzado</option>
+                <select class="form-select" aria-label="Default select example" name='nivel_experiencia'>
+                  <option selected="">Nivel de Experiencia</option>
+                  <option value="1">Principiante</option>
+                  <option value="2">Intermedio</option>
+                  <option value="3">Avanzado</option>
                   </select>
             </div>
-
+            <div class="form-group col-6 input-dietas">
+                <select class="form-select" aria-label="Default select example" name='tipo_ejercicio'>
+                  <option selected="">Tipo de Ejercicio</option>
+                  <option value="1">Abdomen</option>
+                  <option value="2">Biceps</option>
+                  <option value="3">Espalda</option>
+                  <option value="4">Hombros</option>
+                  <option value="5">Pectorales</option>
+                  <option value="6">Piernas</option>
+                  </select>
+            </div>
             <div class="col-6 input-dietas"><button type="submit" class='btn btn-outline-warning'>Generar</button></div>
           </div>
         </form>
@@ -398,359 +135,29 @@
       aria-labelledby="pills-profile-tab"
     >
     <section class="testimonials">
-        <div class="container my-4">
-          <div
-            id="carouselExampleControls"
-            class="carousel slide no-autoplay"
-            data-ride="carousel"
-          >
-           
-  
-            <!-- Diapositivas -->
-            <div class="carousel-inner">
-              <!-- Diapositiva 1 -->
-              <div class="carousel-item active">
-                <!-- Contenido de la carta -->
-                <!-- Inicio carta -->
-                <div class="card custom-card-1 custom-rounded">
-                  <div class="card-header custom-header-1">
-                    <a
-                      class="carousel-control-prev"
-                      href="#carouselExampleControls"
-                      role="button"
-                      data-slide="prev"
-                    >
-                      <span
-                        class="carousel-control-prev-icon"
-                        aria-hidden="true"
-                      ></span>
-                      <span class="sr-only"></span>
-                    </a>
-                    <h3 class="text-center">Lunes</h3>
-                    <a
-                      class="carousel-control-next"
-                      href="#carouselExampleControls"
-                      role="button"
-                      data-slide="next"
-                    >
-                      <span
-                        class="carousel-control-next-icon"
-                        aria-hidden="true"
-                      ></span>
-                      <span class="sr-only"></span>
-                    </a>
-                  </div>
-                  <div class="card-body custom-body-1 diet-card-container">
-                    <div class="diet-card">
-                      <h4>
-                        <img
-                          src="{% static "assets/img/rutinas/sentadilla-split-con-mancuerna.png" %}"
-                          alt="pierna"
-                          class="icon-image"
-                        />
-                        Ejercicios para Piernas 
-                      </h4>
-  
-                      <ul class="meal-list">
-                        <li>
-                          <span class="food-name">Sentadilla - </span>
-                          <span class="portion">Con Mancuerna</span>
-                          <br />
-                          <span class="calories">Series</span>
-                        </li>
-                        <li>
-                          <span class="food-name">8 - </span>
-                          <span class="portion">12</span>
-                          <br />
-                          <span class="calories">repeticiones</span>
-                        </li>
-                        <!-- Agregar más alimentos aquí con las calorías correspondientes -->
-                      </ul>
-
-                      
-                      <h4>
-                        <img
-                          src="{% static "assets/img/rutinas/sentadilla-split-con-barra.png" %}"
-                          alt="pierna"
-                          class="icon-image"
-                        />
-                        
-                      </h4>
-  
-                      <ul class="meal-list">
-                        <li>
-                          <span class="food-name">Sentadilla - </span>
-                          <span class="portion">Con Barra</span>
-                          <br />
-                          <span class="calories">Series</span>
-                        </li>
-                        <li>
-                          <span class="food-name">8 - </span>
-                          <span class="portion">10</span>
-                          <br />
-                          <span class="calories">repeticiones</span>
-                        </li>
-                        <!-- Agregar más alimentos aquí con las calorías correspondientes -->
-                      </ul>
-                      <h4>
-                        <img
-                          src="{% static "assets/img/dietas/sentadilla-pistola.png" %}"
-                          alt="pierna"
-                          class="icon-image"
-                        />
-                        
-                      </h4>
-  
-                      <ul class="meal-list">
-                        <li>
-                          <span class="food-name">Sentadillas - </span>
-                          <span class="portion">Pistola</span>
-                          <br />
-                          <span class="calories">Series</span>
-                        </li>
-                        <li>
-                          <span class="food-name">12 - </span>
-                          <span class="portion">15</span>
-                          <br />
-                          <span class="calories">repeticiones</span>
-                        </li>
-                        <!-- Agregar más alimentos aquí con las calorías correspondientes -->
-                      </ul>
-                      <h4>
-
-
-                        <img
-                          src="{% static "assets/img/rutinas/sentadilla-buso.png" %}"
-                          alt="pierna"
-                          class="icon-image"
-                        />
-                      </h4>
-  
-                      <ul class="meal-list">
-                        <li>
-                          <span class="food-name">Sentadilla - </span>
-                          <span class="portion">Inclinadado en buso</span>
-                          <br />
-                          <span class="calories">Series</span>
-                        </li>
-                        <li>
-                          <span class="food-name">10 - </span>
-                          <span class="portion">12</span>
-                          <br />
-                          <span class="calories">repeticiones</span>
-                        </li>
-                        <!-- Agregar más alimentos aquí con las calorías correspondientes -->
-                      </ul>
-                      <h4>
-
-
-                        <img
-                          src="{% static "assets/img/rutinas/sentadilla-pesa-rusa.png" %}"
-                          alt="pierna"
-                          class="icon-image"
-                        />
-                        
-                      </h4>
-  
-                      <ul class="meal-list">
-                        <li>
-                          <span class="food-name">Sentadilla - </span>
-                          <span class="portion">Con Pesa Rusa</span>
-                          <br />
-                          <span class="calories">Series</span>
-                        </li>
-                        <li>
-                          <span class="food-name">8 - </span>
-                          <span class="portion">10</span>
-                          <br />
-                          <span class="calories">repeticiones</span>
-                        </li>
-                        <!-- Agregar más alimentos aquí con las calorías correspondientes -->
-                      </ul>
-                      <h4>
-
-
-                        <img
-                          src="{% static "assets/img/rutinas/sentadilla-en-pendulo.png" %}"
-                          alt="pierna"
-                          class="icon-image"
-                        />
-                        
-                      </h4>
-  
-                      <ul class="meal-list">
-                        <li>
-                          <span class="food-name">Sentadilla - </span>
-                          <span class="portion">En Maquina Pendulo</span>
-                          <br />
-                          <span class="calories">Series</span>
-                        </li>
-                        <li>
-                          <span class="food-name">8 - </span>
-                          <span class="portion">10</span>
-                          <br />
-                          <span class="calories">repeticiones</span>
-                        </li>
-                        <!-- Agregar más alimentos aquí con las calorías correspondientes -->
-                      </ul>
-                    </div>
-                  </div>
-  
-                  <!-- Contenido de la carta aquí -->
-                </div>
-                <!-- Fin carta -->
+       
+        <!--Inicio de carrusel de cartas-->
+        {% for dieta, comidas in dietas_y_comidas_del_miembro.items %}
+        <div class="section-dietas mx-1"><div class="container-dieta"><div class="d-flex justify-content-between"><h3 class="text-warning">{{dieta.get_dia_display}}</h3> <button class="btn btn-danger" onclick="borrarDieta({{dieta.id}})"><i class="bi bi-trash"></i> Borrar</button></div><ul class="cards-dieta">
+          {% for comida in comidas %}
+          <li class="card-dieta">
+          
+          <div>
+              <h3 class="card-dieta-title">
+                  <img src="{% get_comida_image comida.tiempo %}" alt="4" class="icon-image img-fluid">
+                  {{ comida.get_tiempo_display }}
+              </h3>
+              <div class="card-dieta-content">
+                  <p>{{comida.detalle}}</p><br>
               </div>
-
-
-
-              <!-- Diapositiva 2 -->
-              <div class="carousel-item">
-                <!-- Contenido de la carta -->
-                <!-- Inicio carta -->
-                <div class="card custom-card-1 custom-rounded">
-                  <div class="card-header custom-header-1">
-                    <a
-                      class="carousel-control-prev"
-                      href="#carouselExampleControls"
-                      role="button"
-                      data-slide="prev"
-                    >
-                      <span
-                        class="carousel-control-prev-icon"
-                        aria-hidden="true"
-                      ></span>
-                      <span class="sr-only"></span>
-                    </a>
-                    <h3 class="text-center">Martes</h3>
-                    <a
-                      class="carousel-control-next"
-                      href="#carouselExampleControls"
-                      role="button"
-                      data-slide="next"
-                    >
-                      <span
-                        class="carousel-control-next-icon"
-                        aria-hidden="true"
-                      ></span>
-                      <span class="sr-only"></span>
-                    </a>
-                  </div>
-                  <div class="card-body custom-body-1 diet-card-container">
-                    <div class="diet-card">
-                        <h4>
-                            <img
-                              src="{% static "assets/img/rutinas/remo-sentado-en-polea.png" %}"
-                              alt="espalda"
-                              class="icon-image"
-                            />
-                            Espalda
-La espalda está compuesta por varios músculos (dorsales, infraespinoso, trapecio, entre otros).
- Es la constante ejecución de ejercicios lo que le dará volumen y armonía a tu espalda con la anhelada forma de “V“. Comienza con los siguientes ejercicios.
-                          </h4>
-      
-                          <ul class="meal-list">
-                            <li>
-                              <span class="food-name">Remo - </span>
-                              <span class="portion">Sentado en Polea</span>
-                              <br />
-                              <span class="calories">Series</span>
-                            </li>
-                            <li>
-                              <span class="food-name">12 - </span>
-                              <span class="portion">15</span>
-                              <br />
-                              <span class="calories">repeticiones</span>
-                            </li>
-                            <!-- Agregar más alimentos aquí con las calorías correspondientes -->
-                          </ul>
-                        
-                          
-      
-                       
-                    </div>
-                  </div>
-  
-                  <!-- Contenido de la carta aquí -->
-                </div>
-                <!-- Fin carta -->
-              </div>
-
-
-
-
-              <!-- Diapositiva 3 -->
-              <div class="carousel-item">
-                <!-- Contenido de la carta -->
-                <!-- Inicio carta -->
-                <div class="card custom-card-1 custom-rounded">
-                  <div class="card-header custom-header-1">
-                    <a
-                      class="carousel-control-prev"
-                      href="#carouselExampleControls"
-                      role="button"
-                      data-slide="prev"
-                    >
-                      <span
-                        class="carousel-control-prev-icon"
-                        aria-hidden="true"
-                      ></span>
-                      <span class="sr-only"></span>
-                    </a>
-                    <h3 class="text-center">Miercoles</h3>
-                    <a
-                      class="carousel-control-next"
-                      href="#carouselExampleControls"
-                      role="button"
-                      data-slide="next"
-                    >
-                      <span
-                        class="carousel-control-next-icon"
-                        aria-hidden="true"
-                      ></span>
-                      <span class="sr-only"></span>
-                    </a>
-                  </div>
-                  <div class="card-body custom-body-1 diet-card-container">
-                    <div class="diet-card">
-                        <h4>
-                            <img
-                              src="{% static "assets/img/rutinas/curl-con-barra.png" %}"
-                              alt="Biceps"
-                              class="icon-image"
-                            />
-                            Bíceps
-Es un músculo ubicado en la región superior del brazo, dividido en dos porciones o cabezas: corta
- y larga. No esperes más, maximiza tus ganancias musculares en bíceps con los siguientes ejercicios.
-                          </h4>
-      
-                          <ul class="meal-list">
-                            <li>
-                              <span class="food-name">Curl - </span>
-                              <span class="portion">Con Barra Z</span>
-                              <br />
-                              <span class="calories">series</span>
-                            </li>
-                            <li>
-                              <span class="food-name">12 - </span>
-                              <span class="portion">15</span>
-                              <br />
-                              <span class="calories">repeticiones</span>
-                            </li>
-                            <!-- Agregar más alimentos aquí con las calorías correspondientes -->
-                          </ul>
-
-                       
-                    </div>
-                  </div>
-  
-                  <!-- Contenido de la carta aquí -->
-                </div>
-                <!-- Fin carta -->
-              </div>
-            </div>
           </div>
-        </div>
-        <!--//container-->
+          
+          
+      </li>
+      {% endfor %}
+    </ul></div></div>
+       <!--Inicio de carrusel de cartas-->
+       {% endfor %}
       </section>
     </div>
     <div
@@ -827,7 +234,7 @@ Es un músculo ubicado en la región superior del brazo, dividido en dos porcion
 
           try {
               // Realiza una solicitud Fetch utilizando async/await
-              const response = await fetch("{% url 'dietas' %}", {
+              const response = await fetch("{% url 'rutinas' %}", {
                   method: 'POST',
                   body: formData
               });
@@ -836,48 +243,15 @@ Es un músculo ubicado en la región superior del brazo, dividido en dos porcion
               const data = await response.json();
               console.log(data)
               // Actualiza el contenido de tu página según la respuesta del servidor
-              if (data.success && data.dietas) {
+              if (data.success && data.rutinas) {
                 const parentElement = document.getElementById('pills-home');
 
                 // Eliminar elementos con la clase "section-dietas"
             const elementosEliminar = parentElement.querySelectorAll('.section-dietas');
             elementosEliminar.forEach(elemento => elemento.remove());
-            function getImagenUrl(tipo) {
-              // Define la lógica para obtener la URL de la imagen según el tipo de comida
-              switch (tipo) {
-                  case 2:
-                      return '{% static "assets/img/rutinas/sentadilla-split-con-mancuerna.png %}';
-                  case 4:
-                      return '{% static "assets/img/dietas/pollo.png" %}';
-                  case 6:
-                      return '{% static "assets/img/dietas/cena.png" %}';
-                  default:
-                      return '{% static "assets/img/dietas/rotura.png" %}';
-              }
-          }
-          function getTiempo(tipo) {
-            // Define la lógica para obtener la URL de la imagen según el tipo de comida
-            switch (tipo) {
-                case 1:
-                    return 'Merienda';
-                case 2:
-                    return 'Desayuno';
-                case 3:
-                    return 'Refrigerio de media mañana';
-                case 4:
-                    return 'Almuerzo';
-                case 5:
-                    return 'Refrigerio de media tarde';
-                case 6:
-                    return 'Cena';
-                case 7:
-                    return 'Refrigerio de noche';
 
-                default:
-                    return '{% static "assets/img/rutinas/rotura.png" %}';
-            }
-        }
-                data.dietas.forEach(dieta => {
+
+                data.rutinas.forEach(rutina => {
                     const sectionDieta = document.createElement('div');
                     sectionDieta.classList.add('section-dietas', 'mx-1');
 
@@ -891,13 +265,35 @@ Es un músculo ubicado en la región superior del brazo, dividido en dos porcion
                     tituloElement.classList.add('text-warning');
                     tituloElement.textContent = dieta.nombre;
 
+                    const inputID = document.createElement('input');
+                    inputID.type = 'hidden';  // Establecer el tipo de entrada como oculto
+                    inputID.value = dieta.id;  // Asignar el valor deseado
+
+
                     const guardarBtn = document.createElement('button');
                     guardarBtn.setAttribute('data-toggle', 'modal')
                     guardarBtn.setAttribute('data-target', '#guardar');
                     guardarBtn.classList.add('btn', 'btn-warning');
                     guardarBtn.innerHTML = '<i class="bi bi-bookmark-plus"></i> Guardar';
+                    // Obtener referencia al segundo input
 
+    // Obtener referencia al segundo input
+    const inputIDdieta = document.getElementById('idRutina');
+
+ 
+    // Asignar el evento de clic al botón (fuera del bloque anterior)
+    guardarBtn.addEventListener('click', function() {
+        // Obtener el valor del primer input
+        const valorInput = inputID.value;
+
+        // Asignar el valor al segundo input
+        inputIDdieta.value = valorInput;
+
+        // Hacer algo más con el valor si es necesario
+        console.log('Valor asignado a inputIDdieta:', inputIDdieta.value);
+    });
                     dFlexElement.appendChild(tituloElement);
+                    dFlexElement.appendChild(inputID);
                     dFlexElement.appendChild(guardarBtn);
 
                     containerDieta.appendChild(dFlexElement);
@@ -912,12 +308,15 @@ Es un músculo ubicado en la región superior del brazo, dividido en dos porcion
                         const contenido = `
                             <div>
                                 <h3 class="card-dieta-title">
-                                    <img src="${getImagenUrl(comida.tiempo)}" alt="${(comida.tiempo)}" class="icon-image img-fluid" />
-                                    ${getTiempo(comida.tiempo)}
+                                  <img src="${(ejercicio.imagen)}" alt="${(ejercicio.nombre)}" class="icon-image img-fluid" />
+                                  ${getTiempo(ejercicio.nombre)}
                                 </h3>
                                 <div class="card-dieta-content">
-                                    <p>${comida.detalle}</p><br>
+                                    <p>${ejercicio.detalle_ejercicio}</p><br>
                                 </div>
+                                <div class="card-dieta-content">
+                                  <p>${ejercicio.recomendacion}</p><br>
+                              </div>
                             </div>
                             
                         `;
@@ -939,7 +338,102 @@ Es un músculo ubicado en la región superior del brazo, dividido en dos porcion
           }
       });
   });
-</script>
 
+  
+</script>
+<script>
+  function mostrarAlerta() {
+      const idRutina = document.getElementById('idRutina').value;
+
+      const swalWithBootstrapButtons = Swal.mixin({
+          customClass: {
+              confirmButton: 'btn btn-warning',
+              cancelButton: 'btn btn-danger'
+          },
+          buttonsStyling: false
+      })
+
+      swalWithBootstrapButtons.fire({
+          title: `¿Seguro que desea guardar esta rutina? Si ya tiene una para ese día se sobreescribirá.`,
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Confirmar',
+          cancelButtonText: 'Cancelar',
+          reverseButtons: false
+      }).then((result) => {
+          if (result.isConfirmed) {
+              // Aquí puedes realizar alguna acción adicional si se confirma la alerta
+              document.getElementById('guardarForm').submit();
+          } else if (result.dismiss === Swal.DismissReason.cancel) {
+              swalWithBootstrapButtons.fire(
+                  'Operacion cancelada',
+                  'La dieta no se ha guardado 🙂',
+                  'error'
+              )
+          }
+      });
+  }
+
+  function borrarRutina(idRutina) {
+    const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+            confirmButton: 'btn btn-warning',
+            cancelButton: 'btn btn-danger'
+        },
+        buttonsStyling: false
+    })
+
+    swalWithBootstrapButtons.fire({
+        title: `¿Seguro que desea borrar esta rutina de su lista?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar',
+        reverseButtons: false
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Aquí puedes realizar alguna acción adicional si se confirma la alerta
+            window.location.href = "Dietas/eliminar/"+idRutina+"/"
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+            swalWithBootstrapButtons.fire(
+                'Operacion cancelada',
+                'La dieta no se ha eliminado 🙂',
+                'error'
+            )
+        }
+    });
+}
+
+//-------------------------------Funcion de ayuda para recomendaciones--------------------------------------
+const driver = window.driver.js.driver;
+function ayudaRecomendacion() {
+const driverObj = driver({
+  popoverClass: 'driverjs-theme',
+  nextBtnText: 'Siguiente',
+  prevBtnText: 'Anterior',
+  doneBtnText: 'Completado',
+  showButtons: [
+    'next',
+    'previous',
+    'done'
+  ],
+  steps: [
+  { popover: { title: '¡Hola! 😊', description: 'Bienvenido al tour guiado por la sección de miembros del gimnasio. Aquí te explicaré todas las funciones disponibles y resolveré cualquier duda que puedas tener. ¡Empecemos!' } },
+  { element: '#nuevo', popover: { title: 'Nuevo Miembro ➕', description: 'Haz clic en este botón para agregar un nuevo miembro al gimnasio.', side: 'left', align: 'start' }},
+  { element: '#papelera', popover: { title: 'Papelera de Miembros 🗑️', description: 'Este botón te llevará a la papelera de miembros. Aquí podrás ver y restaurar miembros que hayan sido dados de baja previamente.', side: 'bottom', align: 'start' }},
+  { element: '.table-responsive', popover: { title: 'Listado de Miembros 🏋️', description: 'En esta tabla se muestra información detallada de todos los miembros del gimnasio.', side: 'in', align: 'start' }},
+  { element: '#data_filter', popover: { title: 'Buscar 🔍', description: 'Utiliza este campo para escribir y filtrar información específica de los miembros en la tabla.', side: 'left', align: 'start' }},
+  { element: '.sorting', popover: { title: 'Ordenar Datos 🔄', description: 'Haz clic en los encabezados de la tabla para ordenar la información de los miembros.', side: 'right', align: 'start' }},
+  { element: '.btnVP', popover: { title: 'Ver Detalles 👁️‍🗨️', description: 'Al hacer clic en este botón, podrás ver información detallada de cada miembro y verificar el estado de su membresía.', side: 'right', align: 'start' }},
+  { element: '#menu-opciones', popover: { title: 'Opciones Miembro ⚙️', description: 'Este botón despliega opciones para actualizar datos, asignar membresía y dar de baja a un miembro.', side: 'right', align: 'start' }},
+  { element: '#data_info', popover: { title: 'Información del Listado 📊', description: 'Aquí se muestra la cantidad total de miembros y cuántos están siendo visualizados actualmente.', side: 'right', align: 'start' }},
+  { element: '#data_paginate', popover: { title: 'Páginas 📄➡️', description: 'Navega entre las páginas para ver diferentes conjuntos de miembros en el listado.', side: 'left', align: 'start' }},
+  { popover: { title: '¡Fin del tour! 😁', description: 'Espero que esta presentación sea la que estás buscando. Puedes ver el tour las veces que gustes 😊' }}
+  ]
+});
+
+driverObj.drive();
+}
+</script>
 
 {% endblock js %}

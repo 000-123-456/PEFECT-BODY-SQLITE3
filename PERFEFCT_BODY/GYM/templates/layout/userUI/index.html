@@ -51,7 +51,7 @@
         <ul>
           <li><a class="nav-link scrollto active" href="#hero">Inico</a></li>
           <li><a class="nav-link scrollto" href="{% url "dietas" %}">Dietas</a></li>
-          <li><a class="nav-link scrollto" href="#services">Rutinas</a></li>
+          <li><a class="nav-link scrollto" href="{% url "rutinas" %}">Rutinas</a></li>
           <li><a class="nav-link scrollto o" href="{% url "crear_historialmiembro" %}">Bitacora</a></li>
           <li class="dropdown"><a href="#"><span>{{user.first_name}}</span><i class="bi bi-chevron-down"></i></a>
             <ul>
@@ -104,6 +104,7 @@
 
         <div class="row">
           <div class="col-lg-4 col-md-6 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="100">
+            <a href="{% url "rutinas" %}">
             <div class="icon-box iconbox-blue">
               <div class="icon">
                 <svg width="100" height="100" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
@@ -111,9 +112,10 @@
                 </svg>
                 <i class="bx bxl-dribbble"></i>
               </div>
-              <h4><a href="">Rutinas</a></h4>
+              <h4>Rutinas</h4>
               <p>Puedes recibir recomendaciones de rutinas o crear las tuyas.</p>
             </div>
+          </a>
           </div>
 
           <div class="col-lg-4 col-md-6 d-flex align-items-stretch mt-4 mt-md-0" data-aos="zoom-in" data-aos-delay="200">

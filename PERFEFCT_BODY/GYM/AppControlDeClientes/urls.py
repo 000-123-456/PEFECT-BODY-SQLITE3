@@ -2,6 +2,8 @@ from . import views
 from django.urls import path
 from django.contrib.auth.decorators import login_required
 from AppControlDeClientes.views_dietas.Dietas.views import CreateRecomendacionComida, CreateRecomendacionDieta, ListBajasRecomendacionDieta, ListDietas, ListRecomendacionComida, ListRecomendacionDieta, UpdateRecomendacionComida, UpdateRecomendacionDieta, altaDieta, bajaDieta, eliminar_comida, eliminar_mi_dieta
+from AppControlDeClientes.views_dietas.Dietas.views import ListDietas, eliminar_mi_dieta
+from AppControlDeClientes.views import ListaDeRutinas
 
 
 urlpatterns = [
@@ -70,10 +72,9 @@ urlpatterns = [
     path('Recomendaciones/Dietas/actualizar/<int:pk>/',login_required(UpdateRecomendacionDieta.as_view()), name='actualizar_recomendaciones_dieta'), 
 
     #--------------------------------------------RECOMENDACIONES DE COMIDAS-------------------------------------------------------
-    path('Recomendaciones/Dietas/comida/registro/<int:pk>/',login_required(CreateRecomendacionComida.as_view()), name='registro_recomendaciones_comida'),
-    path('Recomendaciones/Dietas/comida/lista/<int:pk>/',login_required(ListRecomendacionComida.as_view()), name='lista_recomendaciones_comida'),       
-    path('Recomendaciones/Dietas/comida/lista/<int:pk>/eliminar/<int:id>/',login_required(eliminar_comida), name='eliminar_recomendaciones_comida'),       
-    path('Recomendaciones/Dietas/comida/update/<int:pk>/',login_required(UpdateRecomendacionComida.as_view()), name='actualizar_recomendaciones_comida'),
+    path('Recomendaciones/Dietas/comida/registro/<int:pk>/',login_required(views.CreateRecomendacionComida.as_view()), name='registro_recomendaciones_comida'),
+    path('Recomendaciones/Dietas/comida/lista/<int:pk>/',login_required(views.ListRecomendacionComida.as_view()), name='lista_recomendaciones_comida'),       
+    
     
      #--------------------------------------------RECOMENDACIONES RUTINAS-------------------------------------------------------
     path('Recomendaciones/Rutinas/registro/',login_required(views.CreateRutina.as_view()), name='registro_Rutina'),
