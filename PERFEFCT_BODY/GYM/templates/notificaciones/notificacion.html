@@ -8,7 +8,7 @@
             <!-- Horizontal Form -->
            <!-- Flexbox container for aligning the toasts -->
         <h3 class='my-3 mx-3 text-white'><strong>Productos cerca de vencer</strong></h3>
-        {% for cv in notificaciones_productos_vencidos.compras_proximas_a_vencer %}
+        {% for cv in notificaciones_productos_vencidos.compras_proximas_a_vencer_totales %}
         <div aria-live="polite" aria-atomic="true" class="d-flex my-3 justify-content-center align-items-center w-100">
         
             <!-- Then put toasts within -->
@@ -41,7 +41,7 @@
       <div class="col-lg-5 bg-dark bg-gradient rounded-3 mx-3 my-3">        
         <!-- Horizontal Form -->
         <h3 class='my-3 mx-3 text-white'><strong>Nivel bajo de inventario</strong></h3>
-        {% for pb in notificaciones_productos_bajos.productos_bajos %}
+        {% for pb in notificaciones_productos_bajos.productos_bajos_totales %}
         <div aria-live="polite" aria-atomic="true" class="d-flex my-3 justify-content-center align-items-center w-100">
         
        <!-- Flexbox container for aligning the toasts -->

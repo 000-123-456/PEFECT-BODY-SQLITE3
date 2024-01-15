@@ -12,14 +12,7 @@
           <div class="col-lg-12 d-flex flex-row-reverse">
             <a href="#" class="btn btn-outline-dark mx-1" id="ayuda" onclick="tour ()">
               <b><i class="bi bi-info-circle"></i> Ayuda</b>
-            </a> 
-            <a href="{{url_papelera}}" class="btn btn-danger mx-1" id='papelera'>
-              <b><i class="bi bi-trash"></i> Papelera</b>
-            </a>
-            <a href="{% url 'registro_recomendaciones_dieta' %}" class="btn btn-primary mx-1" id='nuevo'>
-              <b><i class="bi bi-plus-lg"></i> Nueva dieta</b>
-            </a>
-            
+            </a>     
         </div>
           <br>
           <br>
@@ -48,32 +41,19 @@
                     <thead class="bg-warning text-black">
                       <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Nombre</th>
-                        <th scope="col">Calorías</th>
-                                    
-                        <th scope="col">Opciones</th>
+                        <th scope="col">¿Quién la hizo?</th>
+                        <th scope="col">¿Cuando la hizo?</th>
+                        <th scope="col">¿A qué horas la hizo?</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {% if dietas %} {% for d in dietas %}
+                      {% if asistencias %} {% for a in asistencias %}
                       <tr>
                         <td>{{forloop.counter}}</td>
-                        <td>{{ d.nombre }}</td>
-                        <td>{{ d.get_rango_display  }}</td>
+                        <td>{{ a.empleado.first_name }} {{ a.empleado.last_name }} - {{ a.empleado.get_rol_display }}</td>
+                        <td>{{ a.fecha  }}</td>
+                        <td>{{ a.fecha_created|time:'H:i' }}</td>
                         
-                       
-                        <td>
-                          <a class="btn btn-dark" href="#" data-bs-toggle="dropdown" id='menu-opciones' aria-expanded="false"><i class="bi bi-card-checklist"></i>
-                            <i class="dropdown-toggle"></i></a>
-                          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" style="">
-                            <li id='actualizar'><a class="dropdown-item" href="{% url "actualizar_recomendaciones_dieta" d.id %}"><strong><i class="bi bi-pencil-square"></i> Actualizar dieta</a></strong></li>
-                            <li><a class="dropdown-item text-danger" href="#" onclick="eliminarDieta({{d.id}})"><strong><i class="bi bi-trash btnUM"></i> Eliminar dieta</a></strong></li>
-                            <li><a class="dropdown-item" href="{% url "registro_recomendaciones_comida" d.id %}"><strong class="btnAM"> <b><i class="bi bi-plus-lg"></i> Agregar comida</a></strong></li>
-                              <li><a class="dropdown-item" href="{% url "lista_recomendaciones_comida" d.id %}"><strong class="btnAM"> <b><i class='bx bxs-bowl-hot'></i> Ver comidas</a></strong></li>
-                          </ul>
-                          
-                       
-                        </td>
                       </tr>
                   
                       {% endfor %} {% else %}
@@ -166,7 +146,7 @@
     }
 };
 
-  {% if dietas %}
+  {% if asistencias %}
   let table = new DataTable('#data', dataTableOptions);
   //remove the default 'Search' text for all DataTable search boxes
   $('[type=search]').each(function () {
@@ -191,14 +171,11 @@
    steps: [
    { popover: { title: '¡Hola! 😊', description: 'Comenzarás un tour guiado para explicarte lo que puedes hacer en esta sección de papelera de dietas y aclarar todas tus dudas.' } },
     
-   { element: '#nuevo', popover: { title: 'Nueva Dieta ➕', description: 'Haz clic en este botón para crear una nueva dieta.', side: 'left', align: 'start' }},
-   { element: '#papelera', popover: { title: 'Papelera 🗑️', description: 'Este botón te llevará a la papelera de dietas. Aquí podrás ver y restaurar dietas que hayan sido eliminadas previamente.', side: 'bottom', align: 'start' }}, 
-   { element: '.table-responsive', popover: { title: 'Listado de Dietas 🍏📋', description: 'En esta tabla se muestra información detallada de todas las dietas creadas por el nutricionista.', side: 'in', align: 'start' }},
-   { element: '#data_filter', popover: { title: 'Buscar 🔍', description: 'Utiliza este campo para escribir y filtrar información específica de las dietas en la tabla.', side: 'left', align: 'start' }},
-   { element: '.sorting', popover: { title: 'Ordenar Datos ↕️', description: 'Haz clic en los encabezados de la tabla para ordenar la información de las dietas.', side: 'right', align: 'start' }},
-   { element: '#menu-opciones', popover: { title: 'Opciones de Dietas ⚙️', description: 'Este botón despliega opciones para actualizar dietas, eliminar dietas, agregar comidas a la dieta y ver las comidas de la dieta.', side: 'right', align: 'start' }},
-   { element: '#data_info', popover: { title: 'Información del Listado 📊', description: 'Aquí se muestra la cantidad total de dietas y cuántas están siendo visualizadas actualmente.', side: 'right', align: 'start' }},
-   { element: '#data_paginate', popover: { title: 'Páginas 📄➡️', description: 'Navega entre las páginas para ver diferentes conjuntos de dietas en el listado.', side: 'left', align: 'start' }},
+   { element: '.table-responsive', popover: { title: 'Listado de Historial de Asistencias 📈✅', description: 'En esta tabla, se presenta un historial detallado de las asistencias de los miembros al gimnasio. Puedes identificar quién registró la asistencia, ya sea un empleado o un administrador, y conocer la fecha y hora exactas en que se llevó a cabo.', side: 'in', align: 'start' }},
+   { element: '#data_filter', popover: { title: 'Buscar 🔍', description: 'Utiliza este campo para escribir y filtrar información específica del historial de asistencias en la tabla.', side: 'left', align: 'start' }},
+   { element: '.sorting', popover: { title: 'Ordenar Datos ↕️', description: 'Haz clic en los encabezados de la tabla para ordenar la información del historial de asistencias según diferentes criterios.', side: 'right', align: 'start' }},
+   { element: '#data_info', popover: { title: 'Información del Listado 📊', description: 'Aquí se muestra la cantidad total de registros en el historial de asistencias y cuántos están siendo visualizados actualmente.', side: 'right', align: 'start' }},
+   { element: '#data_paginate', popover: { title: 'Páginas 📄➡️', description: 'Navega entre las páginas para ver diferentes conjuntos de registros en el historial de asistencias.', side: 'left', align: 'start' }},
    { popover: { title: '¡Fin del tour! 😁', description: 'Espero que esta presentación sea la que estás buscando. Puedes ver el tour las veces que gustes 😊' }}
    ]
 

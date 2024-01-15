@@ -15,7 +15,7 @@ from django.shortcuts import redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.urls import reverse
-from AppControlDeClientes.models import Miembro
+from AppControlDeClientes.models import Asistencia, Miembro, VentaMembresia
 from AppInventario.funciones import listar_productos_con_cantidad_baja, obtener_compras_proximas_a_vencer
 from AppControlDeClientes.op import generar_clave_temporal_segura
 from AppControlDeClientes.mixins import isAdministradorMixin, isMiembroMixin
@@ -31,6 +31,9 @@ class inicioMiembro(isMiembroMixin,TemplateView):
         context = super().get_context_data(**kwargs)
         context["titulo"] = 'Inicio'
         context["modulo"] = 'Home'
+        miembro = Miembro.objects.get(user = self.request.user)
+        context["miembro"] = miembro
+        context["venta_membresia"] = VentaMembresia.objects.get(id = miembro.venta_activa)
         return context
 
 
@@ -439,9 +442,31 @@ class NotificacionesView(TemplateView):
     template_name = 'notificaciones/notificacion.html'
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
+        context["modulo"] = "Notificaciones"
+        context["titulo"] = "Todas las notificaciones"
+        context["url_modulo"] = reverse_lazy('notificaciones')
         context["notificaciones_productos_bajos"] = listar_productos_con_cantidad_baja()
         context["notificaciones_productos_vencidos"] = obtener_compras_proximas_a_vencer()
         context["notificaciones_count"] = listar_productos_con_cantidad_baja()['count_productos_bajos_total']+obtener_compras_proximas_a_vencer()['cantidad_registros_total']
+        return context
+    
+class BitacoraVentaMembresiaView(isAdministradorMixin,TemplateView):
+    template_name = 'Bitacora/bitacoraVentaMembresia.html'
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["modulo"] = "Historial"
+        context["titulo"] = "Ventas de membresías"
+        context["url_modulo"] = reverse_lazy('bitacora_venta_membresia')
+        context["venta_membresia"] = VentaMembresia.objects.all().reverse()
+        return context
+class BitacoraAsistenciaView(isAdministradorMixin,TemplateView):
+    template_name = 'Bitacora/bitacoraAsistencia.html'
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["modulo"] = "Historial"
+        context["titulo"] = "Asistencias"
+        context["url_modulo"] = reverse_lazy('bitacora_asistencias')
+        context["asistencias"] = Asistencia.objects.all().reverse()
         return context
     
 

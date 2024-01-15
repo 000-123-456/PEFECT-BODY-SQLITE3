@@ -9,7 +9,7 @@
     
     <div class="row">
         <div class="col-lg-12 d-flex justify-content-between">
-          <a href="{% url 'lista_miembros' %}" class="btn btn-primary">
+          <a href="{{url_volver}}" class="btn btn-primary">
             <b><i class="bi bi-arrow-left"></i> Regresar</b>
           </a>
           <a href="#" class="btn btn-outline-dark" id="ayuda" onclick="tour ()">
@@ -24,14 +24,14 @@
               <p class="mt-0" id='indicaciones'>Los campo con (<span class="text-danger">*</span>) son campos obligatorios.</p>
             <div class="card">
               <div class="card-body">
-                <h5 class="card-title text-warning"><i class="bi bi-plus-lg"></i> {{titulo}}</h5>
+                <h5 class="card-title text-warning"><i class="{{icono}}"></i> {{titulo}}</h5>
                 
                 <!-- Floating Labels Form -->
                 <form class="row g-3" method="post" enctype="multipart/form-data" action='.'>
                   {% csrf_token %}
                   {% for field in form.visible_fields %}
                   
-                       <div class="col-md-12">   
+                       <div class="col-md-12" id="{{field.name}}">   
                           
                         <div class="form-floating">
                           {{ field }}
@@ -42,8 +42,8 @@
                   {% endfor %}
                   
                   <div class="text-center">
-                    <button type="submit" class="btn bg-warning text-black">Guardar</button>
-                    <a href="{% url 'lista_membresias' %}" class="btn btn-secondary">
+                    <button type="submit" class="btn bg-warning text-black" id='guardar'>Guardar</button>
+                    <a href="{{url_volver}}" class="btn btn-secondary" id='limpiar'>
                        Cancelar
                     </a>
                   </div>
@@ -95,5 +95,44 @@
       }
  
 {% endif %}
+
+
+   //------------------Funcion de ayuda---------------------
+   const driver = window.driver.js.driver;
+   function tour() {
+   const driverObj = driver({
+     popoverClass: 'driverjs-theme',
+     nextBtnText: 'Siguiente',
+     prevBtnText: 'Anterior',
+     doneBtnText: 'Completado',
+     showButtons: [
+       'next',
+       'previous',
+       'done'
+     ],
+     steps: [
+     {% if accion == 'crear' %}
+     { popover: { title: '¡Hola! 😊', description: 'Comenzarás un tour guiado para explicarte lo que puedes hacer en esta sección de registrar comida y aclarar todas tus dudas.' } }, 
+     { element: '#nombre', popover: { title: 'Nombre de la Comida 🍲', description: 'Aquí estableces el nombre de la nueva comida.', side: 'left', align: 'start' }},
+     { element: '#tiempo', popover: { title: 'Tiempo ⏰', description: 'Establece el tiempo de consumo de la comida que estás registrando.', side: 'bottom', align: 'start' } },
+     { element: '#detalle', popover: { title: 'Detalles e Ingredientes 📋🥦', description: 'Aquí puedes ingresar los ingredientes de la comida detallando las porciones de cada uno.', side: 'in', align: 'start' }},
+     { element: '#guardar', popover: { title: 'Guardar 💾', description: 'Al clicar en guardar y con datos correctos se registrará la comida en la dieta. ✨', side: "right", align: 'start' }},
+     {% endif %}
+     {% if accion == 'actualizar' %}
+     { popover: { title: '¡Hola! 😊', description: 'Comenzarás un tour guiado para explicarte lo que puedes hacer en esta sección de actualizar comida y aclarar todas tus dudas.' } }, 
+     { element: '#nombre', popover: { title: 'Nombre de la Comida 🍲', description: 'Aquí estableces el nuevo nombre de la comida.', side: 'left', align: 'start' }},
+     { element: '#tiempo', popover: { title: 'Tiempo ⏰', description: 'Establece el nuevo tiempo de consumo de la comida.', side: 'bottom', align: 'start' } },
+     { element: '#detalle', popover: { title: 'Detalles e Ingredientes 📋🥦', description: 'Aquí puedes ingresar los nuevos ingredientes de la comida detallando las porciones de cada uno.', side: 'in', align: 'start' }},
+     { element: '#guardar', popover: { title: 'Guardar 💾', description: 'Al clicar en guardar y con datos correctos se actualizará los datos de la comida. ✨', side: "right", align: 'start' }},
+     {% endif %}
+
+     { element: '#limpiar', popover: { title: 'Cancelar 🔙', description: 'Al dar click en este botón puedes regresar a la lista de comidas sin realizar ningún cambio.', side: "right", align: 'start' }},
+     { popover: { title: '¡Fin del tour! 😁', description: 'Espero que esta presentación sea la que estás buscando. Puedes ver el tour las veces que gustes 😊' }}
+     ]
+  
+   });
+   
+   driverObj.drive();
+   }
     </script>
 {% endblock js %}

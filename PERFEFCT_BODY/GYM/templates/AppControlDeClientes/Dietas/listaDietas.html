@@ -47,7 +47,7 @@
 </div>
 <section id="contact" class="contact">
     <div class="my-3 mx-3">
-        <ul class="nav nav-pills mb-3 mt-3 mx-3 d-flex justify-content-between bg-platinum" id="pills-tab" role="tablist"> <li class="nav-item">
+        <ul class="nav nav-pills mb-3 mt-3 mx-3 d-flex justify-content-between bg-platinum" id="pills-tab" role="tablist"> <li class="nav-item" id='menu_recomendaciones'>
         <a
           class="nav-link active"
           id="pills-home-tab"
@@ -59,7 +59,7 @@
           >Recomendaciones{{name}}</a
         >
       </li>
-      <li class="nav-item">
+      <li class="nav-item" id='mis_dietas'>
         <a
           class="nav-link"
           id="pills-profile-tab"
@@ -80,7 +80,7 @@
       role="tabpanel"
       aria-labelledby="pills-home-tab"
     >
-    <div class="container">
+    <div class="container" id='formulario'>
     <div class="row">
         <div class="col-md-12 d-flex justify-content-between">
             <h3 class="text-warning">Datos</h3>
@@ -96,22 +96,22 @@
             <div class="col-6 form-group input-dietas">
               <input type="text" name="altura" class="form-control" id="altura" placeholder="Altura(cm)" required="" autocomplete='none'>
             </div>
-            <div class="col-6 form-group input-dietas">
-                <select class="form-select" aria-label="Default select example" name='actividad_fisica'>
+            <div class="col-6 form-group input-dietas" id='actividad'>
+                <select class="form-select" aria-label="Default select example" name='actividad_fisica' >
                     <option selected="">Actividad física</option>
                     <option value="1">Sendetaria</option>
                     <option value="2">Moderada</option>
                     <option value="3">Actividad intensa</option>
                   </select>
             </div>
-            <div class="form-group col-6 input-dietas">
+            <div class="form-group col-6 input-dietas" id='objetivo'>
                 <select class="form-select" aria-label="Default select example" name='objetivo'>
                     <option selected="">Objetivo</option>
                     <option value="1">Perder peso</option>
                     <option value="2">Ganar peso</option>
                   </select>
             </div>
-            <div class="col-6 input-dietas"><button type="submit" class='btn btn-outline-warning'>Generar</button></div>
+            <div class="col-6 input-dietas" ><button type="submit" class='btn btn-outline-warning' id='generar'>Generar</button></div>
           </div>
         </form>
         <!--FIN DE FORMULARIO DE RECOMENDACIONES-->
@@ -446,16 +446,14 @@ const driverObj = driver({
     'done'
   ],
   steps: [
-  { popover: { title: '¡Hola! 😊', description: 'Bienvenido al tour guiado por la sección de miembros del gimnasio. Aquí te explicaré todas las funciones disponibles y resolveré cualquier duda que puedas tener. ¡Empecemos!' } },
-  { element: '#nuevo', popover: { title: 'Nuevo Miembro ➕', description: 'Haz clic en este botón para agregar un nuevo miembro al gimnasio.', side: 'left', align: 'start' }},
-  { element: '#papelera', popover: { title: 'Papelera de Miembros 🗑️', description: 'Este botón te llevará a la papelera de miembros. Aquí podrás ver y restaurar miembros que hayan sido dados de baja previamente.', side: 'bottom', align: 'start' }},
-  { element: '.table-responsive', popover: { title: 'Listado de Miembros 🏋️', description: 'En esta tabla se muestra información detallada de todos los miembros del gimnasio.', side: 'in', align: 'start' }},
-  { element: '#data_filter', popover: { title: 'Buscar 🔍', description: 'Utiliza este campo para escribir y filtrar información específica de los miembros en la tabla.', side: 'left', align: 'start' }},
-  { element: '.sorting', popover: { title: 'Ordenar Datos 🔄', description: 'Haz clic en los encabezados de la tabla para ordenar la información de los miembros.', side: 'right', align: 'start' }},
-  { element: '.btnVP', popover: { title: 'Ver Detalles 👁️‍🗨️', description: 'Al hacer clic en este botón, podrás ver información detallada de cada miembro y verificar el estado de su membresía.', side: 'right', align: 'start' }},
-  { element: '#menu-opciones', popover: { title: 'Opciones Miembro ⚙️', description: 'Este botón despliega opciones para actualizar datos, asignar membresía y dar de baja a un miembro.', side: 'right', align: 'start' }},
-  { element: '#data_info', popover: { title: 'Información del Listado 📊', description: 'Aquí se muestra la cantidad total de miembros y cuántos están siendo visualizados actualmente.', side: 'right', align: 'start' }},
-  { element: '#data_paginate', popover: { title: 'Páginas 📄➡️', description: 'Navega entre las páginas para ver diferentes conjuntos de miembros en el listado.', side: 'left', align: 'start' }},
+  { popover: { title: '¡Hola! 😊', description: 'Bienvenido al tour guiado por la sección de dietas. Aquí te explicaré todas las funciones disponibles y resolveré cualquier duda que puedas tener. ¡Empecemos!' } },
+  { element: '#menu_recomendaciones', popover: { title: 'Recomendaciones 🥗', description: 'En esta sección podrás obtener recomendaciones de dietas basadas en tus requerimientos calóricos. Para planes más especializados puedes puedes acercarte a tu nutricionista de confianza. 😊', side: 'right', align: 'start' }},
+  { element: '#formulario', popover: { title: 'Formulario 📝', description: 'En este apartado podrás ingresar tus datos para obtener dietas para tu semana.', side: 'right', align: 'start' }},
+  { element: '#altura', popover: { title: 'Altura 👤📏', description: 'En este campo debes ingresar tu altura en centímetros.', side: 'left', align: 'start' }},
+  { element: '#actividad', popover: { title: 'Actividad física 🏋️‍♂️', description: 'Aquí deberás seleccionar el nivel de actividad física que realizas, sé muy sincero. 😊', side: 'bottom', align: 'start' }},
+  { element: '#objetivo', popover: { title: 'Objetivo 🎯', description: 'Aquí deberás seleccionar el objetivo que deseas alcanzar, ya sea ganar o perder peso.', side: 'in', align: 'start' }},
+  { element: '#generar', popover: { title: 'Generar 🔄🥗', description: 'Al dar click en este botón apareceran diferentes dietas que puedes agregar a tu lista para el día que desees. 😊', side: 'right', align: 'start' }},
+  { element: '#mis_dietas', popover: { title: 'Mis dietas 📅🍽️', description: 'Las dietas que guardes aparecerán aquí,en esa sección podrás ver tu calendario semanal de dietas, puedes eliminarlos a tu gusto.', side: 'left', align: 'start' }},
   { popover: { title: '¡Fin del tour! 😁', description: 'Espero que esta presentación sea la que estás buscando. Puedes ver el tour las veces que gustes 😊' }}
   ]
 });

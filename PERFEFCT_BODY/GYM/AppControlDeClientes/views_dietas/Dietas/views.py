@@ -3,9 +3,9 @@
 from typing import Any
 from django.http import HttpRequest, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, TemplateView
-from AppControlDeClientes.mixins import isAdministradorMixin, isMiembroMixin
+from AppControlDeClientes.mixins import isAdministradorMixin, isMiembroMixin, isNutricionistaMixin
 from AppControlDeClientes.models import Comida, Dieta, ListaDietas, Miembro
 from AppControlDeClientes import op
 from AppControlDeClientes.funciones import encontrar_posicion_mas_cercana, mis_dietas, obtener_comidas_por_dieta
@@ -88,7 +88,7 @@ class ListDietas(isMiembroMixin,ListView):
         return redirect('dietas')
     
 #-----------RECOMENDACIONES DE DIETAS --------------------------------------------
-class CreateRecomendacionDieta(isAdministradorMixin,CreateView):
+class CreateRecomendacionDieta(isNutricionistaMixin,CreateView):
     template_name = 'AppControlDeClientes/RecomendacionesDietas/createRecomendacion.html'
     form_class = FormDieta
     success_url = reverse_lazy('lista_recomendaciones_dieta')
@@ -97,6 +97,9 @@ class CreateRecomendacionDieta(isAdministradorMixin,CreateView):
         data = super().get_context_data(**kwargs)
         data['titulo'] = 'Registro de dieta'
         data['modulo'] = 'Dietas'
+        data['url_modulo'] = reverse_lazy('lista_recomendaciones_dieta')
+        data['icono'] = "bi bi-plus-lg"
+        data['accion'] = "crear"
         return data
     def form_valid(self, form):
         messages.success(self.request, "Dieta registrada correctamente")
@@ -105,17 +108,62 @@ class CreateRecomendacionDieta(isAdministradorMixin,CreateView):
     def form_invalid(self, form):
         messages.error(self.request, format(form.errors.as_text()))
         return super().form_invalid(form)
+#-----------RECOMENDACIONES DE DIETAS --------------------------------------------
+class UpdateRecomendacionDieta(isNutricionistaMixin,UpdateView):
+    model = Dieta
+    template_name = 'AppControlDeClientes/RecomendacionesDietas/createRecomendacion.html'
+    form_class = FormDieta
+    success_url = reverse_lazy('lista_recomendaciones_dieta')
+    
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data['titulo'] = 'Actulizar dieta'
+        data['modulo'] = 'Dietas'
+        data['url_modulo'] = reverse_lazy('lista_recomendaciones_dieta')
+        data['icono'] = "bi bi-pencil-square"
+        data['accion'] = "actualizar"
+        return data
+    def form_valid(self, form):
+        messages.success(self.request, "Dieta actualizada correctamente")
+        return super().form_valid(form)
 
-class ListRecomendacionDieta(isAdministradorMixin,ListView):
+    def form_invalid(self, form):
+        messages.error(self.request, format(form.errors.as_text()))
+        return super().form_invalid(form)
+
+class ListRecomendacionDieta(isNutricionistaMixin,ListView):
     model = Dieta
     template_name = 'AppControlDeClientes/RecomendacionesDietas/listRecomendacion.html'
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
         data['titulo'] = 'Listado de dietas'
         data['modulo'] = 'Dietas'
-        data['dietas'] = Dieta.objects.all().reverse()
+        data['dietas'] = Dieta.objects.filter(estado=0).reverse()
+        data["url_papelera"] = reverse_lazy('papelera_recomendaciones_dieta')
+        data['url_modulo'] = reverse_lazy('lista_recomendaciones_dieta')
         return data
-    
+class ListBajasRecomendacionDieta(isNutricionistaMixin,ListView):
+    model = Dieta
+    template_name = 'AppControlDeClientes/RecomendacionesDietas/listBajasRecomendacion.html'
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data['titulo'] = 'Papelera de dietas'
+        data['modulo'] = 'Dietas'
+        data['dietas'] = Dieta.objects.filter(estado=1).reverse()
+        data['url_modulo'] = reverse_lazy('lista_recomendaciones_dieta')
+        return data
+def bajaDieta(request, pk):
+    dieta = Dieta.objects.get(id=pk)
+    dieta.estado = 1
+    dieta.save()
+    messages.success(request,f'La dieta fue eliminada.')
+    return redirect(to='lista_recomendaciones_dieta')
+def altaDieta(request, pk):
+    dieta = Dieta.objects.get(id=pk)
+    dieta.estado = 0
+    dieta.save()
+    messages.success(request,f'La dieta fue restaurada.')
+    return redirect(to='papelera_recomendaciones_dieta')
 
 
 
@@ -124,7 +172,7 @@ class ListRecomendacionDieta(isAdministradorMixin,ListView):
 
 
 
-class ListRecomendacionComida(isAdministradorMixin,ListView):
+class ListRecomendacionComida(isNutricionistaMixin,ListView):
     model = Comida
     template_name = 'AppControlDeClientes/RecomendacionesDietas/RecomendacionesComida/listComida.html'
     def get_context_data(self, **kwargs):
@@ -134,12 +182,20 @@ class ListRecomendacionComida(isAdministradorMixin,ListView):
         data['titulo'] = 'Listado de comidas'
         data['modulo'] = 'Dietas'
         data['comidas'] = Comida.objects.filter(dieta=id_dieta).reverse()
+        data['url_nuevo'] = reverse_lazy('registro_recomendaciones_comida', kwargs={'pk': id_dieta})
+        data['url_modulo'] = reverse_lazy('lista_recomendaciones_dieta')
+
         return data
 
-class CreateRecomendacionComida(isAdministradorMixin,CreateView):
+class CreateRecomendacionComida(isNutricionistaMixin,CreateView):
     template_name = 'AppControlDeClientes/RecomendacionesDietas/RecomendacionesComida/createComida.html'
     form_class = FormComida
-    success_url = reverse_lazy('registro_recomendaciones_dieta')
+    def get_success_url(self):
+        # Obtén el valor del parámetro de la URL actual
+        parametro = self.kwargs['pk']
+        # Construye la URL de redirección con el parámetro
+        success_url = reverse_lazy('lista_recomendaciones_comida', kwargs={'pk': parametro})
+        return success_url
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
         
@@ -149,8 +205,14 @@ class CreateRecomendacionComida(isAdministradorMixin,CreateView):
         return form
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
+         # Obtén el valor del parámetro de la URL actual
+        parametro = self.kwargs['pk']
         data['titulo'] = 'Registro de comida'
         data['modulo'] = 'Dietas'
+        data['url_volver'] = reverse_lazy('lista_recomendaciones_comida', kwargs={'pk': parametro})
+        data['url_modulo'] = reverse_lazy('lista_recomendaciones_dieta')
+        data['icono'] = "bi bi-plus-lg"
+        data['accion'] = "crear"
         return data
     def form_valid(self, form):
         #Obtengo el id de la dieta que paso por url
@@ -166,10 +228,55 @@ class CreateRecomendacionComida(isAdministradorMixin,CreateView):
     def form_invalid(self, form):
         messages.error(self.request, format(form.errors.as_text()))
         return super().form_invalid(form)    
-    
+
+class UpdateRecomendacionComida(isNutricionistaMixin,UpdateView):
+    model = Comida
+    template_name = 'AppControlDeClientes/RecomendacionesDietas/RecomendacionesComida/createComida.html'
+    form_class = FormComida
+    def get_success_url(self):
+        # Obtén el valor del parámetro de la URL actual
+        parametro = self.kwargs['pk']
+        comida = Comida.objects.get(id=parametro)
+        # Construye la URL de redirección con el parámetro
+        success_url = reverse_lazy('lista_recomendaciones_comida', kwargs={'pk': comida.dieta.id})
+        return success_url
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        
+        # Agrega una opción adicional al campo 'tiempo'
+        form.fields['tiempo'].choices += [('', 'Seleccione una opción')]
+
+        return form
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data['titulo'] = 'Actualizar de comida'
+        data['modulo'] = 'Dietas'
+        data['url_modulo'] = reverse_lazy('lista_recomendaciones_dieta')
+        # Obtén el valor del parámetro de la URL actual
+        parametro = self.kwargs['pk']
+        comida = Comida.objects.get(id=parametro)
+        data['url_volver'] = reverse_lazy('lista_recomendaciones_comida', kwargs={'pk': comida.dieta.id})
+        data['icono'] = "bi bi-pencil-square"
+        data['accion'] = "actualizar"
+        return data
+    def form_valid(self, form):
+        messages.success(self.request, "Comida actualizada correctamente")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, format(form.errors.as_text()))
+        return super().form_invalid(form)    
 def eliminar_mi_dieta(request, pk):
     mi_dieta = ListaDietas.objects.get(id=pk)
     mi_dieta.delete()
     messages.success(request,f'La dieta fue eliminada de su lista.')
     return redirect(to='dietas')
+
+def eliminar_comida(request,pk, id):
+    comida = Comida.objects.get(id=id)
+    comida.delete()
+    messages.success(request,f'La comida fue eliminada de la dieta.')
+    # Construye la URL inversa con el parámetro
+    url_destino =reverse('lista_recomendaciones_comida', kwargs={'pk': pk})
+    return redirect(to=url_destino)
 

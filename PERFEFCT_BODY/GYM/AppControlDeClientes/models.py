@@ -111,6 +111,7 @@ class VentaMembresia(models.Model):
     empleado = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name='Empleado')
     membresia = models.ForeignKey(Membresia, on_delete=models.PROTECT, verbose_name='Membresia')
     miembro = models.ForeignKey(Miembro, on_delete=models.PROTECT, verbose_name='Miembro',null=True, blank=True)
+    fecha_created = models.DateTimeField(auto_now=True, null=True, blank=True)
     def __str__(self) -> str:
         return self.id
     
@@ -192,6 +193,7 @@ class ListaDeRutinas(models.Model):
 class Dieta(models.Model):
     nombre = models.CharField(max_length=100, null=True, verbose_name='nombre')
     rango = models.PositiveIntegerField(null=True, blank=True, choices=opRango, verbose_name='rango')
+    estado = models.BooleanField(default=False, verbose_name='Estado')
     class Meta:
         db_table = 'dieta'
         verbose_name = 'dieta'

@@ -24,14 +24,14 @@
               <p class="mt-0" id='indicaciones'>Los campo con (<span class="text-danger">*</span>) son campos obligatorios.</p>
             <div class="card">
               <div class="card-body">
-                <h5 class="card-title text-warning"><i class="bi bi-plus-lg"></i> {{titulo}}</h5>
+                <h5 class="card-title text-warning"><i class="{{icono}}"></i> {{titulo}}</h5>
                 
                 <!-- Floating Labels Form -->
                 <form class="row g-3" method="post" enctype="multipart/form-data" action='.'>
                   {% csrf_token %}
                   {% for field in form.visible_fields %}
                   
-                       <div class="col-md-12">   
+                       <div class="col-md-12" id="{{field.name}}">   
                           
                         <div class="form-floating">
                           {{ field }}
@@ -43,7 +43,7 @@
                   
                   <div class="text-center">
                     <button type="submit" class="btn bg-warning text-black">Guardar</button>
-                    <a href="{% url 'lista_membresias' %}" class="btn btn-secondary">
+                    <a href="{% url 'lista_recomendaciones_dieta' %}" class="btn btn-secondary">
                        Cancelar
                     </a>
                   </div>

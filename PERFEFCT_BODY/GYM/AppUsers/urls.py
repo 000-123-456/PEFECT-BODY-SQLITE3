@@ -28,5 +28,8 @@ urlpatterns = [
     path('usuarios/primera-clave/',login_required(views.CambioClave.as_view()), name='primera_clave'),
     path('usuarios/olvido-clave/',views.OlvidoClave.as_view(), name='olvido_clave'),
     
+    #Bitacora
+    path('historial/venta_membresias/',login_required(views.BitacoraVentaMembresiaView.as_view()), name='bitacora_venta_membresia'),
+    path('historial/asistencias/',login_required(views.BitacoraAsistenciaView.as_view()), name='bitacora_asistencias'),
 
 ]

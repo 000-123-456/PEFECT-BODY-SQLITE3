@@ -151,7 +151,47 @@
 
       </div>
     </section><!-- End Sevices Section -->
+    <section id="counts" class="counts section-bg">
+      <div class="container">
 
+        <div class="row justify-content-end">
+          <div class="col-lg-12 col-md-12 col-12 d-md-flex align-items-md-stretch my-3">
+            <div class="count-box">
+              <span>Vencimiento de membresía</span>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-5 col-6 d-md-flex align-items-md-stretch">
+            <div class="count-box">
+              <span data-purecounter-start="0" data-purecounter-end="{{miembro.fecha_fin|date:'d'}}" data-purecounter-duration="1" class="purecounter">{{miembro.fecha_fin|date:"d"}}</span>
+              <p>Día</p>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-5 col-6 d-md-flex align-items-md-stretch">
+            <div class="count-box">
+              <span data-purecounter-start="0" data-purecounter-end="{{miembro.fecha_fin|date:'m'}}" data-purecounter-duration="1" class="purecounter">{{miembro.fecha_fin|date:'m'}}</span>
+              <p>Mes</p>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-5 col-6 d-md-flex align-items-md-stretch">
+            <div class="count-box">
+              <span data-purecounter-start="0" data-purecounter-end="{{miembro.fecha_fin|date:'Y'}}" data-purecounter-duration="1" class="purecounter">{{miembro.fecha_fin|date:'Y'}}</span>
+              <p>Año</p>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-5 col-6 d-md-flex align-items-md-stretch">
+            <div class="count-box">
+              <span>{{venta_membresia.membresia.nombre}}</span>
+              <p>Membresía</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
 
    
   </main><!-- End #main -->
