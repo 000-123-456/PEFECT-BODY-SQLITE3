@@ -1,0 +1,145 @@
+{% extends 'layout/index.html' %}
+{% load static %}
+{% load custom_filters %}
+{% block titulo %}   {{titulo}}   {% endblock titulo %}
+{% block tituloP %}  {{titulo}}   {% endblock tituloP %}
+{% block modulo %}
+  <a href="#">   
+    {{modulo}}
+  </a>   
+{% endblock modulo %}
+{% block tituloS %}  {{titulo2}}   {% endblock tituloS %}
+{% block cuerpo %}
+
+<section class="section dashboard">
+  <div class="row">
+    
+      {% comment %} <div class="col-lg-1"></div> {% endcomment %}
+      <div class="col-lg-12 d-flex flex-row-reverse">
+        <a href="{% url 'lista_bajas_proveedor' %}" class="btn btn-danger">
+          <b><i class="bi bi-trash"></i> Papelera</b>
+        </a>
+        <a href="{% url 'crear_proveedor' %}" class="btn btn-primary mx-1">
+          <b><i class="bi bi-plus-lg"></i> Nuevo proveedor</b>
+        </a>
+        
+        <br>
+    </div>
+      <br>
+      <br>
+    
+
+          <div class="col-lg-12">
+                
+                <!-- Horizontal Form -->
+
+                {% if form.errors %}
+                {% for field  in form  %}
+                        {% for error in field.errors %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>Notificacion: </strong>{{error}}.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" arial-label="Close"></button>
+                        </div>
+                        {% endfor %}
+                {% endfor %}
+              {% endif %}
+            <br>
+            <div class="card recent-sales overflow-auto">
+              
+              <div class="card-body table-responsive"> 
+                <h5 class="card-title text-warning"> <i class="bi bi-list-task"></i> {{titulo}}</h5>
+                <hr>
+                
+                <table class="table bg-black text-white strip rounded mb-4" style="text-align: center" id="data">
+                  <thead class="bg-warning text-black">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Correo</th>
+                        <th scope="col">Teléfono</th>
+                        <th scope="col">Dirección</th>
+                        <th scope="col">Opciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% if proveedores %} {% for a in proveedores %}
+                      <tr data-id="{{ a.id }}">
+                        <td class="text-nowrap" style="vertical-align: middle;">{{forloop.counter}}</td>
+                        <td class="text-nowrap" style="vertical-align: middle;">{{a.nombre}}</td>
+                        <td class="text-nowrap" style="vertical-align: middle;">{{a.correo}}</td>
+                        <td class="text-nowrap" style="vertical-align: middle;">{{a.telefono}}</td>
+                        <td class="text-nowrap" style="vertical-align: middle;">{{a.direcccion}}</td>
+                        <td class="text-nowrap" style="vertical-align: middle;">
+                          <a type="button" class="btn btn-secondary" href="{%url 'actualizar_proveedor' a.id %}">
+                            <i class="bi bi-pencil-square"></i>
+                          </a>
+                          <a class="btn btn-danger" href="#" onclick="eliminarProveedor({{a.id}})">
+                            <i class="bi bi-trash btnUM"></i>
+                        </a>
+                      </tr>
+                  
+                      {% endfor %} {% else %}
+                      <td class="text-nowrap" colspan="9" style="text-align: center">
+                        <b>No hay datos para mostrar</b>
+                      </td>
+                      {% endif %}
+                    </tbody>
+                  </table>
+              </div>
+            </div>
+          </div>
+          {% comment %} <div class="col-lg-1"></div> {% endcomment %}
+        </div>
+        
+      </section>
+
+
+
+{% endblock cuerpo %}
+{% block js %}
+<Script type="application/javascript" src="{% static 'assets/js/AppInventario/Proveedor/listProveedor.js' %}"></Script>
+<script>
+  const dataTableOptions = {
+    //scrollX: "400px",
+    lengthChange: false,
+    filter:[
+      { className: "form-control"},
+    ],
+    lengthMenu: [5, 10, 15, 20, 100, 200, 500],
+    columnDefs: [
+        { className: "text-center", targets: [0, 1, 2, 3, 4, 5] },
+        { orderable: false, targets: [5] },
+        { searchable: false, targets: [0, 5] },
+        //{ width: "5%", targets: [0] }
+    ],
+    pageLength: 5,
+    destroy: true,
+    language: {
+        lengthMenu: "Mostrar _MENU_ registros por página",
+        zeroRecords: "Ninguna máquina encontrada",
+        info: "Mostrando de _START_ a _END_ de un total de _TOTAL_ registros",
+        infoEmpty: "Ningún usuario encontrado",
+        infoFiltered: "(filtrados desde _MAX_ registros totales)",
+        search: "",
+        loadingRecords: "Cargando...",
+        paginate: {
+            first: "Primero",
+            last: "Último",
+            next: "Siguiente",
+            previous: "Anterior"
+        }
+    }
+};
+
+  {% if proveedores %}
+  let table = new DataTable('#data', dataTableOptions);
+  //remove the default 'Search' text for all DataTable search boxes
+  $('[type=search]').each(function () {
+    $(this).attr("placeholder", "Buscar...");
+    $(this).before('<span class="bi bi-search"></span>');
+  });
+  {% endif %}
+
+
+</script>
+{% endblock js %}

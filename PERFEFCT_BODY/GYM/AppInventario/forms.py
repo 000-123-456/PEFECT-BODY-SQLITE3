@@ -202,3 +202,63 @@ FormCompra.field_order = [
             'precio_unitario',
             'fecha_vec',
         ]
+
+class FormProveedor(ModelForm):   
+    class Meta:
+        model=Proveedor
+        fields = {
+            'nombre',
+            'telefono',
+            'direcccion',
+            'correo',
+        }
+        labels={
+            'nombre': 'Nombre',
+            'telefono': 'Teléfono',
+            'direcccion': 'Dirección',
+            'correo':'Correo',
+        }
+        
+        widgets={
+                'nombre': TextInput(
+                    attrs={
+                        'class': 'form-control',
+                        'placeholder': 'Ingrese nombre completo',
+                        'autocomplete':"off",
+                        
+                    }
+                ),
+                'telefono':  TextInput(
+                    attrs={
+                
+                        'class': 'form-control',
+                        'placeholder': 'Ingrese nombre completo',
+                        'pattern': '[0-9]{4}[-][0-9]{4}',
+                        'id':'tel',
+                        'autocomplete':'off',
+                       
+                    }
+                ),
+                'direcccion': Textarea(
+                    attrs={
+                        'style':'height: 100px',
+                        'class': 'form-control',
+                        'placeholder': 'Ingrese nombre completo',
+                         'autocomplete':'off',
+                    }
+                ),
+                'correo': TextInput(
+                    attrs={
+                        'class': 'form-control',
+                        'placeholder': 'Ingrese nombre completo',
+                        
+                    }
+                ),
+
+        }
+FormProveedor.field_order = [
+            'nombre',
+            'telefono',
+            'correo',
+            'direcccion',
+        ]
