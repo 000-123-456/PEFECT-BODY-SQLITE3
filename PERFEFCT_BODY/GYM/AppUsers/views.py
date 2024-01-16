@@ -474,7 +474,7 @@ class BitacoraAsistenciaView(isAdministradorMixin,TemplateView):
         return context
     
 
-class RestoreView(TemplateView):
+class RestoreView(isAdministradorMixin,TemplateView):
     template_name = 'Seguridad/restore.html'
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
