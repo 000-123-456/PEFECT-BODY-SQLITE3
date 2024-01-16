@@ -43,7 +43,14 @@ urlpatterns = [
     ##---------------------------------FIN DE VISTAS DE COMPRAS----------------------------------------------------------------
 
 
-
+    ##------------------------------INICIO DE VISTA DE PROVEEDOR-----------------------------------------------------------------
+    path('Proveedor/Crear/', login_required(views.CreateProveedor.as_view()), name='crear_proveedor'),
+    path('Proveedor/', login_required(views.ListProveedor.as_view()), name='lista_proveedor'),
+    path('Proveedor/Eliminados/',login_required(views.ListProveedorBajas.as_view()), name='lista_bajas_proveedor'),
+    path('Proveedor/Eliminar/<int:pk>/', login_required(views.DeleteProveedor), name='eliminar_proveedor'),
+    path('Proveedor/Alta/<int:pk>/',login_required(views.AltaProveedor), name='alta_proveedor'),
+    path('Proveedor/AltaTodos/',login_required(views.AltaTodosProveedor), name='alta_todos_proveedor'),
+    path('Proveedor/Actualizar/<int:pk>/', login_required(views.UpdateProveedor.as_view()), name='actualizar_proveedor'),
 
 ]
 urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

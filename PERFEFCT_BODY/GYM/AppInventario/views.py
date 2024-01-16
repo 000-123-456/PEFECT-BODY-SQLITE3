@@ -10,7 +10,7 @@ from AppInventario.models import *
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import F, BooleanField, Case, When, Value
-from AppInventario.forms import FormProducto,FormCategoria,FormCompra
+from AppInventario.forms import FormProducto,FormCategoria,FormCompra,FormProveedor
 from django.core.exceptions import ObjectDoesNotExist
 # Create your views here.
 
@@ -579,3 +579,138 @@ def Categoriaproducto(request, producto_id):
     except Producto.DoesNotExist:
         data = {'perecedero': False}
         return JsonResponse(data)
+    
+class CreateProveedor(CreateView):
+    model = Proveedor
+    form_class = FormProveedor
+    success_url= reverse_lazy('crear_proveedor')
+    template_name = 'AppInventario/Proveedor/createProveedor.html'
+    success_message = "¡Registro realizado con éxito!"
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        return super().dispatch(request, *args, **kwargs)  
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        try:
+             data['empresa'] = Empresa.objects.first()
+        except:
+             data['empresa'] = 'Error'
+        data['titulo'] = 'Crear proveedor'
+        data['modulo'] = 'Proveedor'
+        return data
+    
+        return super().post(request, *args, **kwargs)
+    def form_valid(self, form):
+        messages.success(self.request, "Proveedor añadido correctamente!")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        # Obtiene la instancia del modelo que se está actualizando
+        instance = self.get_object()
+        
+        # Envía el objeto instance como contexto a la plantilla
+        context = self.get_context_data(object=instance)
+        
+        # Agrega mensajes de error al contexto
+        messages.error(self.request, format(form.errors.as_text()))
+        
+        # Retorna la respuesta con el contexto actualizado
+        return self.render_to_response(context)
+    
+class ListProveedor(ListView):
+    model = Proveedor
+    template_name = 'AppInventario/Proveedor/listaProveedor.html'
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        return super().dispatch(request, *args, **kwargs)  
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        try:
+             data['empresa'] = Empresa.objects.first()
+        except:
+             data['empresa'] = 'Error'
+        data['titulo'] = 'Lista de proveedores'
+        data['modulo'] = 'Proveedor'
+        data['icono']  = '<i class="bi bi-plus-lg"></i>'
+        data['proveedores'] = Proveedor.objects.filter(estado=0)
+        return data
+class ListProveedorBajas(ListView):
+    model = Proveedor
+    template_name = 'AppInventario/Proveedor/listaProveedorBajas.html'
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        return super().dispatch(request, *args, **kwargs)  
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        try:
+             data['empresa'] = Empresa.objects.first()
+        except:
+             data['empresa'] = 'Error'
+        data['titulo'] = 'Proveedores eliminados'
+        data['modulo'] = 'Proveedor'
+        data['proveedores'] = Proveedor.objects.filter(estado=1)
+        return data
+
+def DeleteProveedor(request, pk):
+        try:
+            proveedor = Proveedor.objects.get(id=pk)
+            proveedor.estado = True
+            proveedor.save()
+            messages.success(request, "¡Proveedor eliminado correctamente!")
+        except:
+            messages.error(request, "¡Error, la accion no se pudo realizar!")
+        return redirect(to='lista_proveedor')
+
+def AltaProveedor(request, pk):
+        try:
+            proveedor = Proveedor.objects.get(id=pk)
+            proveedor.estado = False
+            proveedor.save()
+            messages.success(request, "¡Proveedor restaurado correctamente!")
+        except:
+            messages.error(request, "¡Error, la accion no se pudo realizar!")
+        return redirect(to='lista_bajas_proveedor')
+
+def AltaTodosProveedor(request):
+        try:
+            proveedores = Proveedor.objects.filter(estado=1)
+            for p in proveedores:
+                p.estado = False
+                p.save()
+            messages.success(request, "¡Todos los proveedores fueron restaurados correctamente!")
+        except:
+            messages.error(request, "¡Error, la accion no se pudo realizar!")
+        return redirect(to='lista_proveedor')
+
+class UpdateProveedor(UpdateView):
+    model = Proveedor
+    form_class = FormProveedor
+    success_url= reverse_lazy('lista_proveedor')
+    template_name = 'AppInventario/Proveedor/updateProveedor.html'
+    success_message = "¡Proveedor actualizado con éxito!"
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        return super().dispatch(request, *args, **kwargs)  
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        try:
+             data['empresa'] = Empresa.objects.first()
+        except:
+             data['empresa'] = 'Error'
+        data['titulo'] = 'Actualizar proveedor'
+        data['modulo'] = 'Proveedor'
+        return data
+    
+        return super().post(request, *args, **kwargs)
+    def form_valid(self, form):
+        messages.success(self.request, "Proveedor actualizado correctamente!")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        # Obtiene la instancia del modelo que se está actualizando
+        instance = self.get_object()
+        
+        # Envía el objeto instance como contexto a la plantilla
+        context = self.get_context_data(object=instance)
+        
+        # Agrega mensajes de error al contexto
+        messages.error(self.request, format(form.errors.as_text()))
+        
+        # Retorna la respuesta con el contexto actualizado
+        return self.render_to_response(context)
