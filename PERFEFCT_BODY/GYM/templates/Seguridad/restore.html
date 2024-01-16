@@ -1,0 +1,154 @@
+
+{% extends 'layout/index.html' %}
+{% load static %}
+{% block titulo %}   {{titulo}}   {% endblock titulo %}
+{% block tituloP %}  {{titulo}}   {% endblock tituloP %}
+{% block modulo %}   {{modulo}}   {% endblock modulo %}
+{% block tituloS %}  {{titulo}}   {% endblock tituloS %}
+{% block cuerpo %}
+<section class="section">
+    
+        <div class="row d-flex justify-content-center">
+          {% comment %} <div class="col-lg-1"></div> {% endcomment %}
+          <div class="col-lg-12 d-flex flex-row-reverse">
+            <a href="#" class="btn btn-outline-dark mx-1" id="ayuda" onclick="tour ()">
+              <b><i class="bi bi-info-circle"></i> Ayuda</b>
+            </a>     
+        </div>
+          <br>
+          <br>
+          <div class="col-xl-6">
+
+            <div class="card" id='restore'>
+              <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
+                <h2 class='text-warning'>Restaurar copia</h2>
+                <form id="restoreForm" action="{% url 'restore' %}" method="post" enctype="multipart/form-data" class='d-flex flex-column align-items-center'>
+                    {% csrf_token %}
+                    <div class="col-md-12">
+                        <div class="form-floating" id='archivo'>
+                        <input class='form-control' type="file" name="backup_file" accept=".json" placeholder="Archivo" required>
+                          <label for="floatingName">Selecciona un archivo de backup:</label>
+                        </div>
+                      </div>
+                    <button type="button" class='btn btn-warning my-3' onclick="confirmRestore()" id='restaurar'>Restaurar Datos</button>
+                </form>
+              </div>
+            </div>
+  
+          </div>
+          {% comment %} <div class="col-lg-1"></div> {% endcomment %}
+        </div>
+        
+      </section>
+
+
+
+{% endblock cuerpo %}
+
+
+{% block js %}
+<script>
+    function confirmRestore() {
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-primary',
+                cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false
+        })
+
+        swalWithBootstrapButtons.fire({
+            title: '¿Seguro que desea restaurar esta copia de seguridad?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Confirmar',
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Si se confirma, enviar el formulario
+                document.getElementById('restoreForm').submit();
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                swalWithBootstrapButtons.fire(
+                    'Operación cancelada',
+                    'La copia de seguridad no se ha restaurado :)',
+                    'error'
+                )
+            }
+        })
+    }
+
+</script>
+
+<script>
+  const dataTableOptions = {
+    //scrollX: "400px",
+    lengthChange: false,
+    filter:[
+      { className: "form-control"},
+    ],
+    lengthMenu: [5, 10, 15, 20, 100, 200, 500],
+    columnDefs: [
+        { className: "text-center", targets: [0, 1, 2, 3] },
+        { orderable: false, targets: [3] },
+        { searchable: false, targets: [0,3] },
+        //{ width: "5%", targets: [0] }
+    ],
+    pageLength: 5,
+    destroy: true,
+    language: {
+        lengthMenu: "Mostrar _MENU_ registros por página",
+        zeroRecords: "Ningúna membresía  encontrada",
+        info: "Mostrando de _START_ a _END_ de un total de _TOTAL_ registros",
+        infoEmpty: "Ninguna dieta encontrado",
+        infoFiltered: "(filtrados desde _MAX_ registros totales)",
+        search: "",
+        loadingRecords: "Cargando...",
+        paginate: {
+            first: "Primero",
+            last: "Último",
+            next: "Siguiente",
+            previous: "Anterior"
+        }
+    }
+};
+
+  {% if asistencias %}
+  let table = new DataTable('#data', dataTableOptions);
+  //remove the default 'Search' text for all DataTable search boxes
+  $('[type=search]').each(function () {
+    $(this).attr("placeholder", "Buscar...");
+    $(this).before('<span class="bi bi-search"></span>');
+  });
+  {% endif %}
+
+   //------------------Funcion de ayuda---------------------
+ const driver = window.driver.js.driver;
+ function tour() {
+ const driverObj = driver({
+   popoverClass: 'driverjs-theme',
+   nextBtnText: 'Siguiente',
+   prevBtnText: 'Anterior',
+   doneBtnText: 'Completado',
+   showButtons: [
+     'next',
+     'previous',
+     'done'
+   ],
+   steps: [
+   { popover: { title: '¡Hola! 😊', description: 'Comenzarás un tour guiado para explicarte lo que puedes hacer en esta sección de copia de seguridad y aclarar todas tus dudas.' } },
+    
+   { element: '#restore', popover: { title: 'Restaurar copia de seguridad 💾🔄', description: 'En esta sección se restaura una copia de seguridad, todos los datos serán reemplazados por los de la copia.', side: 'in', align: 'start' }},
+   { element: '#archivo', popover: { title: 'Archivo 📂', description: 'Aquí se debe subir un archivo de los archivos generados de copias de seguridad, debe ser tipo .json obligatoriamente.', side: 'left', align: 'start' }},
+   { element: '#restaurar', popover: { title: 'Restaurar 🔄🔒', description: 'Al dar click en este botón se restauran todos los datos de la copia de seguridad', side: 'left', align: 'start' }},
+   { popover: { title: '¡Fin del tour! 😁', description: 'Espero que esta presentación sea la que estás buscando. Puedes ver el tour las veces que gustes 😊' }}
+   ]
+
+ });
+ 
+ driverObj.drive();
+ }
+</script>
+{% endblock js %}
+
+

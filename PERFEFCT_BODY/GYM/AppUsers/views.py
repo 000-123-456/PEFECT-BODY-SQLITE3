@@ -1,3 +1,6 @@
+from datetime import datetime
+import os
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
@@ -24,6 +27,7 @@ from django.core.mail import send_mail
 from GYM.settings import EMAIL_HOST_USER
 from django.urls import reverse
 from django.contrib.auth import logout
+from django.core.management import call_command
 # Create your views here.
 class inicioMiembro(isMiembroMixin,TemplateView):
     template_name = 'layout/userUI/index.html'
@@ -405,7 +409,7 @@ class CrearEmpresa(isAdministradorMixin,CreateView):
         #return super().post(request, *args, **kwargs)
     
 @method_decorator(login_required, name='dispatch')
-class UpdateEmpresa(UpdateView):
+class UpdateEmpresa(isAdministradorMixin,UpdateView):
     model = Empresa
     form_class = FormEmpresa
     template_name = 'AppUsers/Empresa/updateEmpresa.html'
@@ -470,4 +474,59 @@ class BitacoraAsistenciaView(isAdministradorMixin,TemplateView):
         return context
     
 
-    
+class RestoreView(TemplateView):
+    template_name = 'Seguridad/restore.html'
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["modulo"] = "Seguridad"
+        context["titulo"] = "Restaurar copia de seguridad"
+        context["url_modulo"] = reverse_lazy('restore')
+        return context
+    def post(self, request, *args, **kwargs):
+        if 'backup_file' in request.FILES:
+            # Carpeta de salida para restores
+            restore_folder = 'restores'
+            os.makedirs(restore_folder, exist_ok=True)
+
+            # Guardar el archivo subido en la carpeta de restores
+            uploaded_file = request.FILES['backup_file']
+            restore_file = os.path.join(restore_folder, 'uploaded_backup.json')
+            with open(restore_file, 'wb') as file:
+                for chunk in uploaded_file.chunks():
+                    file.write(chunk)
+
+            # Cargar datos desde el archivo subido
+            call_command('loaddata', restore_file)
+            messages.success(request, 'La copia de seguridad fue restaurada.')
+
+        return self.render_to_response(self.get_context_data()) 
+def backup_view(request):
+    # Carpeta de salida para backups
+    backup_folder = 'backups'
+    os.makedirs(backup_folder, exist_ok=True)
+
+    # Generar un nombre de archivo con formato "Respaldo - Fecha - Hora.json"
+    current_datetime = datetime.now()
+    backup_file_name = f"Respaldo--Fecha{current_datetime.strftime('%Y-%m-%d')}--Hora{current_datetime.strftime('%H-%M')}.json"
+    backup_file_path = os.path.join(backup_folder, backup_file_name)
+    # Generar un archivo de backup en la carpeta de salida
+    with open(backup_file_path, 'w', encoding='utf-8') as backup_file:
+        call_command('dumpdata', format='json', stdout=backup_file)
+
+    # Devolver el archivo como respuesta de descarga
+    with open(backup_file_path, 'rb') as file:
+        response = HttpResponse(file.read(), content_type='application/force-download')
+        response['Content-Disposition'] = f'attachment; filename={backup_file_name}'
+        return response
+def template_backup_view(request):
+
+    return render(request, 'Seguridad/backup.html') 
+
+class template_backup_view(isAdministradorMixin,TemplateView):
+    template_name =  'Seguridad/backup.html'
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["modulo"] = "Seguridad"
+        context["titulo"] = "Copia de seguridad"
+        context["url_modulo"] = reverse_lazy('backup_vista')
+        return context
