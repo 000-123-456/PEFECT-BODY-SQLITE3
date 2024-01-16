@@ -507,7 +507,7 @@ def backup_view(request):
 
     # Generar un nombre de archivo con formato "Respaldo - Fecha - Hora.json"
     current_datetime = datetime.now()
-    backup_file_name = f"Respaldo--Fecha{current_datetime.strftime('%Y-%m-%d')}--Hora{current_datetime.strftime('%H-%M')}.json"
+    backup_file_name = f"Respaldo--Fecha{current_datetime.strftime('%d-%m-%Y')}--Hora{current_datetime.strftime('%H-%M')}.json"
     backup_file_path = os.path.join(backup_folder, backup_file_name)
     # Generar un archivo de backup en la carpeta de salida
     with open(backup_file_path, 'w', encoding='utf-8') as backup_file:
