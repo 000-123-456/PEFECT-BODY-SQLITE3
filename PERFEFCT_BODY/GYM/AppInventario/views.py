@@ -740,10 +740,10 @@ def lista_productos(request):
         if q is not None:
             # Filtrar por nombre o apellido que contenga q
             productos = Producto.objects.filter(
-                Q(nombre__icontains=q) | Q(descripcion__icontains=q) | Q(categoriaP__nombre__icontains=q), estado=False
+                Q(nombre__icontains=q) | Q(descripcion__icontains=q) | Q(categoriaP__nombre__icontains=q), estado=False, cantidad__gt=0
             )
         else:
-            productos = Producto.objects.filter(estado=False)
+            productos = Producto.objects.filter(estado=False, cantidad__gt=0)
 
         # Serializa los objetos Producto a una lista de diccionarios
         productos_list = [

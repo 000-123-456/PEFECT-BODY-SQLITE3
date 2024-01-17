@@ -71,7 +71,7 @@ $(document).ready(function() {
     });
 
     $("#id_cantidad").keydown(function(event) {
-        if (event.key === ".") {
+        if (event.key === "." || event.key === "-") {
             event.preventDefault();
         }
         //evitar que se seleccione un producto con 0 unidades o que coloque 0 a al izquierda
