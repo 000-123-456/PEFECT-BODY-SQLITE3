@@ -1,3 +1,4 @@
+import json
 from django import http
 from django.shortcuts import render
 from typing import Any
@@ -12,6 +13,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.db.models import F, BooleanField, Case, When, Value
 from AppInventario.forms import FormProducto,FormCategoria,FormCompra,FormProveedor
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Q
+from flask import Flask, request, jsonify
 # Create your views here.
 
 
@@ -714,3 +717,87 @@ class UpdateProveedor(UpdateView):
         
         # Retorna la respuesta con el contexto actualizado
         return self.render_to_response(context)
+    
+class CreateVenta(TemplateView):
+    template_name = 'AppInventario/Venta/registroVenta.html'
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        try:
+            data['empresa'] = Empresa.objects.first()
+        except:
+            data['empresa'] = 'Error'
+        data['titulo'] = 'Registro de venta'
+        data['titulo2'] = 'Registro'
+        data['modulo'] = 'Ventas'
+        return data
+    
+    
+def lista_productos(request):
+    q = request.GET.get('q') # obtener término de búsqueda
+    try:
+        if q is not None:
+            # Filtrar por nombre o apellido que contenga q
+            productos = Producto.objects.filter(
+                Q(nombre__icontains=q) | Q(descripcion__icontains=q) | Q(categoriaP__nombre__icontains=q), estado=False
+            )
+        else:
+            productos = Producto.objects.filter(estado=False)
+
+        # Serializa los objetos Producto a una lista de diccionarios
+        productos_list = [
+            {
+                'id': producto.id,
+                'nombre': producto.nombre,
+                'descripcion': producto.descripcion,
+                'foto': producto.get_image(),
+                'precio': producto.precio_venta,
+                'cantidad': producto.cantidad,
+            }
+            for producto in productos
+        ]
+        
+        # Devuelve la lista de productos como JSON
+        return JsonResponse(productos_list, safe=False)
+    except Producto.DoesNotExist:
+        return JsonResponse({'error': 'No hay productos'}, status=400)
+
+    
+
+from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+
+#def registrar_venta recibiendo un array de productos data: JSON.stringify({ carrito: data }),
+@csrf_exempt
+def registro_venta(request):
+    if request.method == 'POST':
+        try:
+            # Obtén los datos JSON del cuerpo de la solicitud
+            data = json.loads(request.body.decode('utf-8'))
+            
+            emple = User.objects.get(id=request.user.id)
+            venta = Venta( total=0, empleado = emple)
+            venta.save()
+
+            # Procesa los datos del carrito
+            totalVenta = 0
+            for item in data['carrito']:
+                # Realiza las operaciones necesarias con cada item (por ejemplo, guarda en la base de datos)
+                print(item)
+                producto = Producto.objects.get(id=item['id'])
+                producto.cantidad -= item['cantidad']
+                producto.save()
+
+                detalle = LineaVenta( cantidad=item['cantidad'], precio_vendido=item['precio'], subtotal=item['subtotal'], venta=venta, producto=producto)
+                detalle.save()
+                totalVenta += item['subtotal']
+
+            venta.total = totalVenta
+            venta.save()
+            # Puedes devolver una respuesta JSON exitosa
+            messages.success(request, 'Venta realizada con éxito')
+        except json.JSONDecodeError as e:
+            messages.error(request, "¡No se pudo realizar la venta!")
+    return JsonResponse({'message': 'success'})
