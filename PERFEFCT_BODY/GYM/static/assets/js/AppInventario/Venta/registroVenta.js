@@ -184,22 +184,22 @@ $(document).ready(function() {
             return opcion.id;
         }
         var $opcion = $(
-            '<div class="wrapper container">'+
+            '<div class="container">'+
                 '<div class="row">'+
-                    '<div class="col-lg-2">'+
-                        '<img src="' + opcion.foto + '" class="img-fluid d-block mx-auto" style="border-radius: 20px; object-fit: contain;">'+
+                    '<div class="col-2" style="max-height: 100vh; overflow: hidden;">'+
+                        '<img src="' + opcion.foto + '" class="img-fluid d-block mx-auto rounded" style="width: 100%; height: 100%; object-fit: contain; max-width: 100%; max-height: 100%;">'+
                     '</div>'+
-                    '<div class="col-lg-10 text-left shadow-sm">'+
+                    '<div class="col-10 text-left shadow-sm">'+
                         '<p style="margin-bottom: 0;">'+
-                            opcion.nombre + '<br>'+
-                            (opcion.descripcion == null ? "Sin descripción" : opcion.descripcion) + '<br>'+
-                            opcion.cantidad + ' unidades disponibles<br>'+
+                            '<b>' + opcion.nombre + '</b> <br>'+ 
+                            opcion.cantidad + ' disponibles<br>'+
                         '</p>'+
                     '</div>'+
                 '</div>'+
             '</div>'
-
-        ); 
+        );
+        
+        
         return $opcion;
     }
     function formatRepoSelection (opcion) {
@@ -229,12 +229,12 @@ $(document).ready(function() {
         $("#id_cantidad").prop("disabled", false);
         $('#id_precio').val(opcion.precio);
         var $opcion = $(
-            '<div class="wrapper container">'+
+            '<div class="container">'+
                 '<div class="row">'+
-                    '<div class="col-lg-2">'+
-                        '<img src="' + opcion.foto + '" class="img-fluid d-block mx-auto" style="border-radius: 25px; object-fit: contain; width: 85%; height: 85%; padding-top: 5px;">'+
+                    '<div class="col-2" style="max-height: 100vh; overflow: hidden;">'+
+                        '<img src="' + opcion.foto + '" class="img-fluid d-block mx-auto rounded" style="width: 100%; height: 100%; object-fit: contain; max-width: 100%; max-height: 100%;">'+
                     '</div>'+
-                    '<div class="col-lg-10 text-left shadow-sm">'+
+                    '<div class="col-10 text-left shadow-sm">'+
                         '<p style="margin-bottom: 0;">'+
                             '<b>' + opcion.nombre + '</b> <br>'+ 
                             opcion.cantidad + ' disponibles<br>'+
@@ -242,8 +242,8 @@ $(document).ready(function() {
                     '</div>'+
                 '</div>'+
             '</div>'
-
-        ); 
+        );
+        
         return $opcion;
     
     }
