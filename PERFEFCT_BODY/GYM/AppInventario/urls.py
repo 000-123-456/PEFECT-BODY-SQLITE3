@@ -52,5 +52,11 @@ urlpatterns = [
     path('Proveedor/AltaTodos/',login_required(views.AltaTodosProveedor), name='alta_todos_proveedor'),
     path('Proveedor/Actualizar/<int:pk>/', login_required(views.UpdateProveedor.as_view()), name='actualizar_proveedor'),
 
+
+    ##------------------------------FIN DE VISTA DE VENTA-----------------------------------------------------------------
+    path('Venta/',login_required(views.CreateVenta.as_view()), name='vista_venta'),
+    path('Venta/listaProductos/',login_required(views.lista_productos), name='lista_productos_venta'),
+    path('Venta/registroVenta/',login_required(views.registro_venta), name='registro_venta'),
+
 ]
 urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

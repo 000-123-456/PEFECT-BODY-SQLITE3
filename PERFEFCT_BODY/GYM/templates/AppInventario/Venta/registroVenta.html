@@ -1,0 +1,198 @@
+{% extends 'layout/index.html' %}
+{% load static %}
+{% block titulo %}   {{titulo}}   {% endblock titulo %}
+{% block tituloP %}  {{titulo}}   {% endblock tituloP %}
+{% block modulo %}
+  <a href="#">   
+    {{modulo}}
+  </a>   
+{% endblock modulo %}
+{% block tituloS %}  {{titulo2}}   {% endblock tituloS %}
+{% block cuerpo %}
+<section class="section dashboard">
+    <div class="col-lg-12 d-flex flex-row-reverse">
+        <a href="#" class="btn btn-outline-dark mx-1" id="ayuda" onclick="tour ()">
+          <b><i class="bi bi-info-circle"></i> Ayuda</b>
+        </a> 
+      </div>
+      <br>
+      <br>
+    
+    <div class="col-lg-10">
+        <div class="card recent-sales overflow-auto">
+            <div class="card-body table-responsive"> 
+
+                <div class="row mb-4 mt-4">
+                    {% csrf_token %}
+
+                    <div class="col-md-4 text-center" id="list_producto">
+                        <h5 class="text-warning mt-2"></i>Producto</h5>
+                        <div class="mt-2" id="input_miembro">
+                            <div class="form-floating" >
+                                <!-- Campo de entrada para filtrar miembros -->
+                                <select class="form-control select2" id="miembros-select" style="width: 100%;" ></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2 text-center" id="cantidad">
+                        <h5 class="text-warning mt-2"></i>Cantidad</h5>
+                        <input type="number" name="id_cantidad" id="id_cantidad" class="form-control mt-3" pattern="[1-9][0-9]*(\.[0-9]+)?">
+                    </div>
+                    <div class="col-md-2 text-center" id="xunidad">
+                        <h5 class="text-warning mt-2"></i>$ Unidad</h5>
+                        <input type="number" name="id_cantidad" id="id_precio" class="form-control mt-3" readonly>
+                    </div>
+                    <div class="col-md-2 text-center" id="subtotal">
+                        <h5 class="text-warning mt-2"></i>$ Subtotal</h5>
+                        <input type="number" name="id_cantidad" id="id_subtotal" class="form-control mt-3" readonly>
+                    </div>
+                    <div class="col-md-2 mt-5" id="btnCarro">
+                        <div class="text-center">
+                            <button class="btn bg-warning text-black" id="btnCarrito"><i class="bi bi-cart-plus"></i> Agregar</button>
+                        </div>
+                    </div>
+
+                </div>
+                
+                <br>
+      
+                <table class="table bg-black text-white strip rounded mb-4" style="text-align: center" id="tabla-carrito">
+                    <thead class="bg-warning text-black">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Producto</th>
+                            <th scope="col">Cantidad</th>
+                            <th scope="col">Precio</th>
+                            <th scope="col">Subtotal</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-carrito">
+                </table>
+
+                <div class="row flex-row-reverse">
+                    <div class="col-md-3" id="total">
+                        <h5 class="text-warning"></i>Total $</h5>
+                        <input type="number" name="id_cantidad" id="id_total" class="form-control mt-3" readonly>
+                    </div>
+                    <div class="col-md-6" id="btnGuardar">
+                        <div class="text-center mt-4">
+                            <button class="btn bg-warning text-black" id="btnVenta"><i class="bi bi-cart-check"></i> Vender</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock cuerpo %}
+{% block js %}
+
+  <Script type="application/javascript" src="{% static 'assets/js/AppInventario/Venta/registroVenta.js' %}"></Script>
+<script>
+    //-------------------------------Funcion de ayuda--------------------------------------
+const driver = window.driver.js.driver;
+function tour() {
+const driverObj = driver({
+  popoverClass: 'driverjs-theme',
+  nextBtnText: 'Siguiente',
+  prevBtnText: 'Anterior',
+  doneBtnText: 'Completado',
+  showButtons: [
+    'next',
+    'previous',
+    'done'
+  ],
+  steps: [
+    { popover: 
+      { 
+        title: '¡Hola! 😊', 
+        description: 'Comenzarás un tour guiado para explicarte lo que puedes hacer en esta sección y aclarar todas tus dudas.' 
+      } 
+    },
+    { 
+      element: '#list_producto', 
+      popover: { 
+        title: 'Productos 📦', 
+        description: 'Aquí se puede buscar productos para filtrarlos.', 
+        side: "right", 
+        align: 'start' 
+      }
+    },
+    { 
+      element: '#cantidad', 
+      popover: { 
+        title: 'Cantidad 🔢', 
+        description: 'Aquí puede ingresar la cantidad de ese producto que desea agregar al carrito.', 
+        side: "right", 
+        align: 'start' 
+      }
+    },
+    { 
+      element: '#xunidad', 
+      popover: { 
+        title: 'Precio unitario 💵', 
+        description: 'En este campo puede visualizar el costo unitario del producto seleccionado.', 
+        side: "in", 
+        align: 'start' 
+      }
+    },
+    { 
+      element: '#subtotal', 
+      popover: { 
+        title: 'Subtotal 🔍', 
+        description: 'En este campo puede ver el subtotal por el precio y la cantidad del producto seleccionado.', 
+        side: "left", 
+        align: 'start' 
+      }
+    },
+    { 
+      element: '#btnCarro', 
+      popover: { 
+        title: 'Agregar al carrito 🛒', 
+        description: 'Con este botón puede agregar el producto a la lista de abajo.', 
+        side: "right", 
+        align: 'start' 
+      }
+    },
+    { 
+      element: '#tabla-carrito', 
+      popover: { 
+        title: 'Carrito 🛒', 
+        description: 'Aqui puedes ver todos los items que está a punto de vender.', 
+        side: "left", 
+        align: 'start' 
+      }
+    },
+    { 
+      element: '#total', 
+      popover: { 
+        title: 'Total 💰', 
+        description: 'Aquí se mostrará el total de la venta que está a punto de realizar.', 
+        side: "right", 
+        align: 'start' 
+      }
+    },
+    { 
+      element: '#btnGuardar', 
+      popover: { 
+        title: 'Vender 💵', 
+        description: 'Al dar click en este botón usted realizará la venta de los productos que se encuentren en el carrito.', 
+        side: "left", 
+        align: 'start' 
+      }
+    },
+    { 
+      popover: { 
+        title: '¡Fin del tour! 😁', 
+        description: 'Eso ha sido todo lo que puedes hacer en esta sección, si tienes más dudas puedes ver el tour las veces que gustes.' 
+      } 
+    }
+  ]
+});
+
+driverObj.drive();
+}
+</script>
+{% endblock js %}
