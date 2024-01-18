@@ -1,0 +1,238 @@
+{% extends 'layout/index.html' %}
+{% load static %}
+{% block titulo %}   {{titulo}}   {% endblock titulo %}
+{% block tituloP %}  {{titulo}}   {% endblock tituloP %}
+{% block modulo %}   {{modulo}}   {% endblock modulo %}
+{% block tituloS %}  {{titulo}}   {% endblock tituloS %}
+{% block cuerpo %}
+<section class="section">
+    
+        <div class="row">
+          {% comment %} <div class="col-lg-1"></div> {% endcomment %}
+          <div class="col-lg-12 d-flex flex-row-reverse">
+            <a href="#" class="btn btn-outline-dark mx-1" id="ayuda" onclick="tour ()">
+              <b><i class="bi bi-info-circle"></i> Ayuda</b>
+            </a>     
+        </div>
+          <br>
+          <br>
+          <div class="col-lg-12">
+                
+                <!-- Horizontal Form -->
+
+                {% if form.errors %}
+                {% for field  in form  %}
+                        {% for error in field.errors %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>Notificacion: </strong>{{error}}.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" arial-label="Close"></button>
+                        </div>
+                        {% endfor %}
+                {% endfor %}
+              {% endif %}
+            <br>
+            <div class="card table-responsive">
+              
+              <div class="card-body"> 
+                <h5 class="card-title text-warning"> <i class="bi bi-list-task"></i> {{titulo}}</h5>
+                <hr>
+                
+                <table class="table bg-black text-white strip rounded mb-4" style="text-align: center" id="data">
+                    <thead class="bg-warning text-black">
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">¿Quién la hizo?</th>
+                        <th scope="col">¿Cuando la hizo?</th>
+                        <th scope="col">¿A qué horas la hizo?</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% if asistencias %} {% for a in asistencias %}
+                      <tr>
+                        <td>{{forloop.counter}}</td>
+                        <td>{{ a.empleado.first_name }} {{ a.empleado.last_name }} - {{ a.empleado.get_rol_display }}</td>
+                        <td>{{ a.fecha_created|date  }}</td>
+                        <td>{{ a.fecha_created|time:'H:i' }}</td>
+                        
+                      </tr>
+                  
+                      {% endfor %} {% else %}
+                      <td colspan="9" style="text-align: center">
+                        <b>No hay datos para mostrar</b>
+                      </td>
+                      {% endif %}
+                    </tbody>
+                  </table>
+              </div>
+            </div>
+          </div>
+          {% comment %} <div class="col-lg-1"></div> {% endcomment %}
+        </div>
+        
+      </section>
+
+
+
+{% endblock cuerpo %}
+
+
+{% block js %}
+<script>
+  function eliminarDieta(id){
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: 'btn btn-primary',
+        cancelButton: 'btn btn-danger'
+      },
+      buttonsStyling: false
+    })
+    
+    swalWithBootstrapButtons.fire({
+      title: '¿Seguro que desea eliminar esta dieta?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Confirmar!',
+      cancelButtonText: 'Cancelar!',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        
+        window.location.href = "eliminar/"+id+"/"
+      } else if (
+        /* Read more about handling dismissals below */
+        result.dismiss === Swal.DismissReason.cancel
+      ) {
+        swalWithBootstrapButtons.fire(
+          'Operación cancelada',
+          'La dieta no se ha eliminado  :)',
+          'error'
+        )
+      }
+    })
+  }
+
+</script>
+
+<script>
+  const dataTableOptions = {
+    //scrollX: "400px",
+    lengthChange: false,
+    filter:[
+      { className: "form-control"},
+    ],
+    lengthMenu: [5, 10, 15, 20, 100, 200, 500],
+    columnDefs: [
+        { className: "text-center", targets: [0, 1, 2, 3] },
+        { orderable: false, targets: [3] },
+        { searchable: false, targets: [0,3] },
+        //{ width: "5%", targets: [0] }
+    ],
+    pageLength: 5,
+    destroy: true,
+    language: {
+        lengthMenu: "Mostrar _MENU_ registros por página",
+        zeroRecords: "Ningúna membresía  encontrada",
+        info: "Mostrando de _START_ a _END_ de un total de _TOTAL_ registros",
+        infoEmpty: "Ninguna dieta encontrado",
+        infoFiltered: "(filtrados desde _MAX_ registros totales)",
+        search: "",
+        loadingRecords: "Cargando...",
+        paginate: {
+            first: "Primero",
+            last: "Último",
+            next: "Siguiente",
+            previous: "Anterior"
+        }
+    }
+};
+
+  {% if asistencias %}
+  let table = new DataTable('#data', dataTableOptions);
+  //remove the default 'Search' text for all DataTable search boxes
+  $('[type=search]').each(function () {
+    $(this).attr("placeholder", "Buscar...");
+    $(this).before('<span class="bi bi-search"></span>');
+  });
+  {% endif %}
+
+   //------------------Funcion de ayuda---------------------
+ const driver = window.driver.js.driver;
+ function tour() {
+ const driverObj = driver({
+   popoverClass: 'driverjs-theme',
+   nextBtnText: 'Siguiente',
+   prevBtnText: 'Anterior',
+   doneBtnText: 'Completado',
+   showButtons: [
+     'next',
+     'previous',
+     'done'
+   ],
+   steps: [
+   { popover: { title: '¡Hola! 😊', description: 'Comenzarás un tour guiado para explicarte lo que puedes hacer en esta sección de papelera de dietas y aclarar todas tus dudas.' } },
+    
+   { 
+    element: '.table-responsive', 
+    popover: { 
+      title: 'Listado de Historial de Ventas 📈💼', 
+      description: 'En esta tabla, se presenta un historial detallado de las ventas de productos. Puedes identificar quién realizó la venta, ya sea un empleado o un administrador, y conocer la fecha y hora exactas en que se llevó a cabo.', 
+      side: 'in', 
+      align: 'start' 
+    }
+  },
+  { 
+    element: '#data_filter', 
+    popover: { 
+      title: 'Buscar 🔍', 
+      description: 'Utiliza este campo para escribir y filtrar información específica del historial de ventas en la tabla.', 
+      side: 'left', 
+      align: 'start' 
+    }
+  },
+  { 
+    element: '.sorting', 
+    popover: { 
+      title: 'Ordenar Datos ↕️', 
+      description: 'Haz clic en los encabezados de la tabla para ordenar la información del historial de ventas según diferentes criterios.', 
+      side: 'right', 
+      align: 'start' 
+    }
+  },
+  { 
+    element: '#data_info', 
+    popover: { 
+      title: 'Información del Listado 📊', 
+      description: 'Aquí se muestra la cantidad total de registros en el historial de ventas y cuántos están siendo visualizados actualmente.', 
+      side: 'right', 
+      align: 'start' 
+    }
+  },
+  { 
+    element: '#data_paginate', 
+    popover: { 
+      title: 'Páginas 📄➡️', 
+      description: 'Navega entre las páginas para ver diferentes conjuntos de registros en el historial de ventas.', 
+      side: 'left', 
+      align: 'start' 
+    }
+  },
+  { 
+    popover: { 
+      title: '¡Fin del tour! 😁', 
+      description: 'Espero que esta presentación sea la que estás buscando. Puedes ver el tour las veces que gustes 😊' 
+    } 
+  }]
+
+ });
+ 
+ driverObj.drive();
+ }
+</script>
+
+
+
+
+
+{% endblock js %}
+
+

@@ -22,6 +22,7 @@ from AppControlDeClientes.models import Asistencia, Miembro, VentaMembresia
 from AppInventario.funciones import listar_productos_con_cantidad_baja, obtener_compras_proximas_a_vencer
 from AppControlDeClientes.op import generar_clave_temporal_segura
 from AppControlDeClientes.mixins import isAdministradorMixin, isMiembroMixin
+from AppInventario.models import Venta
 from GYM.settings import STATIC_URL
 from django.core.mail import send_mail
 from GYM.settings import EMAIL_HOST_USER
@@ -472,7 +473,15 @@ class BitacoraAsistenciaView(isAdministradorMixin,TemplateView):
         context["url_modulo"] = reverse_lazy('bitacora_asistencias')
         context["asistencias"] = Asistencia.objects.all().reverse()
         return context
-    
+class BitacoraVentasView(isAdministradorMixin,TemplateView):
+    template_name = 'Bitacora/bitacoraVenta.html'
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["modulo"] = "Historial"
+        context["titulo"] = "Ventas"
+        context["url_modulo"] = reverse_lazy('bitacora_ventas')
+        context["asistencias"] = Venta.objects.all().reverse()
+        return context    
 
 class RestoreView(isAdministradorMixin,TemplateView):
     template_name = 'Seguridad/restore.html'

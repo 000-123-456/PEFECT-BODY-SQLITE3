@@ -11,6 +11,7 @@ from django.contrib import messages
 from AppUsers.models import Empresa,User
 from AppUsers.forms import RegistroUsuarioForm
 from AppControlDeClientes.mixins import isAdministradorMixin,isAdministradorOrEmpleadoMixin,isEmpleadoMixin, isMiembroMixin,isEntrenadorMixin, isNutricionistaMixin
+from AppInventario.models import Venta
 from .op import generar_clave_temporal_segura,rango
 from django.core.mail import send_mail
 from GYM.settings import EMAIL_HOST_USER
@@ -20,7 +21,7 @@ from django.utils import timezone
 from .funciones import calcular_edad, calcular_fecha_final, encontrar_posicion_mas_cercana, getCantidadVentas, obtener_comidas_por_dieta, obtener_url_imagen,vencimientoMembresias,getVentasMensuales, jsonPruebas,obtener_ejercicio_por_rutina
 import locale
 from django.db.models import Sum, Count
-from datetime import date
+from datetime import date, datetime
 from datetime import timedelta
 from django.db.models import Q
 from fuzzywuzzy import process
@@ -29,20 +30,59 @@ from django.views.decorators.csrf import csrf_exempt
 from AppControlDeClientes import op
 
 # Create your views here.
-def prueba(request):
-    try:
-        data = {
-            'empresa': Empresa.objects.first(),
-            
-            }
-    except:
-        data = {
-                    'empresa': Empresa.objects.first(),
-                    
-        }
-    return render(request, "layout/index.html",data)
+class IndexView(TemplateView):
+    template_name = 'layout/index.html'
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            if request.user.rol == 2:
+                return redirect('registro_asistencia')
+            if request.user.rol == 3:
+                return redirect('inicio_miembro')
+            if request.user.rol == 4:
+                return redirect('lista_recomendaciones_dieta')
+            if request.user.rol == 5:
+                return redirect('lista_Rutina_Ejercicio')
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        total = 0.00
+        context['titulo'] = 'Tablero'
+        context['modulo'] = 'Inicio'
+        # GANANCIAS DIARIAS de membresias
+        fecha_actual = timezone.localtime(timezone.now()).date()
+        ventas_hoy = VentaMembresia.objects.filter(fecha=fecha_actual)
+        ventas_hoy_dinero = ventas_hoy.aggregate(total_ventas=Sum('monto_pagado'))['total_ventas']
+        if ventas_hoy_dinero:
+            total+=ventas_hoy_dinero
+            context['ganancia_hoy_membresias'] = ventas_hoy_dinero
+        else:
+             context['ganancia_hoy_membresias'] = "0.00"
+        # GANANCIAS DE ASISTENCIAS
+        asistencias_hoy = Asistencia.objects.filter(fecha=fecha_actual)
+        dinero_recaudado = asistencias_hoy.aggregate(total_recaudado=Sum('monto_pagado'))['total_recaudado']
+        if dinero_recaudado:
+            total+=dinero_recaudado
+            context['ganancia_hoy_asistencia'] = dinero_recaudado
+        else:
+            context['ganancia_hoy_asistencia'] = "0.00"
+        # GANANCIAS DE VENTAS
+        #calcular la suma para el dia de hoy
+        now = datetime.now()
+        ventas = Venta.objects.filter(fecha_venta__day=now.day)
+        total_ventas_dia = ventas.aggregate(Sum('total'))['total__sum']
+        context['ganancia_hoy_ventas'] = total_ventas_dia if total_ventas_dia else 0.00
+        total+=total_ventas_dia if total_ventas_dia else 0.00
+        context['ganancia_hoy'] = total
 
-
+        # DATOS DE GRAFICO DE ventas de membresias mpor cada mes
+        ventas_cada_mes = getVentasMensuales()
+        for data_dict in ventas_cada_mes:
+            data_dict['data'] = [float(val) for val in data_dict['data']]
+        print(ventas_cada_mes)
+        context['ventas_cada_mes'] = ventas_cada_mes
+        context['cantidad_de_ventas'] =getCantidadVentas()
+        return context
 #*************************Miembro****************************************
 class RegistroMiembroView(isAdministradorOrEmpleadoMixin,CreateView):
     template_name = 'AppControlDeClientes/Miembro/createMiembro.html'
