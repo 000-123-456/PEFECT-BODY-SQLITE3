@@ -84,7 +84,7 @@
                       <i class="bi bi-person-lines-fill iAM"></i>
                     </div>
                     <div class="ps-3">
-                      <h6 class='text-warning'>${{ganancia_hoy_membresias}}</h6>
+                      <h6 class='text-warning'>${{ganancia_hoy_membresias|floatformat:2|replace_comma}}</h6>
 
                     </div>
                   </div>
@@ -107,7 +107,7 @@
                       <i class="bi bi-currency-dollar"></i>
                     </div>
                     <div class="ps-3">
-                      <h6 class='text-warning'>${{ganancia_hoy_asistencia}}</h6>
+                      <h6 class='text-warning'>${{ganancia_hoy_asistencia|floatformat:2|replace_comma}}</h6>
                      
 
                     </div>
@@ -132,7 +132,7 @@
                       <i class="bi bi-currency-dollar"></i>
                     </div>
                     <div class="ps-3">
-                      <h6 class='text-warning'>${{ganancia_hoy_ventas|replace_comma}}</h6>
+                      <h6 class='text-warning'>${{ganancia_hoy_ventas|floatformat:2|replace_comma}}</h6>
                     </div>
                   </div>
 
@@ -196,7 +196,7 @@
                     <i class="bi bi-currency-dollar"></i>
                   </div>
                   <div class="ps-3">
-                    <h6 class='text-success'>${{ganancia_hoy|replace_comma}}</h6>
+                    <h6 class='text-success'>${{ganancia_hoy|floatformat:2|replace_comma}}</h6>
                    
 
                   </div>

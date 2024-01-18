@@ -80,10 +80,13 @@
           {% comment %} <div class="col-lg-1"></div> {% endcomment %}
          
           <div class="col-lg-12 d-flex flex-row-reverse">
-            <a href="{% url 'listar_baja_maquina'%}" class="btn btn-danger">
+            <a href="#" class="btn btn-outline-dark mx-1" id="ayuda" onclick="tour ()">
+              <b><i class="bi bi-info-circle"></i> Ayuda</b>
+            </a>
+            <a href="{% url 'listar_baja_maquina'%}" id="papelera" class="btn btn-danger">
               <b><i class="bi bi-trash"></i> Papelera</b>
             </a>
-            <a href="{% url 'añadir_maquina' %}" class="btn btn-primary mx-1">
+            <a href="{% url 'añadir_maquina' %}" id="nuevo" class="btn btn-primary mx-1">
               <b><i class="bi bi-plus-lg"></i> Añadir máquina</b>
             </a>
             
@@ -145,11 +148,11 @@
                         
                         <td class="text-nowrap" style="vertical-align: middle;">
                         
-                          <a class="btn btn-dark" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                          <a id="menuOP" class="btn btn-dark" href="#" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-card-checklist"></i>
                             <i class="dropdown-toggle"></i>
                           </a>
-                          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" style="">
+                          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" style="" id="menu">
                             <li>
                               <a class="dropdown-item" href="{%url 'editar_maquina' m.id %}">
                                 <strong><i class="bi bi-pencil-square"></i> Actualizar datos</strong>
@@ -243,6 +246,35 @@
     $(this).before('<span class="bi bi-search"></span>');
   });
   {% endif %}
+
+  const driver = window.driver.js.driver;
+function tour() {
+const driverObj = driver({
+  popoverClass: 'driverjs-theme',
+  nextBtnText: 'Siguiente',
+  prevBtnText: 'Anterior',
+  doneBtnText: 'Completado',
+  showButtons: [
+    'next',
+    'previous',
+    'done'
+  ],
+  steps: [
+  { popover: { title: '¡Hola! 😊', description: 'Bienvenido al tour guiado por la sección de miembros del gimnasio. Aquí te explicaré todas las funciones disponibles y resolveré cualquier duda que puedas tener. ¡Empecemos!' } },
+  { element: '#nuevo', popover: { title: 'Nueva máquina ➕', description: 'Haz clic en este botón para agregar una nueva máquina.', side: 'left', align: 'start' }},
+  { element: '#papelera', popover: { title: 'Papelera de Máquinas 🗑️', description: 'Este botón te llevará a la papelera de máquinas. Aquí podrás ver y restaurar máquinas que hayan sido dadas de baja previamente.', side: 'bottom', align: 'start' }},
+  { element: '.table-responsive', popover: { title: 'Listado de Máquinas 🏋️', description: 'En esta tabla se muestra información detallada de todos las máquinas del gimnasio.', side: 'in', align: 'start' }},
+  { element: '#data_filter', popover: { title: 'Buscar 🔍', description: 'Utiliza este campo para escribir y filtrar información específica.', side: 'left', align: 'start' }},
+  { element: '.sorting', popover: { title: 'Ordenar Datos 🔄', description: 'Haz clic en los encabezados de la tabla para ordenar la información.', side: 'right', align: 'start' }},
+  { element: '#menuOP', popover: { title: 'Opciones ⚙️', description: 'Este botón despliega opciones para actualizar datos, enviar a mantenimiento o reparación y dar de baja.', side: 'right', align: 'start' }},
+  { element: '#data_info', popover: { title: 'Información del Listado 📊', description: 'Aquí se muestra la cantidad total de máquinas y cuántas están siendo visualizadas actualmente.', side: 'right', align: 'start' }},
+  { element: '#data_paginate', popover: { title: 'Páginas 📄➡️', description: 'Navega entre las páginas para ver diferentes conjuntos de máquinas en el listado.', side: 'left', align: 'start' }},
+  { popover: { title: '¡Fin del tour! 😁', description: 'Espero que esta presentación sea la que estás buscando. Puedes ver el tour las veces que gustes 😊' }}
+  ]
+});
+
+driverObj.drive();
+}
 
 </script>
 {% endblock js %}
