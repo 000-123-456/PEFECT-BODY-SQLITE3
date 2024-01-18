@@ -7,47 +7,52 @@
 <li><a href="{% url 'dietas' %}">{{modulo}}</a></li>
 {% endblock linkModulo %} {% block contenido %}
 
-<!-- ======= Contact Section ======= -->
-<div class="modal fade" id="guardar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!-- ======= Modal para Seleccionar Días de Rutina ======= -->
+<div class="modal fade" id="seleccionarDiasModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header bg-warning">
-        <h5 class="modal-title text-black" id="exampleModalLabel">Guardar dieta</h5>
-        <button type="button" class="close bg-warning" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body bg-dark">
-        
-        <form method="post" enctype="multipart/form-data" id='guardarForm'>
-          {% csrf_token %}
-          <input type="hidden" name="action" value="guardar">
-          <input type="hidden" name="idDieta" value="" id='idDieta'>
-          <div class="form-group">
-            <label for="recipient-name" class="col-form-label">Día:</label>
-            <select class="form-select" name='dia'>
-              <option value='1'>Lunes</option>
-              <option value='2'>Martes</option>
-              <option value='3'>Miercoles</option>
-              <option value='4'>Jueves</option>
-              <option value='5'>Viernes</option>
-              <option value='6'>Sábado</option>
-              <option value='7'>Domingo</option>
-              </select>
+      <div class="modal-content">
+          <div class="modal-header bg-warning">
+              <h5 class="modal-title text-black" id="exampleModalLabel">Seleccionar Días para Guardar Rutina</h5>
+              <button type="button" class="close bg-warning" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
           </div>
-       
+          <div class="modal-body bg-dark">
+              <!-- Agrega el formulario con el campo de selección de días -->
+              <form method="post" enctype="multipart/form-data" id='seleccionarDiasForm'>
+                  {% csrf_token %}
+                  <input type="hidden" name="action" value="seleccionar_dias">
+                  <input type="hidden" name="idRutina" value="" id='idRutinaConDias'>
+                  <div class="form-group">
+                      <label for="dias" class="col-form-label">Días:</label>
+                      <select class="form-select" name='dias' multiple>
+                          <option value='1'>Lunes</option>
+                          <option value='2'>Martes</option>
+                          <option value='3'>Miércoles</option>
+                          <option value='4'>Jueves</option>
+                          <option value='5'>Viernes</option>
+                          <option value='6'>Sábado</option>
+                          <option value='7'>Domingo</option>
+                      </select>
+                  </div>
+              </form>
+          </div>
+          <div class="modal-footer bg-dark d-flex justify-content-center">
+              <button type="button" class="btn btn-warning" onclick="guardarRutinaConDias()">Guardar</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+          </div>
       </div>
-      <div class="modal-footer bg-dark d-flex justify-content-center">
-        <button type="button" class="btn btn-warning" onclick="mostrarAlerta()">Guardar</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-      </form>
-      </div>
-    </div>
   </div>
 </div>
+<!-- ======= Fin del Modal para Seleccionar Días de Rutina ======= -->
+
+
+
+
+
 <section id="contact" class="contact">
     <div class="my-3 mx-3">
-        <ul class="nav nav-pills mb-3 mt-3 mx-3 d-flex justify-content-between bg-platinum" id="pills-tab" role="tablist"> <li class="nav-item">
+        <ul class="nav nav-pills mb-3 mt-3 mx-3 d-flex justify-content-between bg-platinum" id="pills-tab" role="tablist"> <li class="nav-item" id='menu_recomendaciones'>
         <a
           class="nav-link active"
           id="pills-home-tab"
@@ -59,18 +64,12 @@
           >Recomendaciones{{name}}</a
         >
       </li>
-      <li class="nav-item">
-        <a
-          class="nav-link"
-          id="pills-profile-tab"
-          data-toggle="pill"
-          href="#pills-profile"
-          role="tab"
-          aria-controls="pills-profile"
-          aria-selected="false"
-          >Mis dietas</a
-        >
-      </li>
+
+      <li class="nav-item" id='mis_rutinas'>
+        <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-rutinas" role="tab" aria-controls="pills-rutinas" aria-selected="false" onclick="cargarMisRutinas()">Mis Rutinas</a>
+    </li>
+    
+     
     </ul>
   </div>
   <div class="tab-content" id="pills-tabContent">
@@ -80,7 +79,7 @@
       role="tabpanel"
       aria-labelledby="pills-home-tab"
     >
-    <div class="container">
+    <div class="container" id='formulario'>
     <div class="row">
         <div class="col-md-12 d-flex justify-content-between">
             <h3 class="text-warning">Datos</h3>
@@ -93,16 +92,16 @@
           {% csrf_token %}
         <div class="row gy-2 gx-md-3">
           <input type="hidden" name="action" value="recomendaciones">
-          
-            <div class="col-6 form-group input-dietas">
-                <select class="form-select" aria-label="Default select example" name='nivel_experiencia'>
+           
+            <div class="col-6 form-group input-dietas" id='nivel_experiencia'>
+                <select class="form-select" aria-label="Default select example" name='nivel_experiencia' >
                   <option selected="">Nivel de Experiencia</option>
                   <option value="1">Principiante</option>
                   <option value="2">Intermedio</option>
                   <option value="3">Avanzado</option>
                   </select>
             </div>
-            <div class="form-group col-6 input-dietas">
+            <div class="form-group col-6 input-dietas" id='tipo_ejercicio'>
                 <select class="form-select" aria-label="Default select example" name='tipo_ejercicio'>
                   <option selected="">Tipo de Ejercicio</option>
                   <option value="1">Abdomen</option>
@@ -113,7 +112,7 @@
                   <option value="6">Piernas</option>
                   </select>
             </div>
-            <div class="col-6 input-dietas"><button type="submit" class='btn btn-outline-warning'>Generar</button></div>
+            <div class="col-6 input-dietas" ><button type="submit" class='btn btn-outline-warning' id='generar'>Generar</button></div>
           </div>
         </form>
         <!--FIN DE FORMULARIO DE RECOMENDACIONES-->
@@ -128,6 +127,7 @@
 
       <!--Fin div de recomendacion-->
     </div>
+
     <div
       class="tab-pane fade"
       id="pills-profile"
@@ -136,43 +136,43 @@
     >
     <section class="testimonials">
        
-        <!--Inicio de carrusel de cartas-->
-        {% for dieta, comidas in dietas_y_comidas_del_miembro.items %}
-        <div class="section-dietas mx-1"><div class="container-dieta"><div class="d-flex justify-content-between"><h3 class="text-warning">{{dieta.get_dia_display}}</h3> <button class="btn btn-danger" onclick="borrarDieta({{dieta.id}})"><i class="bi bi-trash"></i> Borrar</button></div><ul class="cards-dieta">
-          {% for comida in comidas %}
-          <li class="card-dieta">
-          
-          <div>
-              <h3 class="card-dieta-title">
-                  <img src="{% get_comida_image comida.tiempo %}" alt="4" class="icon-image img-fluid">
-                  {{ comida.get_tiempo_display }}
-              </h3>
-              <div class="card-dieta-content">
-                  <p>{{comida.detalle}}</p><br>
-              </div>
+            <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+              <section class="testimonials">
+                  {% for rutina, dias in rutinas_y_dias_del_miembro.items %}
+                      <div class="section-rutinas mx-1">
+                          <div class="container-rutina">
+                              <div class="d-flex justify-content-between">
+                                  <h3 class="text-warning">{{ rutina.get_dia_display }}</h3>
+                                  <button class="btn btn-danger" onclick="borrarRutina({{ rutina.id }})">
+                                      <i class="bi bi-trash"></i> Borrar
+                                  </button>
+                              </div>
+                              <ul class="cards-rutina">
+                                  {% for dia in dias %}
+                                      <li class="card-rutina">
+                                          <div>
+                                              <h3 class="card-rutina-title">{{ dia.get_tiempo_display }}</h3>
+                                              <div class="card-rutina-content">
+                                                  <p>{{ dia.detalle }}</p><br>
+                                              </div>
+                                          </div>
+                                      </li>
+                                  {% endfor %}
+                              </ul>
+                          </div>
+                      </div>
+                  {% endfor %}
+              </section>
           </div>
-          
-          
-      </li>
-      {% endfor %}
-    </ul></div></div>
-       <!--Inicio de carrusel de cartas-->
-       {% endfor %}
-      </section>
-    </div>
-    <div
-      class="tab-pane fade"
-      id="pills-contact"
-      role="tabpanel"
-      aria-labelledby="pills-contact-tab"
-    >
-      ...
-    </div>
-  </div>
-</section>
-<!-- End Contact Section -->
+    
 
 {% endblock contenido %} {% block js %}
+
+
+
+
+
+
 <script
   src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
   integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
@@ -188,6 +188,14 @@
   integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
   crossorigin="anonymous"
 ></script>
+
+
+
+
+
+
+
+
 <script>
   {% if form.errors %}
       // Crear una lista para almacenar los mensajes de error
@@ -221,188 +229,228 @@
     // Detener la reproducción automática del carrusel
     $('.carousel').carousel({ interval: false, });
 </script>
+
+
+
+
+
+
+
+
+
+
 <!-- Agrega esto en tu template -->
+
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-      const formulario = document.getElementById('recomendacion');
-
-      formulario.addEventListener('submit', async function (e) {
-          e.preventDefault(); // Evita la recarga de la página
-
-          // Recopila los datos del formulario
-          const formData = new FormData(formulario);
-
-          try {
-              // Realiza una solicitud Fetch utilizando async/await
-              const response = await fetch("{% url 'rutinas' %}", {
-                  method: 'POST',
-                  body: formData
-              });
-
-              // Parsea la respuesta como JSON
-              const data = await response.json();
-              console.log(data)
-              // Actualiza el contenido de tu página según la respuesta del servidor
-              if (data.success && data.rutinas) {
-                const parentElement = document.getElementById('pills-home');
-
-                // Eliminar elementos con la clase "section-dietas"
-            const elementosEliminar = parentElement.querySelectorAll('.section-dietas');
-            elementosEliminar.forEach(elemento => elemento.remove());
-
-
-                data.rutinas.forEach(rutina => {
-                    const sectionDieta = document.createElement('div');
-                    sectionDieta.classList.add('section-dietas', 'mx-1');
-
-                    const containerDieta = document.createElement('div');
-                    containerDieta.classList.add('container-dieta');
-
-                    const dFlexElement = document.createElement('div');
-                    dFlexElement.classList.add('d-flex', 'justify-content-between');
-
-                    const tituloElement = document.createElement('h3');
-                    tituloElement.classList.add('text-warning');
-                    tituloElement.textContent = dieta.nombre;
-
-                    const inputID = document.createElement('input');
-                    inputID.type = 'hidden';  // Establecer el tipo de entrada como oculto
-                    inputID.value = dieta.id;  // Asignar el valor deseado
-
-
-                    const guardarBtn = document.createElement('button');
-                    guardarBtn.setAttribute('data-toggle', 'modal')
-                    guardarBtn.setAttribute('data-target', '#guardar');
-                    guardarBtn.classList.add('btn', 'btn-warning');
-                    guardarBtn.innerHTML = '<i class="bi bi-bookmark-plus"></i> Guardar';
-                    // Obtener referencia al segundo input
-
-    // Obtener referencia al segundo input
-    const inputIDdieta = document.getElementById('idRutina');
-
- 
-    // Asignar el evento de clic al botón (fuera del bloque anterior)
-    guardarBtn.addEventListener('click', function() {
-        // Obtener el valor del primer input
-        const valorInput = inputID.value;
-
-        // Asignar el valor al segundo input
-        inputIDdieta.value = valorInput;
-
-        // Hacer algo más con el valor si es necesario
-        console.log('Valor asignado a inputIDdieta:', inputIDdieta.value);
-    });
-                    dFlexElement.appendChild(tituloElement);
-                    dFlexElement.appendChild(inputID);
-                    dFlexElement.appendChild(guardarBtn);
-
-                    containerDieta.appendChild(dFlexElement);
-
-                    const cardsDieta = document.createElement('ul');
-                    cardsDieta.classList.add('cards-dieta');
-
-                    dieta.comidas.forEach(comida => {
-                        const cardDieta = document.createElement('li');
-                        cardDieta.classList.add('card-dieta');
-
-                        const contenido = `
-                            <div>
-                                <h3 class="card-dieta-title">
-                                  <img src="${(ejercicio.imagen)}" alt="${(ejercicio.nombre)}" class="icon-image img-fluid" />
-                                  ${getTiempo(ejercicio.nombre)}
-                                </h3>
-                                <div class="card-dieta-content">
-                                    <p>${ejercicio.detalle_ejercicio}</p><br>
-                                </div>
-                                <div class="card-dieta-content">
-                                  <p>${ejercicio.recomendacion}</p><br>
-                              </div>
-                            </div>
-                            
-                        `;
-
-                        cardDieta.innerHTML = contenido;
-                        cardsDieta.appendChild(cardDieta);
-                    });
-
-                    containerDieta.appendChild(cardsDieta);
-                    sectionDieta.appendChild(containerDieta);
-                    parentElement.appendChild(sectionDieta);
-                });
-              } else if (data.error) {
-                  // Actualiza el contenido de error en tu página
-                  
-              }
-          } catch (error) {
-              console.error('Error en la solicitud Fetch:', error);
-          }
-      });
-  });
-
   
+      document.addEventListener('DOMContentLoaded', function () {
+        const formulario = document.getElementById('recomendacion');
+
+        formulario.addEventListener('submit', async function (e) {
+            e.preventDefault(); // Evita la recarga de la página
+
+            // Recopila los datos del formulario
+            const formData = new FormData(formulario);
+
+            try {
+                // Realiza una solicitud Fetch utilizando async/await
+                const response = await fetch("{% url 'rutinas' %}", {
+                    method: 'POST',
+                    body: formData
+                });
+
+                // Verifica si la solicitud fue exitosa (código de estado 200)
+                if (response.ok) {
+                    // Parsea la respuesta como JSON
+                    const data = await response.json();
+                    console.log(data);
+
+                    // Actualiza el contenido de tu página según la respuesta del servidor
+                    if (data.success && data.rutinas) {
+                        const parentElement = document.getElementById('pills-home');
+
+                        // Eliminar elementos con la clase "section-dietas"
+                        const elementosEliminar = parentElement.querySelectorAll('.section-dietas');
+                        elementosEliminar.forEach(elemento => elemento.remove());
+
+                        //-------------------------------------------------------------------------------
+
+                        data.rutinas.forEach(rutina => {
+                            const nuevaRutinaHTML = `
+                                <div class="section-dietas mx-1">
+                                    <div class="container-dieta">
+                                        <div class="d-flex justify-content-between">
+                                            <h3 class="text-warning">${rutina.nombre}</h3>
+                                            
+                                            <button class="btn btn-warning" onclick="guardarRutina({{rutina.id}})">
+                                              <i class="bi bi-save"></i> Guardar
+                                          </button>
+                                          
+                                        </div>
+                                        <ul class="cards-dieta">
+                                            ${rutina.ejercicios.map(ejercicio => `
+
+                                                <li class="card-dieta">
+                                                    <div>
+                                                      <img src="${ejercicio.img}" alt="4" class="icon-image img-fluid">
+                                                        <h3 class="card-dieta-title">
+                                                          ${getMusculoEnLetra(ejercicio.musculo)}
+                                                        </h3>
+                                                        <div class="card-dieta-content">
+                                                            <p>${ejercicio.detalle_ejercicio}</p><br>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            `).join('')}
+                                        </ul>
+                                    </div>
+                                </div>
+                            `;
+
+                            // Agregar la nueva rutina al DOM
+                            parentElement.insertAdjacentHTML('beforeend', nuevaRutinaHTML);
+                        });
+                    } else if (data.error) {
+                        // Manejar el error de manera apropiada
+                    }
+                } else {
+                    console.error('Error en la solicitud Fetch:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error en la solicitud Fetch:', error);
+            }
+        });
+    });
+
+// Resto del código... 
 </script>
+
 <script>
-  function mostrarAlerta() {
-      const idRutina = document.getElementById('idRutina').value;
+  // ... (código existente)
 
-      const swalWithBootstrapButtons = Swal.mixin({
-          customClass: {
-              confirmButton: 'btn btn-warning',
-              cancelButton: 'btn btn-danger'
-          },
-          buttonsStyling: false
-      })
+  function getMusculoEnLetra(musculo) {
+      // Mapeo de valores numéricos a letras para los músculos (ajústalo según tus necesidades)
+      const musculoLetras = {
+          1: 'Abdomen',
+          2: 'Biceps',
+          3: 'Espalda',
+          4: 'Hombros',
+          5: 'Pectorales',
+          6: 'Piernas'
+      };
 
-      swalWithBootstrapButtons.fire({
-          title: `¿Seguro que desea guardar esta rutina? Si ya tiene una para ese día se sobreescribirá.`,
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonText: 'Confirmar',
-          cancelButtonText: 'Cancelar',
-          reverseButtons: false
-      }).then((result) => {
-          if (result.isConfirmed) {
-              // Aquí puedes realizar alguna acción adicional si se confirma la alerta
-              document.getElementById('guardarForm').submit();
-          } else if (result.dismiss === Swal.DismissReason.cancel) {
-              swalWithBootstrapButtons.fire(
-                  'Operacion cancelada',
-                  'La dieta no se ha guardado 🙂',
-                  'error'
-              )
-          }
-      });
+      return musculoLetras[musculo] || 'Desconocido';
   }
 
-  function borrarRutina(idRutina) {
+  // ... (resto del código)
+</script>
+
+
+
+
+
+
+<script>
+  function guardarRutina(idRutina) {
+      // Aquí puedes abrir el nuevo modal para seleccionar los días
+      $('#seleccionarDiasModal').modal('show');
+  }
+
+  function guardarRutinaConDias(idRutina) {
+      // Aquí puedes implementar la lógica para guardar la rutina con los días seleccionados
+      // Puedes usar AJAX o cualquier otra lógica necesaria
+      // Después de guardar, puedes cerrar el modal si es necesario
+      $('#seleccionarDiasModal').modal('hide');
+      // También puedes mostrar un mensaje de éxito si es necesario
+      const swalWithBootstrapButtons = Swal.mixin({
+          customClass: {
+              confirmButton: 'btn btn-success',
+          },
+          buttonsStyling: false
+      });
+      swalWithBootstrapButtons.fire({
+          icon: 'success',
+          title: 'Rutina guardada con éxito',
+          showConfirmButton: false,
+          timer: 1500
+      });
+  }
+</script>
+
+
+<script>
+  async function cargarMisRutinas() {
+    try {
+        // Realiza una solicitud Fetch para obtener las rutinas del servidor
+        const response = await fetch("URL_PARA_OBTENER_RUTINAS_DEL_SERVIDOR");
+        const data = await response.json();
+
+        // Renderiza las rutinas en el contenedor correspondiente (mis-rutinas-container)
+        const misRutinasContainer = document.getElementById('mis-rutinas-container');
+        misRutinasContainer.innerHTML = ''; // Limpia el contenedor antes de agregar las nuevas rutinas
+
+        data.rutinas.forEach(rutina => {
+            // Aquí debes crear y agregar elementos HTML para mostrar cada rutina en el contenedor
+            // Puedes usar innerHTML, createElement, appendChild, etc.
+        });
+
+    } catch (error) {
+        console.error('Error al cargar las rutinas:', error);
+    }
+}
+</script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Cargar rutinas al iniciar la página
+        cargarMisRutinas();
+    });
+</script>
+
+
+
+
+<script>
+  async function mostrarAlerta() {
+    const idRutina = document.getElementById('idRutina').value;
+
     const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
             confirmButton: 'btn btn-warning',
             cancelButton: 'btn btn-danger'
         },
         buttonsStyling: false
-    })
+    });
 
-    swalWithBootstrapButtons.fire({
-        title: `¿Seguro que desea borrar esta rutina de su lista?`,
+    const result = await swalWithBootstrapButtons.fire({
+        title: `¿Seguro que desea guardar esta rutina? Si ya tiene una para ese día se sobreescribirá.`,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Confirmar',
         cancelButtonText: 'Cancelar',
         reverseButtons: false
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // Aquí puedes realizar alguna acción adicional si se confirma la alerta
-            window.location.href = "Dietas/eliminar/"+idRutina+"/"
-        } else if (result.dismiss === Swal.DismissReason.cancel) {
-            swalWithBootstrapButtons.fire(
-                'Operacion cancelada',
-                'La dieta no se ha eliminado 🙂',
-                'error'
-            )
-        }
     });
+
+    if (result.isConfirmed) {
+        // Aquí puedes realizar alguna acción adicional si se confirma la alerta
+        document.getElementById('guardarForm').submit();
+
+        // Redirigir a la pestaña "Mis Rutinas" después de enviar el formulario
+        window.location.href = "#pills-rutinas";
+
+        // Cargar y mostrar las rutinas después de la redirección
+        
+        cargarMisRutinas();
+    } else if (result.dismiss === Swal.DismissReason.cancel) {
+        swalWithBootstrapButtons.fire(
+            'Operacion cancelada',
+            'La rutina no se ha guardado 🙂',
+            'error'
+        );
+    }
 }
+
 
 //-------------------------------Funcion de ayuda para recomendaciones--------------------------------------
 const driver = window.driver.js.driver;
@@ -418,16 +466,12 @@ const driverObj = driver({
     'done'
   ],
   steps: [
-  { popover: { title: '¡Hola! 😊', description: 'Bienvenido al tour guiado por la sección de miembros del gimnasio. Aquí te explicaré todas las funciones disponibles y resolveré cualquier duda que puedas tener. ¡Empecemos!' } },
-  { element: '#nuevo', popover: { title: 'Nuevo Miembro ➕', description: 'Haz clic en este botón para agregar un nuevo miembro al gimnasio.', side: 'left', align: 'start' }},
-  { element: '#papelera', popover: { title: 'Papelera de Miembros 🗑️', description: 'Este botón te llevará a la papelera de miembros. Aquí podrás ver y restaurar miembros que hayan sido dados de baja previamente.', side: 'bottom', align: 'start' }},
-  { element: '.table-responsive', popover: { title: 'Listado de Miembros 🏋️', description: 'En esta tabla se muestra información detallada de todos los miembros del gimnasio.', side: 'in', align: 'start' }},
-  { element: '#data_filter', popover: { title: 'Buscar 🔍', description: 'Utiliza este campo para escribir y filtrar información específica de los miembros en la tabla.', side: 'left', align: 'start' }},
-  { element: '.sorting', popover: { title: 'Ordenar Datos 🔄', description: 'Haz clic en los encabezados de la tabla para ordenar la información de los miembros.', side: 'right', align: 'start' }},
-  { element: '.btnVP', popover: { title: 'Ver Detalles 👁️‍🗨️', description: 'Al hacer clic en este botón, podrás ver información detallada de cada miembro y verificar el estado de su membresía.', side: 'right', align: 'start' }},
-  { element: '#menu-opciones', popover: { title: 'Opciones Miembro ⚙️', description: 'Este botón despliega opciones para actualizar datos, asignar membresía y dar de baja a un miembro.', side: 'right', align: 'start' }},
-  { element: '#data_info', popover: { title: 'Información del Listado 📊', description: 'Aquí se muestra la cantidad total de miembros y cuántos están siendo visualizados actualmente.', side: 'right', align: 'start' }},
-  { element: '#data_paginate', popover: { title: 'Páginas 📄➡️', description: 'Navega entre las páginas para ver diferentes conjuntos de miembros en el listado.', side: 'left', align: 'start' }},
+  { popover: { title: '¡Hola! 😊', description: 'Bienvenido al tour guiado por la sección de rutinas. Aquí te explicaré todas las funciones disponibles y resolveré cualquier duda que puedas tener. ¡Empecemos!' } },
+  { element: '#menu_recomendaciones', popover: { title: 'Recomendaciones 🏃🏻‍♂️', description: 'En esta sección podrás obtener recomendaciones de rutinas basadas en tu experiencia de ejercicio. Para planes más especializados puedes puedes acercarte a tu entrenador de confianza. 😊', side: 'right', align: 'start' }},
+  { element: '#formulario', popover: { title: 'Formulario 📝', description: 'En este apartado podrás seleccionar los datos para obtener rutinas para tu semana.', side: 'right', align: 'start' }},
+  { element: '#nivel_experiencia', popover: { title: 'Nivel Experiencia 🏋️‍♂️', description: 'Aquí deberás seleccionar el nivel de experiencia fisica que quieres realizar, sé muy sincero. 😊', side: 'bottom', align: 'start' }},
+  { element: '#tipo_ejercicio', popover: { title: 'Tipo de Ejercicio 💪', description: 'Aquí deberás seleccionar el tipo de ejercicio que deseas realizar, de las partes de tu cuerpo.', side: 'in', align: 'start' }},
+  { element: '#generar', popover: { title: 'Generar 🔄🧘🏼‍♂️', description: 'Al dar click en este botón apareceran diferentes rutinas. 😊', side: 'right', align: 'start' }},
   { popover: { title: '¡Fin del tour! 😁', description: 'Espero que esta presentación sea la que estás buscando. Puedes ver el tour las veces que gustes 😊' }}
   ]
 });

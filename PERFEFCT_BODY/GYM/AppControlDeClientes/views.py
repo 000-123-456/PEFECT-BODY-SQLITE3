@@ -1118,9 +1118,17 @@ class CreateEjercicio(isEntrenadorMixin,CreateView):
 
 
 #*************************************************listaRutina
-class ListaDeRutinas(isMiembroMixin,ListView):
+
+
+
+
+
+from django.shortcuts import render
+
+class ListaDeRutinas(isMiembroMixin, ListView):
     model = Rutina
     template_name = 'AppControlDeClientes/Rutinas/listaRutina.html'
+
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         data = super().get_context_data(**kwargs)
         try:
@@ -1130,25 +1138,24 @@ class ListaDeRutinas(isMiembroMixin,ListView):
         data['titulo'] = 'Menú de rutinas'
         data['modulo'] = 'Rutinas'
         return data
+
     def post(self, request: HttpRequest, *args: str, **kwargs: Any):
         data = {}
         try:
-            #Si el parametro action es recomendaciones quiere decir se esta pidiendo recomendaciones de dietas
-            action= request.POST['action']
+            # Si el parametro action es recomendaciones quiere decir se esta pidiendo recomendaciones de dietas
+            action = request.POST['action']
             if action == 'recomendaciones':
-                #obtenemos el miembro que ha iniciado sesion
-                miembro = Miembro.objects.get(user = request.user.pk)
-                    
-                
-            data = obtener_ejercicio_por_rutina(request.POST['nivel_experiencia'], request.POST['tipo_ejercicio'])
-
+                # Obtenemos el miembro que ha iniciado sesión
+                miembro = Miembro.objects.get(user=request.user.pk)
             
-           
-
+                data = obtener_ejercicio_por_rutina(request.POST['nivel_experiencia'], request.POST['tipo_ejercicio'])          
+                print(data)
+                return JsonResponse(data, safe=False)
 
         except Exception as e:
-            data['error']= str(e)
-        return redirect('rutinas')
+            data['error'] = str(e)
+
+        return JsonResponse(data, safe=False)
 
 
 

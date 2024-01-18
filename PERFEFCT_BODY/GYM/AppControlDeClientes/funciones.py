@@ -6,7 +6,7 @@ from django.templatetags.static import static
 import os
 from django.db.models import Sum, Count
 from django.db.models.functions import ExtractMonth, ExtractYear
-from .models import Comida, Dieta, ListaDietas, VentaMembresia,Rutina
+from .models import Comida, Dieta, ListaDietas, VentaMembresia,Rutina,ListaDeRutinas
 
 
 # Directorio que contiene las imágenes
@@ -305,16 +305,15 @@ def mis_dietas(miembro):
 
 
 #*******************rutina*************************
-def obtener_ejercicio_por_rutina(experiencia,tipo_ejercicio):
-    # Filtrar las dietas por el rango proporcionado
-      
+def obtener_ejercicio_por_rutina(experiencia, tipo_ejercicio):
+    # Filtrar las rutinas por el rango proporcionado
     rutinas = Rutina.objects.filter(experiencia=experiencia, tipo_ejercicio=tipo_ejercicio)
 
-    # Obtener todas las comidas relacionadas con esas dietas y convertirlas a diccionarios
+    # Obtener todas las rutinas relacionadas con esos filtros y convertirlas a diccionarios
     ejercicio_por_rutina = []
 
     for rutina in rutinas:
-        ejercicios = rutina.ejercicio_set.all().order_by('-id')  # Ordenar las comidas por el campo 'tiempo'
+        ejercicios = rutina.ejercicio_set.all().order_by('-id')  # Ordenar los ejercicios por el campo 'id'
         ejercicios_dict = {
             'nombre': rutina.nombre,
             'id': rutina.id,
@@ -323,5 +322,17 @@ def obtener_ejercicio_por_rutina(experiencia,tipo_ejercicio):
         ejercicio_por_rutina.append(ejercicios_dict)
 
     # Devolver la respuesta en formato JSON
-    return {'rutinas': ejercicios_dict, 'success': True}
+    return {'rutinas': ejercicio_por_rutina, 'success': True}
 
+
+#************************
+def serialize_rutinas(rutinas):
+    serialized_rutinas = []
+    for rutina in rutinas:
+        serialized_rutina = {
+            'id': rutina.id,
+            'nombre': rutina.nombre,
+            # Agrega más campos según tus necesidades
+        }
+        serialized_rutinas.append(serialized_rutina)
+    return serialized_rutinas

@@ -170,8 +170,10 @@ class Ejercicio(models.Model):
         verbose_name = 'ejercicio'
         verbose_name_plural = 'ejercicios'
         ordering = ['id']
+
     def toJSON(self):
-        item = model_to_dict(self)
+        item = model_to_dict(self, exclude=['imagen'])
+        item ['img']=self.get_image()
         item['rutina'] = self.rutina.toJSON()
         return item
     
