@@ -101,7 +101,7 @@
                           <img src="{% if a.miembro %}{{a.miembro.get_image}}{% else %}/static/assets/img/no-user.png{% endif %}" class="img-fluid d-block mx-auto" style="width: 70px; height:70px; border-radius: 20px;">
                       </td>
                         <td class="text-nowrap" style="vertical-align: middle;">{% if not a.miembro %}{{a.nombre}}{% else %}{{a.miembro.user.first_name}} {{a.miembro.user.last_name}}{% endif %}</td>
-                        <td class="text-nowrap" style="vertical-align: middle;">{{ a.fecha_created.date }}</td>
+                        <td class="text-nowrap" style="vertical-align: middle;">{{ a.fecha }}</td>
                         <td class="text-nowrap" style="vertical-align: middle;">{{ a.fecha_created|time:'H:i' }}</td>
                         <td class="text-nowrap" style="vertical-align: middle;">{% if a.monto_pagado %}$ {{ a.monto_pagado | replace_comma }}{% else %}<span class="badge bg-warning text-dark">Membresía</span>{% endif %}</td>
                         <td class="text-nowrap" style="vertical-align: middle;">
