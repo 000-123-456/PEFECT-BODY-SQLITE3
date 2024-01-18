@@ -16,10 +16,13 @@
     
       {% comment %} <div class="col-lg-1"></div> {% endcomment %}
       <div class="col-lg-12 d-flex flex-row-reverse">
-        <a href="{% url 'lista_bajas_proveedor' %}" class="btn btn-danger">
+        <a href="#" class="btn btn-outline-dark mx-1" id="ayuda" onclick="tour ()">
+          <b><i class="bi bi-info-circle"></i> Ayuda</b>
+        </a>
+        <a href="{% url 'lista_bajas_proveedor' %}" id="papelera" class="btn btn-danger">
           <b><i class="bi bi-trash"></i> Papelera</b>
         </a>
-        <a href="{% url 'crear_proveedor' %}" class="btn btn-primary mx-1">
+        <a href="{% url 'crear_proveedor' %}" id="nuevo" class="btn btn-primary mx-1">
           <b><i class="bi bi-plus-lg"></i> Nuevo proveedor</b>
         </a>
         
@@ -70,10 +73,10 @@
                         <td class="text-nowrap" style="vertical-align: middle;">{{a.telefono}}</td>
                         <td class="text-nowrap" style="vertical-align: middle;">{{a.direcccion}}</td>
                         <td class="text-nowrap" style="vertical-align: middle;">
-                          <a type="button" class="btn btn-secondary" href="{%url 'actualizar_proveedor' a.id %}">
+                          <a type="button" class="btn btn-secondary brnVP" href="{%url 'actualizar_proveedor' a.id %}">
                             <i class="bi bi-pencil-square"></i>
                           </a>
-                          <a class="btn btn-danger" href="#" onclick="eliminarProveedor({{a.id}})">
+                          <a class="btn btn-danger" href="#" id="menu-opciones" onclick="eliminarProveedor({{a.id}})">
                             <i class="bi bi-trash btnUM"></i>
                         </a>
                       </tr>
@@ -140,6 +143,35 @@
   });
   {% endif %}
 
+  //-------------------------------Funcion de ayuda--------------------------------------
+const driver = window.driver.js.driver;
+function tour() {
+const driverObj = driver({
+  popoverClass: 'driverjs-theme',
+  nextBtnText: 'Siguiente',
+  prevBtnText: 'Anterior',
+  doneBtnText: 'Completado',
+  showButtons: [
+    'next',
+    'previous',
+    'done'
+  ],
+  steps: [
+  { popover: { title: '¡Hola! 😊', description: 'Bienvenido al tour guiado por la sección de miembros del gimnasio. Aquí te explicaré todas las funciones disponibles y resolveré cualquier duda que puedas tener. ¡Empecemos!' } },
+  { element: '#nuevo', popover: { title: 'Nuevo Proveedor ➕', description: 'Haz clic en este botón para agregar un nuevo proveedor al gimnasio.', side: 'left', align: 'start' }},
+  { element: '#papelera', popover: { title: 'Papelera de Proveedor 🗑️', description: 'Este botón te llevará a la papelera de proveedores. Aquí podrás ver y restaurar proveedores que hayan sido dados de baja previamente.', side: 'bottom', align: 'start' }},
+  { element: '.table-responsive', popover: { title: 'Listado de Proveedores 🏋️', description: 'En esta tabla se muestra información detallada de todos los proveedores del gimnasio.', side: 'in', align: 'start' }},
+  { element: '#data_filter', popover: { title: 'Buscar 🔍', description: 'Utiliza este campo para escribir y filtrar información específica de los proveedores en la tabla.', side: 'left', align: 'start' }},
+  { element: '.sorting', popover: { title: 'Ordenar Datos 🔄', description: 'Haz clic en los encabezados de la tabla para ordenar la información de los proveedores.', side: 'right', align: 'start' }},
+  { element: '.btnVP', popover: { title: 'Opciones ⚙️', description: 'Este botón despliega un formulario para poder cambiar los datos del proveedor.', side: 'right', align: 'start' }},
+  { element: '#menu-opciones', popover: { title: 'Eliminar 🗑️', description: 'Este botón da de baja al proveedor.', side: 'right', align: 'start' }},
+  { element: '#data_info', popover: { title: 'Información del Listado 📊', description: 'Aquí se muestra la cantidad total de proveedores y cuántos están siendo visualizados actualmente.', side: 'right', align: 'start' }},
+  { element: '#data_paginate', popover: { title: 'Páginas 📄➡️', description: 'Navega entre las páginas para ver diferentes conjuntos de proveedores en el listado.', side: 'left', align: 'start' }},
+  { popover: { title: '¡Fin del tour! 😁', description: 'Espero que esta presentación sea la que estás buscando. Puedes ver el tour las veces que gustes 😊' }}
+  ]
+});
+
+driverObj.drive();
 
 </script>
 {% endblock js %}
