@@ -1,0 +1,318 @@
+{% extends 'layout/index.html' %}
+{% load static %}
+{% load custom_filters %}
+{% block titulo %}   {{titulo}}   {% endblock titulo %}
+{% block tituloP %}  {{titulo}}   {% endblock tituloP %}
+{% block modulo %}
+  <a href="#">   
+    {{modulo}}
+  </a>   
+{% endblock modulo %}
+{% block tituloS %}  {{titulo2}}   {% endblock tituloS %}
+{% block cuerpo %}
+
+<div class="modal fade" id="verProducto" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-warning">
+          <h5 class="modal-title text-black" id="exampleSideModal2"><b><i class="bi bi-cart-check"></i> Productos vendidos</b></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <table class="table bg-black text-white strip rounded mb-4" style="text-align: center" id="tabla-carrito">
+                <thead class="bg-warning text-black">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Producto</th>
+                        <th scope="col">Cantidad</th>
+                        <th scope="col">Precio</th>
+                        <th scope="col">Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-carrito">
+            </table>
+        </div>
+        <div class="modal-footer justify-content-center">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal"><b>Cerrar</b></button>
+        </div>
+    </form>
+    
+      </div>
+    </div>
+  </div>
+
+
+<section class="section dashboard">
+  <div class="col-lg-12 d-flex flex-row-reverse">
+    <a href="#" class="btn btn-outline-dark mx-1" id="ayuda" onclick="tour ()">
+      <b><i class="bi bi-info-circle"></i> Ayuda</b>
+    </a> 
+  </div>
+        <div class="col-lg-12">
+            <div class="row">
+            {% comment %} <div class="col-lg-1"></div> {% endcomment %}
+            <div class="col-xxl-3 col-md-3">
+                <div class="card info-card revenue-card" id="card_ventasMes">
+                <div class="card-body">
+                    <h5 class="card-title">Ventas <span>| Mes</span></h5>
+
+                    <div class="d-flex align-items-center">
+                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center bg-warning">
+                        <i class="bi bi-currency-dollar text-black"></i>
+                    </div>
+                    <div class="ps-3">
+                        <h6 class="text-warning">{{total_ventas_mes|replace_comma}}</h6>
+                    </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+                
+                <div class="col-xxl-3 col-md-3">
+                    <div class="card info-card revenue-card" id="card_ventasHoy">
+                    <div class="card-body">
+                        <h5 class="card-title">Ventas <span>| Hoy</span></h5>
+
+                        <div class="d-flex align-items-center">
+                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center bg-warning">
+                            <i class="bi bi-currency-dollar text-black"></i>
+                        </div>
+                        <div class="ps-3">
+                            <h6 class="text-warning">{{total_ventas_hoy|replace_comma}}</h6>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                
+                
+
+            </div>
+        </div>
+    
+
+          <div class="col-lg-12">    
+                <!-- Horizontal Form -->
+                {% if form.errors %}
+                {% for field  in form  %}
+                        {% for error in field.errors %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>Notificacion: </strong>{{error}}.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" arial-label="Close"></button>
+                        </div>
+                        {% endfor %}
+                {% endfor %}
+              {% endif %}
+            <br>
+            <div class="card recent-sales overflow-auto">
+              
+              <div class="card-body table-responsive"> 
+                <h5 class="card-title text-warning"> <i class="bi bi-list-task"></i> {{titulo}}</h5>
+                <hr>
+                
+                <table class="table bg-black text-white strip rounded mb-4" style="text-align: center" id="data">
+                  <thead class="bg-warning text-black">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Total</th>
+                        <th scope="col">Fecha</th>
+                        <th scope="col">Hora</th>
+                        <th scope="col">Opciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% if ventas %} {% for a in ventas %}
+                      <tr data-id="{{ a.id }}">
+                        <td class="text-nowrap" style="vertical-align: middle;">{{forloop.counter}}</td>
+                        
+                        <td class="text-nowrap" style="vertical-align: middle;">$ {{ a.total }}</td>
+                        <td class="text-nowrap" style="vertical-align: middle;">{{ a.fecha_venta.date }}</td>
+                        <td class="text-nowrap" style="vertical-align: middle;">{{ a.fecha_venta|time:'H:i' }}</td>
+                        <td class="text-nowrap" style="vertical-align: middle;">
+                            <button type="button" class="btn btn-primary btnVP" data-bs-toggle="modal" data-bs-target="#verProducto">
+                                <i class="bi bi-eye iVP"></i>
+                              </button>
+                              
+                              <a class="btn btn-danger btnEliminar" href="#" onclick="eliminarVenta({{a.id}})">
+                                <i class="bi bi-trash btnUM"></i>
+                            </a>
+                        </td>
+                      </tr>
+                  
+                      {% endfor %} {% else %}
+                      <td class="text-nowrap" colspan="9" style="text-align: center">
+                        <b>No hay datos para mostrar</b>
+                      </td>
+                      {% endif %}
+                    </tbody>
+                  </table>
+              </div>
+            </div>
+          </div>
+          {% comment %} <div class="col-lg-1"></div> {% endcomment %}
+        </div>
+        
+      </section>
+
+
+
+{% endblock cuerpo %}
+{% block js %}
+<script type="application/javascript" src="{% static 'assets/js/AppInventario/Venta/listVenta.js' %}"></script>
+<script>
+  const dataTableOptions = {
+    //scrollX: "400px",
+    lengthChange: false,
+    filter:[
+      { className: "form-control"},
+    ],
+    lengthMenu: [5, 10, 15, 20, 100, 200, 500],
+    columnDefs: [
+        { className: "text-center", targets: [0, 1, 2, 3, 4] },
+        { orderable: false, targets: [4] },
+        { searchable: false, targets: [0, 4] },
+        //{ width: "5%", targets: [0] }
+    ],
+    pageLength: 5,
+    destroy: true,
+    language: {
+        lengthMenu: "Mostrar _MENU_ registros por página",
+        zeroRecords: "Ninguna máquina encontrada",
+        info: "Mostrando de _START_ a _END_ de un total de _TOTAL_ registros",
+        infoEmpty: "Ningún usuario encontrado",
+        infoFiltered: "(filtrados desde _MAX_ registros totales)",
+        search: "",
+        loadingRecords: "Cargando...",
+        paginate: {
+            first: "Primero",
+            last: "Último",
+            next: "Siguiente",
+            previous: "Anterior"
+        }
+    }
+};
+
+  {% if ventas %}
+  let table = new DataTable('#data', dataTableOptions);
+  //remove the default 'Search' text for all DataTable search boxes
+  $('[type=search]').each(function () {
+    $(this).attr("placeholder", "Buscar...");
+    $(this).before('<span class="bi bi-search"></span>');
+  });
+  {% endif %}
+
+//-------------------------------Funcion de ayuda--------------------------------------
+const driver = window.driver.js.driver;
+function tour() {
+const driverObj = driver({
+  popoverClass: 'driverjs-theme',
+  nextBtnText: 'Siguiente',
+  prevBtnText: 'Anterior',
+  doneBtnText: 'Completado',
+  showButtons: [
+    'next',
+    'previous',
+    'done'
+  ],
+  steps: [
+    { popover: 
+      { 
+        title: '¡Hola! 😊', 
+        description: 'Comenzarás un tour guiado para explicarte lo que puedes hacer en esta sección y aclarar todas tus dudas.' 
+      } 
+    },
+    { 
+      element: '#card_ventasMes', 
+      popover: { 
+        title: 'Ganancias del mes 💰', 
+        description: 'Aquí puede visualizar el total de ganancias por las ventas de productos del mes.', 
+        side: "right", 
+        align: 'start' 
+      }
+    },
+    { 
+      element: '#card_ventasHoy', 
+      popover: { 
+        title: 'Ganancias del dia 💰', 
+        description: 'Aquí puede visualizar el total de ganancias dirias por las ventas de productos.', 
+        side: "right", 
+        align: 'start' 
+      }
+    },
+    { 
+      element: '.table-responsive', 
+      popover: { 
+        title: 'Listado de ventas 📋', 
+        description: 'En esta tabla se muestran todas las ventas que se han realizado.', 
+        side: "in", 
+        align: 'start' 
+      }
+    },
+    { 
+      element: '#data_filter', 
+      popover: { 
+        title: 'Buscar 🔍', 
+        description: 'En este campo puedes escribir para filtrar y buscar datos específicos de los registros en la tabla.', 
+        side: "left", 
+        align: 'start' 
+      }
+    },
+    { 
+      element: '.sorting', 
+      popover: { 
+        title: 'Ordenar datos 🔄', 
+        description: 'En los encabezados de la tabla puedes reordenar los datos.', 
+        side: "right", 
+        align: 'start' 
+      }
+    },
+    { 
+      element: '.btnVP', 
+      popover: { 
+        title: 'Carrito 🛒', 
+        description: 'Aquí puedes ver los productos que se vendieron.', 
+        side: "left", 
+        align: 'start' 
+      }
+    },
+    { 
+      element: '.btnEliminar', 
+      popover: { 
+        title: 'Eliminar 🗑️', 
+        description: 'Aqui puedes seleccionar el botón para borrar una venta registrada.', 
+        side: "left", 
+        align: 'start' 
+      }
+    },
+    { 
+      element: '#data_info', 
+      popover: { 
+        title: 'Información del listado 📊', 
+        description: 'Aquí se mostrará la cantidad de asistencias registradas y cuántas se están mostrando.', 
+        side: "right", 
+        align: 'start' 
+      }
+    },
+    { 
+      element: '#data_paginate', 
+      popover: { 
+        title: 'Páginas 📄➡️', 
+        description: 'Aquí podrás ver la página en la que te encuentras y otras más para que puedas buscar otros registros.', 
+        side: "left", 
+        align: 'start' 
+      }
+    },
+    { 
+      popover: { 
+        title: '¡Fin del tour! 😁', 
+        description: 'Eso ha sido todo lo que puedes hacer en esta sección, si tienes más dudas puedes ver el tour las veces que gustes.' 
+      } 
+    }
+  ]
+});
+
+driverObj.drive();
+}
+
+</script>
+{% endblock js %}

@@ -12,11 +12,12 @@ from AppInventarioMaquinaria.models import *
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from AppInventarioMaquinaria.forms import *
+from AppControlDeClientes.mixins import isAdministradorOrEmpleadoMixin
 # Create your views here.
 
 
 
-class CreateMaquinaria(CreateView):
+class CreateMaquinaria(isAdministradorOrEmpleadoMixin,CreateView):
     model = Maquinaria
     form_class = FormMaquinaria
     success_url= reverse_lazy('añadir_maquina')
@@ -72,7 +73,7 @@ from django.contrib import messages
 from django.utils import timezone
 
 
-class ListMaquinaria(ListView):
+class ListMaquinaria(isAdministradorOrEmpleadoMixin,ListView):
     model = Maquinaria
     form_class = FormMaquinariaEdit
     template_name = 'AppInventarioMaquinaria/Maquinaria/listMaquinaria.html'
@@ -90,7 +91,7 @@ class ListMaquinaria(ListView):
         return data
     
  
-class ListBajaMaquinaria(ListView):
+class ListBajaMaquinaria(isAdministradorOrEmpleadoMixin,ListView):
     model = Maquinaria
     form_class = FormMaquinariaEdit
     template_name = 'AppInventarioMaquinaria/Maquinaria/listaBajaMaquinarias.html'
@@ -137,7 +138,7 @@ def AltaTodasMaquinaria(request):
         messages.error(request, "¡Error, la accion no se pudo realizar!")
     return redirect(to='listar_maquina')
 
-class UpdateMaquinaria(UpdateView):
+class UpdateMaquinaria(isAdministradorOrEmpleadoMixin,UpdateView):
     model = Maquinaria
     form_class = FormMaquinaria
     template_name = 'AppInventarioMaquinaria/Maquinaria/actualizarMaquinaria.html'
@@ -258,7 +259,7 @@ def obtener_ultimo_historial(request, id_maquina):
     return JsonResponse({'error':'No hay historial abierto'}, status=400)
 
 #--------------------------------------------VER HISTORIAL DE LA MAQUINA--------------------------------------------
-class ListHistorialMaquina(ListView):
+class ListHistorialMaquina(isAdministradorOrEmpleadoMixin,ListView):
     template_name = 'AppInventarioMaquinaria/Maquinaria/listHistorialMaquinaria.html'  # Ruta a tu plantilla HTML para mostrar el historial
     context_object_name = 'historial'  # Nombre del objeto en el contexto que contiene el historial
 

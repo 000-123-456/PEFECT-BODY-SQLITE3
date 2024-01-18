@@ -1,3 +1,5 @@
+import datetime
+from ipaddress import summarize_address_range
 import json
 from django import http
 from django.shortcuts import render
@@ -14,7 +16,12 @@ from django.db.models import F, BooleanField, Case, When, Value
 from AppInventario.forms import FormProducto,FormCategoria,FormCompra,FormProveedor
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
+from django.db.models import Sum, Count
+from datetime import timedelta
+from django.utils import timezone
 from flask import Flask, request, jsonify
+
+from AppControlDeClientes.mixins import isAdministradorOrEmpleadoMixin
 # Create your views here.
 
 
@@ -277,7 +284,7 @@ def AltaTodosProducto(request):
 ##-----------------------------COMPRAS-------------------------------------------------------------
 from django.db.models import F
 from django.shortcuts import get_object_or_404
-from datetime import date
+from datetime import date, timezone
 
 class CreateCompra(CreateView):
     model = Compra
@@ -583,7 +590,7 @@ def Categoriaproducto(request, producto_id):
         data = {'perecedero': False}
         return JsonResponse(data)
     
-class CreateProveedor(CreateView):
+class CreateProveedor(isAdministradorOrEmpleadoMixin,CreateView):
     model = Proveedor
     form_class = FormProveedor
     success_url= reverse_lazy('crear_proveedor')
@@ -619,7 +626,7 @@ class CreateProveedor(CreateView):
         # Retorna la respuesta con el contexto actualizado
         return self.render_to_response(context)
     
-class ListProveedor(ListView):
+class ListProveedor(isAdministradorOrEmpleadoMixin,ListView):
     model = Proveedor
     template_name = 'AppInventario/Proveedor/listaProveedor.html'
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
@@ -635,7 +642,7 @@ class ListProveedor(ListView):
         data['icono']  = '<i class="bi bi-plus-lg"></i>'
         data['proveedores'] = Proveedor.objects.filter(estado=0)
         return data
-class ListProveedorBajas(ListView):
+class ListProveedorBajas(isAdministradorOrEmpleadoMixin,ListView):
     model = Proveedor
     template_name = 'AppInventario/Proveedor/listaProveedorBajas.html'
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
@@ -682,7 +689,7 @@ def AltaTodosProveedor(request):
             messages.error(request, "¡Error, la accion no se pudo realizar!")
         return redirect(to='lista_proveedor')
 
-class UpdateProveedor(UpdateView):
+class UpdateProveedor(isAdministradorOrEmpleadoMixin,UpdateView):
     model = Proveedor
     form_class = FormProveedor
     success_url= reverse_lazy('lista_proveedor')
@@ -718,7 +725,7 @@ class UpdateProveedor(UpdateView):
         # Retorna la respuesta con el contexto actualizado
         return self.render_to_response(context)
     
-class CreateVenta(TemplateView):
+class CreateVenta(isAdministradorOrEmpleadoMixin,TemplateView):
     template_name = 'AppInventario/Venta/registroVenta.html'
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
@@ -801,3 +808,78 @@ def registro_venta(request):
         except json.JSONDecodeError as e:
             messages.error(request, "¡No se pudo realizar la venta!")
     return JsonResponse({'message': 'success'})
+
+#*************************************************************************************************
+class ListVenta(isAdministradorOrEmpleadoMixin,ListView):
+    model = Venta
+    template_name = 'AppInventario/Venta/listVentas.html'
+    context_object_name = 'ventas'  # Establece el nombre del objeto en el contexto
+
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        try:
+            data['empresa'] = Empresa.objects.first()
+        except:
+            data['empresa'] = 'Error'
+        data['titulo'] = 'Lista de ventas'
+        data['modulo'] = 'Ventas'
+        data['icono'] = '<i class="bi bi-plus-lg"></i>'
+
+         # Get the current date and time in the local timezone
+        now = datetime.datetime.now()
+        # Filtra las ventas eliminadas basadas en el estado del producto
+        ventas = Venta.objects.filter(fecha_venta__month=now.month)
+        # Calcula el total sumado de las ventas este mes
+        total_ventas_mes = ventas.aggregate(Sum('total'))['total__sum']
+        data['total_ventas_mes'] = total_ventas_mes if total_ventas_mes else 0.00
+
+        #calcular la suma para el dia de hoy
+        ventas = Venta.objects.filter(fecha_venta__day=now.day)
+        total_ventas_dia = ventas.aggregate(Sum('total'))['total__sum']
+        data['total_ventas_hoy'] = total_ventas_dia if total_ventas_dia else 0.00
+
+
+        # Filtra las ventas eliminadas basadas en el estado del producto
+        data['ventas'] = Venta.objects.all().reverse()
+
+        return data
+
+#lista de linea de venta por el id de la venta
+@csrf_exempt
+def get_productosVendidos(request, venta_id):
+    try:
+        venta = Venta.objects.get(id=venta_id)
+        lineas_venta = LineaVenta.objects.filter(venta=venta)
+        lineas_venta_list = [
+            {
+                'id': linea_venta.id,
+                'producto': linea_venta.producto.nombre,
+                'cantidad': linea_venta.cantidad,
+                'precio_vendido': linea_venta.precio_vendido,
+                'subtotal': linea_venta.subtotal,
+            }
+            for linea_venta in lineas_venta
+        ]
+        return JsonResponse(lineas_venta_list, safe=False)
+    except Venta.DoesNotExist:
+        return JsonResponse({'error': 'No hay ventas'}, status=400)
+    
+
+#metodo para eliminar una venta, se eliminan todas las lineas de venta asociadas a la venta y se restaura el stock de los productos
+@csrf_exempt
+def eliminar_venta(request, venta_id):
+    try:
+        venta = Venta.objects.get(id=venta_id)
+        lineas_venta = LineaVenta.objects.filter(venta=venta)
+        for linea_venta in lineas_venta:
+            producto = linea_venta.producto
+            producto.cantidad += linea_venta.cantidad
+            producto.save()
+            linea_venta.delete()
+        venta.delete()
+        messages.success(request, 'Venta eliminada con éxito')
+    except json.JSONDecodeError as e:
+            messages.error(request, "¡No se pudo realizar la eliminación!")
+    return redirect(to='lista_venta')

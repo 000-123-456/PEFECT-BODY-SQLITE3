@@ -57,6 +57,8 @@ urlpatterns = [
     path('Venta/',login_required(views.CreateVenta.as_view()), name='vista_venta'),
     path('Venta/listaProductos/',login_required(views.lista_productos), name='lista_productos_venta'),
     path('Venta/registroVenta/',login_required(views.registro_venta), name='registro_venta'),
-
+    path('Venta/Listado/', login_required(views.ListVenta.as_view()), name='lista_venta'),
+    path('Venta/verProductos/<int:venta_id>/',login_required(views.get_productosVendidos), name='productos_vendidos'),
+    path('Venta/Eliminar/<int:venta_id>/', login_required(views.eliminar_venta), name='eliminar_venta'),
 ]
 urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

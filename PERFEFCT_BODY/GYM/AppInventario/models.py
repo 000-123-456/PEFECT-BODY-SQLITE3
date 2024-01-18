@@ -90,7 +90,7 @@ class Compra(models.Model):
 
 class Venta(models.Model):
     total = models.DecimalField(max_digits=15,decimal_places=2,null=False,verbose_name="Total")
-    fecha_venta = models.DateField(auto_now=True)
+    fecha_venta = models.DateTimeField(auto_now=True)
     fecha_created = models.DateTimeField(auto_now=True)
     ## CLAVES FORANEAS
     empleado = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name='Empleado')
