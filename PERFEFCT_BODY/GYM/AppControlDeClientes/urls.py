@@ -6,7 +6,7 @@ from AppControlDeClientes.views_dietas.Dietas.views import ListDietas, eliminar_
 from AppControlDeClientes.views import ListaDeRutinas
 urlpatterns = [
     #------------------------------------LOGIN---------------------------------------------------------------------------
-    path('',login_required(views.prueba), name='prueba'),
+    path('',login_required(views.IndexView.as_view()), name='prueba'),
 
 
 

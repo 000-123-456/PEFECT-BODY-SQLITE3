@@ -126,7 +126,7 @@
                         <td class="text-nowrap" style="vertical-align: middle;">{{forloop.counter}}</td>
                         
                         <td class="text-nowrap" style="vertical-align: middle;">$ {{ a.total }}</td>
-                        <td class="text-nowrap" style="vertical-align: middle;">{{ a.fecha_venta.date }}</td>
+                        <td class="text-nowrap" style="vertical-align: middle;">{{ a.fecha_venta|date }}</td>
                         <td class="text-nowrap" style="vertical-align: middle;">{{ a.fecha_venta|time:'H:i' }}</td>
                         <td class="text-nowrap" style="vertical-align: middle;">
                             <button type="button" class="btn btn-primary btnVP" data-bs-toggle="modal" data-bs-target="#verProducto">

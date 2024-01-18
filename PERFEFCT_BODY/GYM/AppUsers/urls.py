@@ -31,6 +31,7 @@ urlpatterns = [
     #Bitacora
     path('historial/venta_membresias/',login_required(views.BitacoraVentaMembresiaView.as_view()), name='bitacora_venta_membresia'),
     path('historial/asistencias/',login_required(views.BitacoraAsistenciaView.as_view()), name='bitacora_asistencias'),
+     path('historial/ventas/',login_required(views.BitacoraVentasView.as_view()), name='bitacora_ventas'),
     path('backup/descargar/', views.backup_view, name='backup'),
     path('backup/', views.template_backup_view.as_view(), name='backup_vista'),
     path('restore/', views.RestoreView.as_view(), name='restore'),

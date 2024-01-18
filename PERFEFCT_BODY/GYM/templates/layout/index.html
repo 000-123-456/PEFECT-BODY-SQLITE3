@@ -1,4 +1,5 @@
 {% load static %}
+{% load custom_filters %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -73,29 +74,17 @@
             <div class="col-xxl-4 col-md-6">
               <div class="card info-card sales-card">
 
-                <div class="filter">
-                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li class="dropdown-header text-start">
-                      <h6>Filter</h6>
-                    </li>
 
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                  </ul>
-                </div>
 
                 <div class="card-body">
-                  <h5 class="card-title">Membresías <span>| Hoy</span></h5>
+                  <h5 class="card-title">Venta de membresías <span>| Hoy</span></h5>
 
                   <div class="d-flex align-items-center">
                     <div class="card-icon rounded-circle d-flex align-items-center justify-content-center bg-warning text-black">
                       <i class="bi bi-person-lines-fill iAM"></i>
                     </div>
                     <div class="ps-3">
-                      <h6 class='text-warning'>$145</h6>
-                      <span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">increase</span>
+                      <h6 class='text-warning'>${{ganancia_hoy_membresias}}</h6>
 
                     </div>
                   </div>
@@ -108,29 +97,18 @@
             <div class="col-xxl-4 col-md-6">
               <div class="card info-card revenue-card">
 
-                <div class="filter">
-                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li class="dropdown-header text-start">
-                      <h6>Filter</h6>
-                    </li>
 
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                  </ul>
-                </div>
 
                 <div class="card-body">
-                  <h5 class="card-title">Asistencias <span>| Hoy</span></h5>
+                  <h5 class="card-title">Cobros de asistencias <span>| Hoy</span></h5>
 
                   <div class="d-flex align-items-center">
                     <div class="card-icon rounded-circle d-flex align-items-center justify-content-center bg-warning text-black">
                       <i class="bi bi-currency-dollar"></i>
                     </div>
                     <div class="ps-3">
-                      <h6 class='text-warning'>$3,264</h6>
-                      <span class="text-success small pt-1 fw-bold">8%</span> <span class="text-muted small pt-2 ps-1">increase</span>
+                      <h6 class='text-warning'>${{ganancia_hoy_asistencia}}</h6>
+                     
 
                     </div>
                   </div>
@@ -144,28 +122,17 @@
 
               <div class="card info-card customers-card">
 
-                <div class="filter">
-                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li class="dropdown-header text-start">
-                      <h6>Filter</h6>
-                    </li>
 
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                  </ul>
-                </div>
 
                 <div class="card-body">
-                  <h5 class="card-title">Miembros <span>| Totales</span></h5>
+                  <h5 class="card-title">Venta de productos <span>| Hoy</span></h5>
                   
                   <div class="d-flex align-items-center">
                     <div class="card-icon rounded-circle d-flex align-items-center justify-content-center bg-warning text-black">
-                      <i class="bi bi-people"></i>
+                      <i class="bi bi-currency-dollar"></i>
                     </div>
                     <div class="ps-3">
-                      <h6 class='text-warning'>1244</h6>
+                      <h6 class='text-warning'>${{ganancia_hoy_ventas|replace_comma}}</h6>
                     </div>
                   </div>
 
@@ -173,7 +140,7 @@
               </div>
 
             </div><!-- End Customers Card -->
-
+            
             <!-- Reports -->
             <div class="col-12">
               <div class="card">
@@ -195,61 +162,9 @@
                   <h5 class="card-title">Ventas de membresías <span>/Anuales</span></h5>
 
                   <!-- Line Chart -->
-                  <div id="reportsChart"></div>
+                  <div id="ventasMensuales" class="echart"></div>
 
-                  <script>
-                    document.addEventListener("DOMContentLoaded", () => {
-                      new ApexCharts(document.querySelector("#reportsChart"), {
-                        series: [{
-                          name: 'Sales',
-                          data: [31, 40, 28, 51, 42, 82, 56],
-                        }, {
-                          name: 'Revenue',
-                          data: [11, 32, 45, 32, 34, 52, 41]
-                        }, {
-                          name: 'Customers',
-                          data: [15, 11, 32, 18, 9, 24, 11]
-                        }],
-                        chart: {
-                          height: 350,
-                          type: 'area',
-                          toolbar: {
-                            show: false
-                          },
-                        },
-                        markers: {
-                          size: 4
-                        },
-                        colors: ['#4154f1', '#2eca6a', '#ff771d'],
-                        fill: {
-                          type: "gradient",
-                          gradient: {
-                            shadeIntensity: 1,
-                            opacityFrom: 0.3,
-                            opacityTo: 0.4,
-                            stops: [0, 90, 100]
-                          }
-                        },
-                        dataLabels: {
-                          enabled: false
-                        },
-                        stroke: {
-                          curve: 'smooth',
-                          width: 2
-                        },
-                        xaxis: {
-                          type: 'datetime',
-                          categories: ["2018-09-19T00:00:00.000Z", "2018-09-19T01:30:00.000Z", "2018-09-19T02:30:00.000Z", "2018-09-19T03:30:00.000Z", "2018-09-19T04:30:00.000Z", "2018-09-19T05:30:00.000Z", "2018-09-19T06:30:00.000Z"]
-                        },
-                        tooltip: {
-                          x: {
-                            format: 'dd/MM/yy HH:mm'
-                          },
-                        }
-                      }).render();
-                    });
-                  </script>
-                  <!-- End Line Chart -->
+                 
 
                 </div>
 
@@ -267,7 +182,29 @@
 
           
 
-          
+           <!-- Revenue Card -->
+           <div class="col-xxl-12 col-md-12">
+            <div class="card info-card revenue-card">
+
+
+
+              <div class="card-body">
+                <h5 class="card-title">Total recaudado <span>| Hoy</span></h5>
+
+                <div class="d-flex align-items-center">
+                  <div class="card-icon rounded-circle d-flex align-items-center justify-content-center bg-warning text-black">
+                    <i class="bi bi-currency-dollar"></i>
+                  </div>
+                  <div class="ps-3">
+                    <h6 class='text-success'>${{ganancia_hoy|replace_comma}}</h6>
+                   
+
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div><!-- End Revenue Card -->
 
           <!-- Website Traffic -->
           <div class="card">
@@ -276,132 +213,14 @@
             <div class="card-body pb-0">
               <h5 class="card-title">Membresias vendidas <span>| Todas</span></h5>
 
-              <div id="trafficChart" style="min-height: 400px;" class="echart"></div>
+              <div id="contadorVentas" style="min-height: 400px;" class="echart"></div>
 
-              <script>
-                document.addEventListener("DOMContentLoaded", () => {
-                  echarts.init(document.querySelector("#trafficChart")).setOption({
-                    tooltip: {
-                      trigger: 'item'
-                    },
-                    legend: {
-                      top: '5%',
-                      left: 'center'
-                    },
-                    series: [{
-                      name: 'Access From',
-                      type: 'pie',
-                      radius: ['40%', '70%'],
-                      avoidLabelOverlap: false,
-                      label: {
-                        show: false,
-                        position: 'center'
-                      },
-                      emphasis: {
-                        label: {
-                          show: true,
-                          fontSize: '18',
-                          fontWeight: 'bold'
-                        }
-                      },
-                      labelLine: {
-                        show: false
-                      },
-                      data: [{
-                          value: 1048,
-                          name: 'Search Engine'
-                        },
-                        {
-                          value: 735,
-                          name: 'Direct'
-                        },
-                        {
-                          value: 580,
-                          name: 'Email'
-                        },
-                        {
-                          value: 484,
-                          name: 'Union Ads'
-                        },
-                        {
-                          value: 300,
-                          name: 'Video Ads'
-                        }
-                      ]
-                    }]
-                  });
-                });
-              </script>
+             
 
             </div>
           </div><!-- End Website Traffic -->
 
-        <!-- Website Traffic -->
-        <div class="card">
-            
-
-          <div class="card-body pb-0">
-            <h5 class="card-title">Asistencias <span>| Hoy</span></h5>
-
-            <div id="trafficChart2" style="min-height: 400px;" class="echart"></div>
-
-            <script>
-              document.addEventListener("DOMContentLoaded", () => {
-                echarts.init(document.querySelector("#trafficChart2")).setOption({
-                  tooltip: {
-                    trigger: 'item'
-                  },
-                  legend: {
-                    top: '5%',
-                    left: 'center'
-                  },
-                  series: [{
-                    name: 'Access From',
-                    type: 'pie',
-                    radius: ['40%', '70%'],
-                    avoidLabelOverlap: false,
-                    label: {
-                      show: false,
-                      position: 'center'
-                    },
-                    emphasis: {
-                      label: {
-                        show: true,
-                        fontSize: '18',
-                        fontWeight: 'bold'
-                      }
-                    },
-                    labelLine: {
-                      show: false
-                    },
-                    data: [{
-                        value: 1048,
-                        name: 'Search Engine'
-                      },
-                      {
-                        value: 735,
-                        name: 'Direct'
-                      },
-                      {
-                        value: 580,
-                        name: 'Email'
-                      },
-                      {
-                        value: 484,
-                        name: 'Union Ads'
-                      },
-                      {
-                        value: 300,
-                        name: 'Video Ads'
-                      }
-                    ]
-                  }]
-                });
-              });
-            </script>
-
-          </div>
-        </div><!-- End Website Traffic -->
+       
         
 
         </div><!-- End Right side columns -->
@@ -449,7 +268,144 @@
   
   <!-- Template Main JS File -->
   <script src="{% static 'assets/js/main.js' %}"></script>
-  {% block js %}{% endblock js %}
+  {% block js %}
+  <script>
+    function getRandomColor() {
+      const letters = '0123456789ABCDEF';
+      const colors = [];
+      let color = '#';
+      for (let i = 0; i < 14; i++) {
+          for (let i = 0; i < 6; i++) {
+          color += letters[Math.floor(Math.random() * 16)];
+          }
+      
+          colors.push(color);
+          color ="#"
+      }
+      return colors;
+    }
+    const vibrantColors = [
+    '#FFC300', // Amarillo fuerte
+    '#FF5733', // Rojo fuerte
+    '#337BFF', // Azul fuerte
+    '#9533FF', // Morado intenso
+    '#FF3373', // Rojo brillante
+      '#A933FF', // Morado brillante
+      '#FF33B4', // Rosa brillante
+      '#FF3373', // Rojo intenso
+      '#FFDA33', // Amarillo intenso
+      '#33FF5E', // Verde intenso
+      '#33FFD7', // Turquesa intenso
+      '#3379FF', // Azul intenso
+      '#9533FF', // Morado intenso
+      '#FF33A7', // Rosa intenso
+      '#FF336B', // Rojo oscuro
+      '#FFD933', // Amarillo oscuro
+      '#33FF4D', // Verde oscuro
+      '#33FFC3', // Turquesa oscuro
+    
+      
+      '#FF337D', // Rosa oscuro
+      '#FF3349', // Rojo profundo
+      '#FFD033', // Amarillo profundo
+      '#33FF6B', // Verde profundo
+      '#33FFB6', // Turquesa profundo
+];
+    document.addEventListener("DOMContentLoaded", () => {
+      new ApexCharts(document.querySelector("#ventasMensuales"), {
+        series: [
+        
+        {% for s in ventas_cada_mes %}
+        {
+            name: "{{s.name}}",
+            data: [{% for d in s.data %}"{{d}}",{% endfor %}],
+          },
+        {% endfor %}],
+        chart: {
+          height: 350,
+          type: 'area',
+          toolbar: {
+            show: false
+          },
+        },
+        markers: {
+          size: 4
+        },
+        colors: vibrantColors,
+        fill: {
+          type: "gradient",
+          gradient: {
+            shadeIntensity: 1,
+            opacityFrom: 0.3,
+            opacityTo: 0.4,
+            stops: [0, 90, 100]
+          }
+        },
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          curve: 'smooth',
+          width: 2
+        },
+        xaxis: {
+          type: 'int',
+          categories: ["Enero", "Febrero", "Marzo", "Abril", "Mayo","Junio", "Julio", "Agosto", "Septiembre","Octubre", "Noviembre", "Diciembre"],
+        },
+        yaxis: {
+            labels: {
+              formatter: function (value) {
+                return "$" + value.toFixed(2);
+              }
+            }
+          },
+       
+      }).render();
+    });
+    document.addEventListener("DOMContentLoaded", () => {
+      echarts.init(document.querySelector("#contadorVentas")).setOption({
+        tooltip: {
+          trigger: 'item'
+        },
+        legend: {
+          top: '5%',
+          left: 'center',
+          textStyle: {
+              color: 'white' // Cambia el color del texto de las leyendas a azul
+            }
+        },
+        series: [{
+          name: 'Membresía',
+          type: 'pie',
+          radius: ['40%', '70%'],
+          avoidLabelOverlap: false,
+          label: {
+            show: false,
+            position: 'center'
+          },
+          emphasis: {
+            label: {
+              show: true,
+              fontSize: '18',
+              fontWeight: 'bold'
+            }
+          },
+          labelLine: {
+            show: false
+          },
+          data: [
+          {% for cv in cantidad_de_ventas %}
+              {       
+              value: "{{cv.data}}",
+              name:"{{cv.name}}"
+            },
+          {% endfor %}
+          ]
+        }]
+      });
+    });
+  </script>
+  {% endblock js %}
   {% if messages %}
       {% for m in messages %}
       <script>
