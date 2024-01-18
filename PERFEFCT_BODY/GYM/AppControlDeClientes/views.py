@@ -2,7 +2,7 @@ from typing import Any
 from django.forms import model_to_dict
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, TemplateView
 from AppControlDeClientes.models import Comida, Dieta, HistorialMiembro, Miembro,Membresia,VentaMembresia, Asistencia,Rutina,Ejercicio
 from AppControlDeClientes.forms import FormComida, FormDieta, FormMiembro,FormMembresia, FormHistorialMiembro, FormAsistenciaMiembro,FormRutina,FormEjercicio
@@ -129,7 +129,7 @@ class RegistroMiembroView(isAdministradorOrEmpleadoMixin,CreateView):
         miembro.save()
             # Envía un correo electrónico al usuario con su username y password
         subject = 'Registro exitoso'
-        message = f'Se ha registrado exitosamente.\nUsuario: {user.username}\nContraseña: {clave}\nIngrese al siguiente link: http://127.0.0.1:8000/'
+        message = f'Se ha registrado exitosamente.\nUsuario: {user.username}\nContraseña: {clave}\nIngrese al siguiente link: {self.request.build_absolute_uri(reverse("login"))}'
         from_email = EMAIL_HOST_USER
         recipient_list = [user.username]
         send_mail(subject, message,from_email, recipient_list)
@@ -199,7 +199,7 @@ class ActualizarMiembroView(isAdministradorOrEmpleadoMixin,UpdateView):
             print(email_viejo)
             if not respuesta:
                 subject = 'Actualización exitosa'
-                message = f'Se ha actualizado exitosamente.\nUsuario nuevo: {user.username}\nIngrese al siguiente link: http://127.0.0.1:8000/'
+                message = f'Se ha actualizado exitosamente.\nUsuario nuevo: {user.username}\nIngrese al siguiente link: {self.request.build_absolute_uri(reverse("login"))}'
                 from_email = EMAIL_HOST_USER
                 recipient_list = [user.username]
                 send_mail(subject, message, from_email, recipient_list)

@@ -110,11 +110,6 @@ class LoginFormView(LoginView):
         # Realizar la autenticación del usuario
         self.user = form.get_user()
         print(f"Usuario después de form.get_user(): {self.user}")
-        if self.user is not None:
-        # Verificar si es el primer ingreso
-            if self.user.primer_ingreso:
-                login(self.request, self.user)
-                return redirect('primera_clave')
         if not self.user.is_active:
             messages.error(self.request, "Su cuenta no está activa. Comuníquese con el administrador.")
             return self.form_invalid(form)
@@ -123,7 +118,14 @@ class LoginFormView(LoginView):
         # Comprobar si el rol es igual a 3 (miembro) y comprobar si el miembro tiene membresia activa
         if user.rol == 3:
             if not Miembro.objects.get(user = user).venta_activa:
-                return self.form_invalid(form)   
+                return self.form_invalid(form) 
+        if self.user is not None:
+        # Verificar si es el primer ingreso
+            if self.user.primer_ingreso:
+                login(self.request, self.user)
+                return redirect('primera_clave')
+
+  
 
         login(self.request, self.user)
 
