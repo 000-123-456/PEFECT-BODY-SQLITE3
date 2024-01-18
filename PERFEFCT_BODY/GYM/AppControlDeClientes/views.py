@@ -54,7 +54,7 @@ class IndexView(TemplateView):
         ventas_hoy = VentaMembresia.objects.filter(fecha=fecha_actual)
         ventas_hoy_dinero = ventas_hoy.aggregate(total_ventas=Sum('monto_pagado'))['total_ventas']
         if ventas_hoy_dinero:
-            total+=ventas_hoy_dinero
+            total+=float(ventas_hoy_dinero)
             context['ganancia_hoy_membresias'] = ventas_hoy_dinero
         else:
              context['ganancia_hoy_membresias'] = "0.00"
@@ -62,7 +62,7 @@ class IndexView(TemplateView):
         asistencias_hoy = Asistencia.objects.filter(fecha=fecha_actual)
         dinero_recaudado = asistencias_hoy.aggregate(total_recaudado=Sum('monto_pagado'))['total_recaudado']
         if dinero_recaudado:
-            total+=dinero_recaudado
+            total+=float(dinero_recaudado)
             context['ganancia_hoy_asistencia'] = dinero_recaudado
         else:
             context['ganancia_hoy_asistencia'] = "0.00"
@@ -72,7 +72,7 @@ class IndexView(TemplateView):
         ventas = Venta.objects.filter(fecha_venta__day=now.day)
         total_ventas_dia = ventas.aggregate(Sum('total'))['total__sum']
         context['ganancia_hoy_ventas'] = total_ventas_dia if total_ventas_dia else 0.00
-        total+=total_ventas_dia if total_ventas_dia else 0.00
+        total+=float(total_ventas_dia) if total_ventas_dia else 0.00
         context['ganancia_hoy'] = total
 
         # DATOS DE GRAFICO DE ventas de membresias mpor cada mes
