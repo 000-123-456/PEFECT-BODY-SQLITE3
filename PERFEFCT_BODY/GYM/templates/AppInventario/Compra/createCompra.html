@@ -8,11 +8,16 @@
 <section class="section">
     
   <div class="row">
-    <div class="col-lg-12 d-flex">
+    <div class="col-lg-12 d-flex justify-content-between">
       <a href="{% url 'lista_compras' %}" class="btn btn-primary">
         <b><i class="bi bi-arrow-left"></i> Regresar</b>
-      </a>  
+      </a>
+      <a href="#" class="btn btn-outline-dark" id="ayuda" onclick="tour ()">
+        <b><i class="bi bi-info-circle"></i> Ayuda</b>
+      </a>   
   </div>
+
+
   <br>
   <!-- **************************************empieza proveedor ********************************** -->
   {% if proveedor and producto %}
@@ -20,34 +25,37 @@
     <div class="col-lg-6">             
         
         <br>
-    
+        <p class="mt-0" id='indicaciones'>Los campo con (<span class="text-danger">*</span>) son campos obligatorios.</p> 
       <div class="card">
         <div class="card-body">
           <h5 class="card-title text-warning"><i class="bi bi-plus-lg"></i> {{titulo}}</h5>
-
+         
           <!-- Floating Labels Form -->
                   <form class="row g-3" method="post" enctype="multipart/form-data" action='.'>
                     {% csrf_token %}
+
                     {% for field in form.visible_fields %}
                         {% if field.name == 'producto' %}
+
                           <div class="col-md-6">
-                            <div class="form-floating">
+                            <div class="form-floating" id="{{field.name}}">
                                 {{ field }}
-                                <label for="floatingName" autofocus>{{ field.label }}</label>
+                                <label for="floatingName" autofocus>{{ field.label }}{% if field.field.required %}<span class="text-danger"> *</span>{% endif %}</label>
                             </div>
                         </div>
+
                         <div class="col-md-6">
                             <!-- Mostrar la imagen del producto seleccionado -->
                             <div id="img-container">
-                              <img id="img" alt="Imagen del producto" style="max-width: 200px; max-height: 200px;">
+                              <img id="img" alt="Imagen del producto" style="max-width: 200px; max-height: 200px; border-radius:20px; "src="{% static "assets/img/no-photo.jpg" %}">
                             </div>
                         </div>
                       
                         {% else %}
                                   <div class="col-md-{% if field.name == 'cantidad' or field.name == 'precio_unitario' %}6{% else %}12{% endif %}">
-                                    <div class="form-floating">
+                                    <div class="form-floating" id="{{field.name}}">
                                         {{ field }}
-                                        <label for "floatingName" autofocus>{{ field.label }}</label>
+                                        <label for "floatingName" autofocus>{{ field.label }}{% if field.field.required %}<span class="text-danger"> *</span>{% endif %}</label>
                                     </div>
                                 </div>
                       
@@ -242,6 +250,43 @@
       }
  
 {% endif %}
+
+
+//----ayuda-----------------
+// Función de ayuda
+// Función de ayuda
+const driver = window.driver.js.driver;
+
+function tour() {
+  const driverObj = driver({
+    popoverClass: 'driverjs-theme',
+    nextBtnText: 'Siguiente',
+    prevBtnText: 'Anterior',
+    doneBtnText: 'Completado',
+    showButtons: ['next', 'previous', 'done'],
+    steps: [
+      { popover: { title: '¡Hola! 😊', description: 'Comenzarás un tour guiado para explicarte lo que puedes hacer en esta sección y aclarar todas tus dudas.' } },
+      { element: '#indicaciones', popover: { title: 'Indicaciones', description: 'Los campos con (*) son campos que no pueden ir vacíos. Sigue las indicaciones al pie de la letra 😊.', side: "left", align: 'start' }},
+      { element: '#producto', popover: { title: 'Producto 👨🏻', description: 'En este campo debe seleccionar el producto que desea comprar.', side: "bottom", align: 'start' }},
+      { element: '#proveedor', popover: { title: 'Proveedor 👨🏻', description: 'En este campo debe seleccionar al proveedor que usted desea comprarle.', side: "bottom", align: 'start' }},
+      { element: '#cantidad', popover: { title: 'Cantidad 📧', description: 'En este campo debe digitar la cantidad de producto que desea comprar.', side: "left", align: 'start' }},
+      { element: '#precio_unitario', popover: { title: 'Precio Unitario', description: 'Aquí debe digitar el precio unitario de la compra.', side: "top", align: 'start' }},
+      { element: '#fecha_vec', popover: { title: 'Fecha de vencimiento', description: 'Aquí se ingresa la fecha de vencimiento del producto.', side: "right", align: 'start' }},  
+      { element: '#guardar', popover: { title: 'Guardar 💾', description: 'Al dar click en guardar se registran los datos.', side: "right", align: 'start' }},
+      { element: '#limpiar', popover: { title: 'Limpiar 🧹', description: 'Al dar click en este botón se limpian todos los campos que tenga algo escrito o seleccionado.', side: "right", align: 'start' }},
+      { popover: { title: '¡Fin del tour! 😁', description: 'Eso ha sido todo lo que puedes hacer en esta sección, si tienes más dudas puedes ver el tour las veces que gustes.' } }
+    ]
+  });
+
+
+  // Iniciar el tour
+  driverObj.drive();
+}
+
+
+
+
+
 </script>
 
 
