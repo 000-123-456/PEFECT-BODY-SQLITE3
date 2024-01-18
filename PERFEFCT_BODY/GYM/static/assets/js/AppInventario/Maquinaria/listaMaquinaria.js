@@ -84,18 +84,19 @@ const obtenerUltimoHistorial = async (idMaquina) => {
   }
 }
 
-//---------------------------------------------------------------------------------------------------
 // Obten el campo de entrada por su id
 let campoFechaFin = document.getElementById('fecha_fin');
 let campoFechaInicio = document.getElementById('fecha_ini');
 // Obtiene la fecha actual en formato YYYY-MM-DD
 let fechaActual = new Date();
 // Resta un día a la fecha actual
-fechaActual.setDate(fechaActual.getDate());
+fechaActual.setDate(fechaActual.getDate() - 1);
 // Convierte la fecha a formato YYYY-MM-DD
 let fechaAnterior = fechaActual.toISOString().slice(0, 10);
 // Establece la fecha anterior en el campo de entrada
 campoFechaFin.value = fechaAnterior;
 campoFechaInicio.value = fechaAnterior;
+
+
 
 
