@@ -84,8 +84,15 @@ WSGI_APPLICATION = 'GYM.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
-DATABASES = db.POSTGRESQL
+# Por defecto SQLite (funciona sin PostgreSQL). Para usar Postgres local:
+#   $env:DJANGO_USE_POSTGRES="1"   (PowerShell)
+#   set DJANGO_USE_POSTGRES=1      (cmd)
+_use_postgres = os.environ.get("DJANGO_USE_POSTGRES", "").strip().lower() in (
+    "1",
+    "true",
+    "yes",
+)
+DATABASES = db.POSTGRESQL if _use_postgres else db.SQLITE
 
 
 # Password validation

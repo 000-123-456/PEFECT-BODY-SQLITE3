@@ -1,0 +1,28 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Django: migrate (SQLite)",
+      "type": "shell",
+      "command": "${workspaceFolder}/GYM/.venv/Scripts/python.exe manage.py migrate",
+      "options": {
+        "cwd": "${workspaceFolder}/GYM",
+        "env": {}
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Django: runserver",
+      "type": "shell",
+      "command": "${workspaceFolder}/GYM/.venv/Scripts/python.exe manage.py runserver",
+      "options": {
+        "cwd": "${workspaceFolder}/GYM"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    }
+  ]
+}
