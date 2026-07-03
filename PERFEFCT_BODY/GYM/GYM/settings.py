@@ -11,8 +11,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 import os
-from pathlib import Path
 
+import dj_database_url
 from django.urls import reverse_lazy
 import GYM.db as db
 from django.utils.translation import gettext_lazy as _
@@ -21,16 +21,32 @@ from django.utils.translation import gettext_lazy as _
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
+def _env_bool(name, default=False):
+    return os.environ.get(name, str(default)).strip().lower() in ("1", "true", "yes")
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-#4a-hm#i43&gs+_c#tzom3mv4@k^=!r(-dm6)2emn(qo*py1%l'
+SECRET_KEY = os.environ.get(
+    "SECRET_KEY",
+    "django-insecure-#4a-hm#i43&gs+_c#tzom3mv4@k^=!r(-dm6)2emn(qo*py1%l",
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = _env_bool("DEBUG", default=True)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+    if host.strip()
+]
+
+if os.environ.get("RENDER_EXTERNAL_HOSTNAME"):
+    render_host = os.environ["RENDER_EXTERNAL_HOSTNAME"]
+    if render_host not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(render_host)
 
 
 # Application definition
@@ -50,6 +66,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -84,15 +101,18 @@ WSGI_APPLICATION = 'GYM.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-# Por defecto SQLite (funciona sin PostgreSQL). Para usar Postgres local:
-#   $env:DJANGO_USE_POSTGRES="1"   (PowerShell)
-#   set DJANGO_USE_POSTGRES=1      (cmd)
-_use_postgres = os.environ.get("DJANGO_USE_POSTGRES", "").strip().lower() in (
-    "1",
-    "true",
-    "yes",
-)
-DATABASES = db.POSTGRESQL if _use_postgres else db.SQLITE
+# Render: DATABASE_URL. Local Postgres: DJANGO_USE_POSTGRES=1. Por defecto: SQLite.
+_database_url = os.environ.get("DATABASE_URL")
+if _database_url:
+    DATABASES = {
+        "default": dj_database_url.parse(
+            _database_url,
+            conn_max_age=600,
+            ssl_require=True,
+        )
+    }
+else:
+    DATABASES = db.POSTGRESQL if _env_bool("DJANGO_USE_POSTGRES") else db.SQLITE
 
 
 # Password validation
@@ -138,16 +158,34 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+    },
+}
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
+CSRF_TRUSTED_ORIGINS = [
+    f"https://{host}"
+    for host in ALLOWED_HOSTS
+    if host not in ("localhost", "127.0.0.1")
+]
+
+if not DEBUG:
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
 # CONFIGURACION DE CORREO
-EMAIL_BACKEND="django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST="smtp.gmail.com"
-EMAIL_USE_TLS=True
-EMAIL_PORT=587
-EMAIL_HOST_USER="perfectbody952@gmail.com"
-EMAIL_HOST_PASSWORD="tqiebdipuyysdeqo"
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
 #CONFIGURACION DE DECIMALES
 DECIMAL_SEPARATOR = '.'
 USE_THOUSAND_SEPARATOR = True

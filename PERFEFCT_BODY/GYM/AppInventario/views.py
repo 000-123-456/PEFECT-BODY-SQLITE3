@@ -19,8 +19,6 @@ from django.db.models import Q
 from django.db.models import Sum, Count
 from datetime import timedelta
 from django.utils import timezone
-from flask import Flask, request, jsonify
-
 from AppControlDeClientes.mixins import isAdministradorOrEmpleadoMixin
 # Create your views here.
 
