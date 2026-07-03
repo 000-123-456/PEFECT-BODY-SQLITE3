@@ -105,12 +105,13 @@ WSGI_APPLICATION = 'GYM.wsgi.application'
 _database_url = os.environ.get("DATABASE_URL")
 if _database_url:
     DATABASES = {
-        "default": dj_database_url.parse(
-            _database_url,
+        "default": dj_database_url.config(
+            default=_database_url,
             conn_max_age=600,
-            ssl_require=True,
+            conn_health_checks=True,
         )
     }
+    DATABASES["default"]["ENGINE"] = "django.db.backends.postgresql"
 else:
     DATABASES = db.POSTGRESQL if _env_bool("DJANGO_USE_POSTGRES") else db.SQLITE
 
